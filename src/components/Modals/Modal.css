@@ -3,7 +3,7 @@
   color: var(--white);
   padding: 16px 24px;
   border-radius: 6px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   justify-items: center;
@@ -18,5 +18,4 @@
 .modal__header {
   display: flex;
   justify-content: center;
-  font-size: 30px;
 }

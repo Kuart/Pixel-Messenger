@@ -20,12 +20,15 @@ export function Modal(props) {
 
   const template = `
     <section class="{{classes.modal}}">
-      <header class="{{classes.header}}">{{headerText}}</header>
+      <header class="{{classes.header}}">
+        <h2>{{headerText}}</h2>
+      </header>
       <div class="{{classes.body}}">{{slots.body}}</div>              
     </section>`;
 
   return {
     template,
-    context
+    context,
+    name: 'Modal'
   };
 }

@@ -1,5 +1,7 @@
 export const routs = {
   login: 'login',
   register: 'register',
-  messanger: 'messanger'
+  messanger: 'messanger',
+  wrongRout: '404',
+  serverError: '500'
 };

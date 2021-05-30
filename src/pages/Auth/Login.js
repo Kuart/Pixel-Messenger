@@ -24,6 +24,7 @@ export function Login(props) {
           @label=Логин 
           @name=login 
           @eventTarget=login__input-login 
+          @id=lgn57
         @}}
 
         {{@ Input 
@@ -32,6 +33,7 @@ export function Login(props) {
           @name=password 
           @eventTarget=login__input-password 
           @error=Не правильно введен пароль 
+          @id=pasw57
         @}}
 
       </div>
@@ -60,7 +62,7 @@ export function Login(props) {
 
   const template = `{{@ Modal @headerText=Вход @}}`;
 
-  return { template, context };
+  return { template, context, name: 'Login' };
 }
 
 function submitForm(event) {

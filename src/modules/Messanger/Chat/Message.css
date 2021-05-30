@@ -1,0 +1,29 @@
+.messages-area__message {
+  display: grid;
+  grid-template-columns: 50px auto 50px;
+  column-gap: 12px;
+}
+
+.messages-area__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.content__author {
+  color: var(--accent);
+  text-shadow: 0 0 2px #000;
+  font-size: 18px;
+}
+
+.content__message {
+  color: var(--white);
+  font-family: var(--secondFont);
+  font-size: 16px;
+}
+
+.messages-area__time {
+  color: var(--white);
+  text-shadow: 0 0 2px #000;
+}

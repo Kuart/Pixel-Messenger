@@ -11,12 +11,20 @@ export class PixelRouter {
 
     if (!location.hash) {
       location.hash = routs.login;
+    } else if (!this.routes[location.hash]) {
+      location.hash = routs.wrongRout;
     }
 
     return this.routes[location.hash];
   }
 
   callUpdate(event) {
-    this.pixelDOM.changePage(this.routes[event.currentTarget.location.hash]);
+    const component = this.routes[event.currentTarget.location.hash];
+    if (!component) {
+      location.hash = routs.wrongRout;
+      this.pixelDOM.changePage(routs.wrongRout);
+    } else {
+      this.pixelDOM.changePage(this.routes[event.currentTarget.location.hash]);
+    }
   }
 }

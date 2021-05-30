@@ -8,11 +8,12 @@ export function Button(props) {
   };
 
   const template = `
-    <button class="button {{class}}">{{text}}</button>
+    <button class="button {{class}}" width={{width}}>{{text}}</button>
   `;
 
   return {
     template,
-    context
+    context,
+    name: 'Button'
   };
 }

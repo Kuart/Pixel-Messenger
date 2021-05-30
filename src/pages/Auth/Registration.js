@@ -3,16 +3,6 @@ import { Button, defaultModalContext, Input, Modal } from '../../components';
 import { routs } from '../../utils';
 import './Authorization.css';
 
-const inputs = [
-  { label: 'Почта', type: 'email', name: 'email' },
-  { label: 'Логин', type: 'text', name: 'login' },
-  { label: 'Имя', type: 'text', name: 'name' },
-  { label: 'Фамилия', type: 'text', name: 'secondName' },
-  { label: 'Телефон', type: 'tel', name: 'phoneNumber' },
-  { label: 'Пароль', type: 'password', name: 'password' },
-  { label: 'Повторите пароль', type: 'password', name: 'passwordCheck' }
-];
-
 export function Registration(props) {
   Pixel.registerComponent(Modal);
   Pixel.registerComponent(Input);
@@ -24,21 +14,21 @@ export function Registration(props) {
     context: {
       formOnChangeHandler,
       submitForm,
-      redirectLogin
+      redirectLogin,
+      inputs: [
+        { label: 'Почта', type: 'email', name: 'email' },
+        { label: 'Логин', type: 'text', name: 'login' },
+        { label: 'Имя', type: 'text', name: 'name' },
+        { label: 'Фамилия', type: 'text', name: 'secondName' },
+        { label: 'Телефон', type: 'tel', name: 'phoneNumber' },
+        { label: 'Пароль', type: 'password', name: 'password' },
+        { label: 'Повторите пароль', type: 'password', name: 'passwordCheck' }
+      ]
     },
     template: `
     <form class="auth-form auth-form_register" {{_eventChange=formOnChangeHandler=auth-form_register}} {{_eventSubmit=submitForm=auth-form_register}}>
       <div class="auth-form_body">
-        ${inputs
-          .map(
-            (input) => `
-          {{@ Input 
-            @label=${input.label}
-            @type=${input.type} 
-            @name=${input.name} 
-          @}}`
-          )
-          .join('')}
+        {{# @inputs @Input @inputType=input #}}
       </div>
 
       <footer class="auth-form__footer">
@@ -61,7 +51,7 @@ export function Registration(props) {
 
   const template = `{{@ Modal @headerText=Регистрация @}}`;
 
-  return { template, context };
+  return { template, context, name: 'Registration' };
 }
 
 function submitForm(event) {

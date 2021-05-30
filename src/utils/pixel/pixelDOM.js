@@ -9,20 +9,25 @@ export class PixelDOM {
     this.domParser = new DOMParser();
   }
 
+  root = null;
+  rootName = null;
   rootNode = null;
   rootComponent = null;
+
   components = {};
   _components = {};
+
   listeners = [];
   activeListeners = [];
 
-  init(root, target) {
+  init(root, rootName, target) {
     this.root = root;
+    this.rootName = rootName;
     this.rootNode = target;
     const startPage = this.router.initRouting();
 
     this.registerComponent(root, { page: startPage });
-    this.render(`{{@ ${root.name} @}}`, { page: startPage }, target);
+    this.render(`{{@ ${rootName} @}}`, { page: startPage }, target);
   }
 
   render(template, context, target) {
@@ -45,10 +50,9 @@ export class PixelDOM {
   }
 
   registerComponent(component, context) {
-    if (!this.components[component.name]) {
-      this.components[component.name] = component(context);
-      this._components[component.name] = component;
-    }
+    const result = component(context);
+    this.components[result.name] = result;
+    this._components[result.name] = component;
   }
 
   registerListener(listenerType, selector, handler) {
@@ -60,7 +64,7 @@ export class PixelDOM {
       this.listeners.forEach((listener) => {
         const { listenerType, selector, handler } = listener;
         const node = document.querySelector(`.${selector}`);
-        console.log(selector);
+
         if (!node) throw Error(nodeSearchError(selector));
 
         node.addEventListener(listenerType, handler);
@@ -82,7 +86,8 @@ export class PixelDOM {
 
   changePage(page) {
     this.listeners = [];
-    this.components[this.root.name] = this._components[this.root.name]({ page });
-    this.render(`{{@ ${this.root.name} @}}`, { page }, this.rootNode);
+
+    this.components[this.rootName] = this._components[this.rootName]({ page });
+    this.render(`{{@ ${this.rootName} @}}`, { page }, this.rootNode);
   }
 }

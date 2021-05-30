@@ -1,1 +1,1 @@
-export { Login, Registration } from './Auth';
+export { Chat, Header, ChatList } from './Messanger';

@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@parcel/transformer-image": "^2.0.0-beta.3.1",
     "autoprefixer": "^10.2.6",
     "express": "^4.17.1",
     "parcel": "^2.0.0-beta.3.1",
@@ -10,7 +11,6 @@
   "name": "pixel_chat",
   "description": "### Откройте pull request в ветку main из ветки, где вы разрабатывали проект, и добавьте ссылку на этот pr в README.md в ветке main. Название pull request может быть любое.",
   "version": "1.0.0",
-  "main": "index.js",
   "engine": "12.21.0",
   "dependencies": {
     "accepts": "^1.3.7",
@@ -62,8 +62,9 @@
     "vary": "^1.1.2"
   },
   "scripts": {
-    "start": "parcel static/index.html --open",
-    "build": "parcel build static/index.html --no-content-hash",
+    "start": "parcel static/index.html --open --no-cache  --port 3000",
+    "build": "parcel build static/index.html --no-content-hash --no-source-maps",
+    "serve": "node server/index.js",
     "test": ""
   },
   "repository": {

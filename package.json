@@ -1,9 +1,13 @@
 {
   "devDependencies": {
+    "autoprefixer": "^10.2.6",
     "express": "^4.17.1",
-    "parcel-bundler": "^1.12.5"
+    "parcel": "^2.0.0-beta.3.1",
+    "parcel-bundler": "^1.12.5",
+    "postcss": "^8.3.0",
+    "postcss-modules": "^4.0.0"
   },
-  "name": "messenger_app",
+  "name": "pixel_chat",
   "description": "### Откройте pull request в ветку main из ветки, где вы разрабатывали проект, и добавьте ссылку на этот pr в README.md в ветке main. Название pull request может быть любое.",
   "version": "1.0.0",
   "main": "index.js",
@@ -44,7 +48,6 @@
     "path-to-regexp": "^0.1.7",
     "proxy-addr": "^2.0.6",
     "qs": "^6.7.0",
-    "range-parser": "^1.2.1",
     "raw-body": "^2.4.0",
     "safe-buffer": "^5.1.2",
     "safer-buffer": "^2.1.2",

@@ -1,0 +1,32 @@
+:root {
+  --accent: #985caf;
+  --accentFocus: #613793;
+  --light: #3a4281;
+  --dark: #1a2a40;
+  --white: #fff;
+  --black: #222222;
+  --warning: #ff2f2f;
+}
+
+@font-face {
+  font-family: Pixel Cyr;
+  src: url(../assets/fonts/Pixel.ttf);
+}
+
+@font-face {
+  font-family: PerfectDOSVGA437;
+  src: url(../assets/fonts/PixelLow.ttf);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: Pixel Cyr;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-size: 14px;
+}

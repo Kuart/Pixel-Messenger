@@ -3,10 +3,9 @@
     "express": "^4.17.1",
     "parcel-bundler": "^1.12.5"
   },
-  "name": "messenger_app",
-  "description": "### Откройте pull request в ветку main из ветки, где вы разрабатывали проект, и добавьте ссылку на этот pr в README.md в ветке main. Название pull request может быть любое.",
+  "name": "pixel-chat",
+  "description": "pixel messanger",
   "version": "1.0.0",
-  "main": "index.js",
   "engine": "12.21.0",
   "dependencies": {
     "accepts": "^1.3.7",
@@ -59,9 +58,9 @@
     "vary": "^1.1.2"
   },
   "scripts": {
-    "start": "parcel static/index.html --open",
-    "build": "parcel build static/index.html --no-content-hash",
-    "test": ""
+    "start": "parcel static/index.html --open --no-cache --port 3000",
+    "build": "parcel build static/index.html --no-content-hash --no-source-maps",
+    "serve": "node server/index.js"
   },
   "repository": {
     "type": "git",

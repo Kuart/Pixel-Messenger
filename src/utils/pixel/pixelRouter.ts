@@ -1,1 +1,3 @@
-export class PixelRouter {}
+class PixelRouter {}
+
+export default PixelRouter;

@@ -3,7 +3,7 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "max-len": [2, 100],
+    "max-len": [2, 120],
     "import/extensions": [
       "error",
       "ignorePackages",

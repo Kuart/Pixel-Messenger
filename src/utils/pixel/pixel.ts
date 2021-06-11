@@ -24,8 +24,9 @@ class Pixel {
 
   constructor(config: IPixelInstance) {
     this.target = config.el;
-    this.parser = new PixelParser(config.template);
     this.router = new PixelRouter();
+    this.parser = new PixelParser();
+    this.render(config.template);
   }
 
   componens: Record<string, IPixelComponent> = {};
@@ -37,6 +38,12 @@ class Pixel {
 
     this.componens[componentName] = instance;
   }
+
+  /* global document */
+  render = (template: string) => {
+    const container = document.querySelector(this.target);
+    const VDOM = this.parser.parseHTML(template);
+  };
 }
 
 export default Pixel;

@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "module": "system",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "../../built/local/tsc.js",
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": ["ES2017", "DOM", "ES2016"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]

@@ -11,8 +11,8 @@ const root = new Pixel({
     '/error': routes.error,
   },
   template: /* html */ `
-    <div class="container">
-      <App />
+    <div !isActive class="container" color="red">
+      <span>Hi!</span>
     </div>
   `,
 });

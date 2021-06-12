@@ -1,5 +1,6 @@
 import Stack from '../structures/stack';
-import PixelDOM, { PNode } from './pixelDOM';
+import { Pixel } from './Pixel';
+import { PixelDOM, PNode } from './PixelDOM';
 
 export interface IParsedTag {
   tagName: string;
@@ -7,29 +8,36 @@ export interface IParsedTag {
   type: string;
 }
 class PixelParser {
-  private tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
+  tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 
-  private componentRegExp = /<[\\/]?[A-Z\-!](?:"[^"]*"|'[^']*'|[^'">])*>/g;
+  componentRegExp = /<[\\/]?[A-Z\-!](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 
-  private attrRegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
+  attrRegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
 
-  private wsRegExp = /^\s*$/;
+  tagNameRegExp = /<\/?([^\s]+?)[/\s>]/;
 
-  private pixelDOM: PixelDOM;
+  pixelDOM: PixelDOM;
 
-  private stack: Stack<PNode>;
+  stack: Stack<PNode>;
 
-  constructor() {
+  instance: Pixel;
+
+  constructor(instance: Pixel) {
     this.pixelDOM = new PixelDOM();
     this.stack = new Stack();
+    this.instance = instance;
   }
 
-  parseHTML = (template: string): PNode => {
+  parseHTML = (html: string): PNode => {
     let result = null;
-    template.replace(this.tagRegExp, (tag: string) => {
+    html.replace(this.tagRegExp, (tag: string, index: number) => {
+      const start = index + tag.length;
+      const nextChar = html.charAt(start);
       const isOpen = tag[1] !== '/';
 
-      if (!isOpen) {
+      if (tag.match(this.componentRegExp)) {
+        const componentInstant = this.parseComponent(tag);
+      } else if (!isOpen) {
         const closedTag = this.stack.pop();
         const parentTag = this.stack.peek();
         if (!parentTag) {
@@ -37,25 +45,35 @@ class PixelParser {
         } else {
           parentTag.value.children.push(closedTag);
         }
-      }
-
-      if (isOpen && tag.match(this.componentRegExp)) {
-        console.log(tag, 'Component');
-      } else if (isOpen) {
+      } else {
         const { tagName, type, attrs } = this.parseTag(tag);
         const element = this.pixelDOM.createElement(type, tagName, attrs);
+        if (nextChar && nextChar !== '<') {
+          const text = html.slice(start, html.indexOf('<', start)).trim();
+          if (text.length) {
+            element.children.push(text);
+          }
+        }
         this.stack.push(element);
       }
     });
     return result;
   };
 
+  parseComponent(tag: string) {
+    const [_, tagName] = tag.match(this.tagNameRegExp);
+    const { template, data, components } = this.instance.components[tagName]();
+    const dom = this.parseHTML(template);
+    console.log(dom);
+  }
+
   parseTag = (tag: string): IParsedTag => {
     const reg = new RegExp(this.attrRegExp);
     const attrs: Record<string, string | number | boolean> = {};
     const tagName = tag.split(' ')[0].trim().substr(1).split('>')[0];
 
-    while (true) {
+    let isEmpty = false;
+    while (!isEmpty) {
       const result: RegExpExecArray | null = reg.exec(tag);
       if (result) {
         const [attr, value] = result[0].trim().split('=');
@@ -66,7 +84,7 @@ class PixelParser {
           attrs[attr] = value.substring(1, value.length - 1);
         }
       } else {
-        break;
+        isEmpty = true;
       }
     }
 
@@ -74,4 +92,4 @@ class PixelParser {
   };
 }
 
-export default PixelParser;
+export { PixelParser };

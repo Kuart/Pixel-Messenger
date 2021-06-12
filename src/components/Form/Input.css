@@ -1,0 +1,48 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input__label {
+  color: var(--accent);
+}
+
+.input__control-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.input__control {
+  font-family: PerfectDOSVGA437;
+  height: 30px;
+  outline: none;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+}
+
+.input__underline {
+  background: var(--accent);
+  height: 1px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  transition: height 0.4s ease;
+}
+
+.input__control:hover + .input__underline {
+  height: 3px;
+}
+
+.input__control:focus + .input__underline {
+  height: 3px;
+}
+
+.input__error {
+  color: var(--warning);
+  font-family: PerfectDOSVGA437;
+  height: 10px;
+}

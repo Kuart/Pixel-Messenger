@@ -1,5 +1,6 @@
-import { Pixel } from './utils/pixel/Pixel';
+import { Pixel } from './utils/pixel/pixel';
 import { Login } from './pages';
+import './index.css';
 
 const root = new Pixel({
   el: '#root',
@@ -8,8 +9,7 @@ const root = new Pixel({
     Login,
   },
   template: /* html */ `
-    <div !isActive class="container" color="red">
-      Hi!
+    <div class="container" color="red">
       <Login />
     </div>
   `,

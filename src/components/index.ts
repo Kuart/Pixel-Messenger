@@ -1,4 +1,5 @@
-export { Modal } from './Modals';
-export { Input } from './Form';
+export { Modal } from './Modal';
+import Input from './Form';
 export { Button } from './Button';
-export { UserPhoto } from './UserPhoto';
+
+export { Input };

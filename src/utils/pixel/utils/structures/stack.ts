@@ -1,4 +1,4 @@
-import { IStackNode } from './stack.type';
+import IStackNode from './stack.type';
 
 export default class Stack<T> {
   private size: number;
@@ -30,7 +30,12 @@ export default class Stack<T> {
   pop(): T | null {
     const local = this.tail;
     if (this.size) {
-      this.tail = this.tail.prev;
+      if (this.tail.prev) {
+        this.tail = this.tail.prev;
+      } else {
+        this.tail = null;
+        this.head = null;
+      }
       this.size -= 1;
     }
     return local ? local.value : null;
@@ -40,7 +45,7 @@ export default class Stack<T> {
     return this.tail;
   }
 
-  isLast(): boolean {
-    return this.size === 1;
+  isEmpty(): boolean {
+    return this.size === 0;
   }
 }

@@ -1,4 +1,4 @@
-import { Pixel } from './Pixel';
+import { Pixel } from '../pixel';
 
 class PixelRouter {
   public pixel: Pixel;

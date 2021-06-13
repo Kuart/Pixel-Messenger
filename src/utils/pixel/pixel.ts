@@ -1,5 +1,5 @@
-import { PixelDOM } from './PixelDOM';
-import { PixelParser } from './PixelParser';
+import { PixelParser } from './parser';
+import { PixelDOM } from './pixelDom';
 
 export interface IPixelComponent {
   template?: string;
@@ -32,11 +32,11 @@ class Pixel {
     this.pixelDOM = new PixelDOM();
 
     this.root = document.querySelector(config.el);
-    this.registerComponent(config.components);
+    this.registerComponents(config.components);
     this.render(config.template);
   }
 
-  registerComponent(components: { [key: string]: Function }): void {
+  registerComponents(components: { [key: string]: Function }): void {
     Object.keys(components).forEach((componentName: string) => {
       if (!this.components[componentName]) {
         this.components[componentName] = components[componentName];
@@ -46,8 +46,12 @@ class Pixel {
 
   render = (template: string) => {
     const VDOM = this.parser.parseHTML(template);
-    this.pixelDOM.mount(VDOM, this.root);
-    console.log(this.components);
+    console.log(VDOM);
+    if (this.root.childNodes.length) {
+      this.root.replaceWith(VDOM.domEl);
+    } else {
+      this.root.appendChild(VDOM.domEl);
+    }
   };
 }
 

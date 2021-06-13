@@ -1,0 +1,23 @@
+.container {
+  background-color: var(--lightFocus);
+  background: url('/assets/images/BG/RootBG.png') no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.container_user-miss {
+  background: url('/assets/images/BG/404BG.png') no-repeat;
+  background-size: cover;
+}
+
+.container_server-miss {
+  background: url('/assets/images/BG/500BG.png') no-repeat;
+  background-size: cover;
+  background-position: 0px -230px;
+}

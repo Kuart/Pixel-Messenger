@@ -1,9 +1,14 @@
 import { Pixel } from '../pixel';
 import { NODE_TYPE, PixelDOM, VNode } from '../pixelDom';
-import { Stack } from '../utils';
-import Component from '../utils/Component';
-import { Attributes, Methods, IParsedTag } from './parser.type';
+import { Stack, Component, Methods, Props } from '../utils';
+import { Attributes, IParsedTag } from './parser.type';
 
+const PREFIXES = {
+  BIND: 'b:',
+  STATIC: 's:',
+  HANLDER: 'e:',
+  PROPS: 'p:',
+};
 export default class PixelParser {
   tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 
@@ -12,6 +17,8 @@ export default class PixelParser {
   attrRegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
 
   tagNameRegExp = /<\/?([^\s]+?)[/\s>]/;
+
+  replaceRegExp = new RegExp(/{{([^{}]*)}}/g);
 
   pixelDOM: PixelDOM;
 
@@ -22,12 +29,12 @@ export default class PixelParser {
     this.instance = instance;
   }
 
-  parseHTML(html: string, component?: Component) {
+  parseHTML(html: string, parentComponent?: Component) {
     const stack = new Stack<VNode | Component>();
     const reg = new RegExp(this.tagRegExp);
 
-    if (component) {
-      stack.push(component);
+    if (parentComponent) {
+      stack.push(parentComponent);
     }
 
     let el = null;
@@ -42,36 +49,29 @@ export default class PixelParser {
 
         if (isComponent) {
           const parentTag = stack.peek();
-          const component = this.parseComponent(tag);
-          const domEl = this.pixelDOM.mount(component);
-          component.domEl = domEl;
+          const component = this.parseComponent(tag, parentComponent);
+          component.domEl = this.pixelDOM.mount(component);
 
           if (parentTag) {
             parentTag.value.children.push(component);
           }
-        }
-
-        if (!isComponent && isXHTML) {
+        } else if (isXHTML) {
           const { tagName, type, attrs } = this.parseTag(tag, NODE_TYPE.ELEMENT_NODE);
           const element = this.pixelDOM.createElement(type, tagName, attrs);
-          const domEl = this.pixelDOM.mount(element) as HTMLElement;
-          element.domEl = domEl;
+          element.domEl = this.pixelDOM.mount(element) as HTMLElement;
 
           const parentTag = stack.peek();
 
           if (parentTag) {
             parentTag.value.children.push(element);
           }
-        }
-
-        if (!isComponent && !isXHTML) {
+        } else {
           const isOpen = tag[1] !== '/';
 
           if (!isOpen) {
             const closedTag = stack.pop();
             const parentTag = stack.peek();
-            const domEl = this.pixelDOM.mount(closedTag) as HTMLElement;
-            closedTag.domEl = domEl;
+            closedTag.domEl = this.pixelDOM.mount(closedTag) as HTMLElement;
 
             if (parentTag) {
               parentTag.value.children.push(closedTag);
@@ -87,12 +87,7 @@ export default class PixelParser {
 
             if (nextChar && nextChar !== '<') {
               const text = html.slice(start, html.indexOf('<', start)).trim();
-              if (text.length) {
-                const textNode = this.pixelDOM.createTextNode(text);
-                textNode.parent = element;
-                textNode.domEl = this.pixelDOM.mount(textNode) as Text;
-                element.children.push(textNode);
-              }
+              this.parseText(text, parentComponent, element);
             }
             stack.push(element);
           }
@@ -100,12 +95,33 @@ export default class PixelParser {
       }
     } while (el);
 
+    if (/^{{.+}}$/gi.test(html)) {
+      this.parseText(html, parentComponent, parentComponent);
+    }
+
     return stack.pop();
   }
 
-  parseComponent(tag: string) {
+  parseText(text: string, parentComponent: Component, parentNode: VNode | Component) {
+    if (text.length) {
+      const prop = text.match(this.replaceRegExp);
+      let replacedText = text;
+
+      if (prop) {
+        const replaced = this.findPropInParent(prop[0], parentComponent) ?? text;
+        replacedText = replaced.toString();
+      }
+
+      const textNode = this.pixelDOM.createTextNode(replacedText);
+      textNode.parent = parentNode;
+      textNode.domEl = this.pixelDOM.mount(textNode) as Text;
+      parentNode.children.push(textNode);
+    }
+  }
+
+  parseComponent(tag: string, parentComponent?: Component) {
     const [_, componentName] = tag.match(this.tagNameRegExp);
-    const { template, data, components, props, methods } = this.instance.components[componentName]();
+    const { template, components, state, usedProps, methods } = this.instance.components[componentName]();
 
     if (components) {
       this.instance.registerComponents(components);
@@ -113,8 +129,14 @@ export default class PixelParser {
 
     const [firstTag, ...tags] = template.match(this.tagRegExp);
 
-    const { tagName, attrs, methodsType } = this.parseTag(firstTag, NODE_TYPE.COMPONENT_NODE);
+    /* //TODO  component inside component */
+    if (firstTag.match(this.componentRegExp)) {
+      const component = this.parseComponent(firstTag);
+      console.log(component);
+    }
 
+    const { tagName, attrs, methodsType, props } = this.parseComponentTag(firstTag, usedProps, parentComponent, tag);
+    console.log(methods);
     const componentMethods: Methods = Object.entries(methodsType).reduce(
       (acc: Methods, item: [string, { event: string }]) => {
         const [key, value] = item;
@@ -124,42 +146,123 @@ export default class PixelParser {
       {}
     );
 
-    const component = new Component({ tagName, componentMethods, props: attrs });
+    const component = new Component({ tagName, componentMethods, props, attrs, state });
 
     const start = firstTag.length;
     const end = template.trim().length - tags[tags.length - 1].length;
 
-    console.log(component);
-    return this.parseHTML(template.trim().substring(start, end), component);
+    return this.parseHTML(`${template.trim().substring(start, end)}`, component);
   }
 
-  parseTag = (tag: string, type: string): IParsedTag => {
+  parseTag = (tag: string, type: string, parentComponent?: Component): IParsedTag => {
     const reg = new RegExp(this.attrRegExp);
+    let attr: RegExpExecArray | null = null;
+
     const attrs: Attributes = {};
-    const props: Record<string, string | number | boolean> = {};
-    const methodsType: Methods = {};
+
     const tagName = tag.split(' ')[0].trim().substr(1).split('>')[0];
 
-    let isEmpty = false;
-
-    while (!isEmpty) {
-      const result: RegExpExecArray | null = reg.exec(tag);
-      if (result) {
-        const [attr, value] = result[0].trim().split('=');
+    do {
+      attr = reg.exec(tag);
+      if (attr) {
+        const [name, value] = attr[0].trim().split('=');
         const currentValue = value.substring(1, value.length - 1);
 
-        if (attr.substring(0, 2) === 'p-') {
-          props[attr.substring(2)] = currentValue;
-        } else if (attr.substring(0, 3) === 'on-') {
-          methodsType[currentValue] = { event: attr.substring(3) };
+        if (type === PREFIXES.PROPS) {
         } else {
-          attrs[attr] = currentValue;
+          attrs[name] = currentValue;
         }
-      } else {
-        isEmpty = true;
       }
+    } while (attr);
+
+    return { tagName, type, attrs };
+  };
+
+  /*  no pref - attribute
+      s - static string/number
+      b - value from parent state/props
+      on - event
+  */
+  parseComponentTag = (
+    tag: string,
+    reqProps: string[] = [],
+    parentComponent?: Component,
+    componentTag?: string
+  ): IParsedTag => {
+    const tagName = tag.split(' ')[0].trim().substr(1).split('>')[0];
+    const currentTag = `${tag} ${componentTag ?? ''}`;
+    const reg = new RegExp(this.attrRegExp);
+    let attr: RegExpExecArray | null = null;
+
+    const attrs: Attributes = {};
+    const props = reqProps.reduce((acc: Props, item: string) => {
+      acc[item] = null;
+      return acc;
+    }, {});
+
+    const methodsType: Methods = {};
+
+    do {
+      attr = reg.exec(currentTag);
+      if (attr) {
+        const [name, value] = attr[0].trim().split('=');
+        const currentValue = value.substring(1, value.length - 1);
+        const cleanName = name.substring(2);
+        const type = name.substring(0, 2);
+
+        if (type === PREFIXES.STATIC) {
+          props[cleanName] = currentValue;
+        } else if (type === PREFIXES.BIND) {
+          const [propName] = currentValue.split('.');
+
+          if (propName in parentComponent.props) {
+            props[cleanName] = this.parseObjectPath(parentComponent.props, currentValue);
+          } else if (propName in parentComponent.state) {
+            props[cleanName] = this.parseObjectPath(parentComponent.state, currentValue);
+          }
+        } else if (type === PREFIXES.HANLDER) {
+          methodsType[currentValue] = { event: name.substring(2) };
+        } else {
+          attrs[name] = currentValue;
+          props[name] = currentValue;
+        }
+      }
+    } while (attr);
+    return { tagName, attrs, methodsType, props };
+  };
+
+  findPropInParent = (prop: string, component: Component) => {
+    const cleanProp = prop.substring(2, prop.length - 2).trim();
+
+    if (cleanProp in component.props) {
+      return component.props[cleanProp];
     }
 
-    return { tagName, type, attrs, methodsType };
+    if (cleanProp in component.state) {
+      return component.state[cleanProp];
+    }
+
+    return null;
+  };
+
+  parseObjectPath = (props: Props, path: string) => {
+    try {
+      const clearPath = path.substring(2, path.length - 2).trim();
+      const keys = clearPath.split('.');
+
+      let result = props;
+
+      for (const key of keys) {
+        const value = result[key];
+
+        if (!value) {
+          return '';
+        }
+        result = value;
+      }
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   };
 }

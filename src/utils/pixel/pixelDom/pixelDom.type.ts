@@ -1,10 +1,13 @@
 /* eslint no-use-before-define: 0 */
 
+import { Attributes } from '../parser';
+import { Component } from '../utils';
+
 interface VNode {
   type: string;
   tagName: string;
-  props: Record<string, string | number | boolean>;
-  children: (VTextNode | VNode)[];
+  attrs: Attributes;
+  children: (VTextNode | VNode | Component)[];
   keyIndex?: number;
   domEl?: HTMLElement | null;
   parent?: VNode | null;
@@ -15,7 +18,7 @@ interface VTextNode {
   text: string;
   domEl?: Text | null;
   keyIndex?: number;
-  parent?: VNode | null;
+  parent?: VNode | Component | null;
 }
 
 export { VNode, VTextNode };

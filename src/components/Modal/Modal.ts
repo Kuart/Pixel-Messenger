@@ -1,15 +1,16 @@
-function Modal() {
+import { IComponentModel } from '../../utils';
+import './Modal.css';
+
+export default function Modal(): IComponentModel {
   return {
-    props: ['classes', 'child'],
+    usedProps: ['child', 'headerText'],
     template: /* html */ `
-    <section p-class="classes.modal">
-      <header p-class="classes.header">
+    <section class="modal">
+      <header class="modal__header">
         <h2>{{headerText}}</h2>
       </header>
-      <div p-class="classes.body">{{child}}</div>              
+      <div class="modal__body">{{child}}</div>              
     </section>
     `,
   };
 }
-
-export { Modal };

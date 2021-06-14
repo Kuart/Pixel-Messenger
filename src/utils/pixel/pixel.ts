@@ -46,7 +46,7 @@ class Pixel {
 
   render = (template: string) => {
     const VDOM = this.parser.parseHTML(template);
-    console.log(VDOM);
+
     if (this.root.childNodes.length) {
       this.root.replaceWith(VDOM.domEl);
     } else {

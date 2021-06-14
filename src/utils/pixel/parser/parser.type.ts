@@ -1,11 +1,13 @@
-type Methods = Record<string, { event: string; handler?: Function }>;
-type Attributes = Record<string, string | number | boolean>;
+import { Methods, Props } from '../utils';
+
+type Attributes = Record<string, string>;
 
 interface IParsedTag {
   tagName: string;
   attrs: Attributes;
-  methods: Methods;
-  type: string;
+  methodsType?: Methods;
+  props?: Props;
+  type?: string;
 }
 
-export { IParsedTag, Methods, Attributes };
+export { IParsedTag, Attributes };

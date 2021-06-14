@@ -9,7 +9,7 @@ const root = new Pixel({
     Login,
   },
   template: /* html */ `
-    <div class="container" color="red">
+    <div class="container">
       <Login />
     </div>
   `,

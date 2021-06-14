@@ -1,10 +1,7 @@
-import { NODE_TYPE, PixelDOM, VNode, VTextNode } from '../pixelDom';
-import EventBus from './EventBus';
-
-export interface ICompOptions {
-  props: Record<string, unknown>;
-  tagName: string;
-}
+import { Attributes, Methods } from '../../parser';
+import { NODE_TYPE, PixelDOM, VNode, VTextNode } from '../../pixelDom';
+import EventBus from '../EventBus';
+import { IComponentOptions, Props, State } from './Component.type';
 
 export default class Component {
   static EVENTS = {
@@ -13,25 +10,31 @@ export default class Component {
     RENDER: 'render',
   };
 
-  type: string = NODE_TYPE.COMPONENT_NODE;
-
   eventBus: EventBus;
 
   pixelDom: PixelDOM;
 
-  props: any;
+  type: string = NODE_TYPE.COMPONENT_NODE;
 
   tagName: string;
 
   keyIndex: number | null;
 
-  domEl: HTMLElement;
+  domEl: HTMLElement | Text;
 
   parent: HTMLElement;
 
   children: (VNode | VTextNode | Component)[];
 
-  constructor(options: ICompOptions) {
+  props: Props;
+
+  attrs: Attributes;
+
+  state: State;
+
+  methods: Methods;
+
+  constructor(options: IComponentOptions) {
     this.eventBus = new EventBus();
     this.pixelDom = new PixelDOM();
 
@@ -39,7 +42,11 @@ export default class Component {
     this.children = [];
     this.keyIndex = null;
 
-    this.props = this.makePropsProxy(options.props);
+    this.props = this.makeProxy(options.props || {});
+    this.state = this.makeProxy(options.state || {});
+    this.attrs = options.attrs;
+    this.methods = this.makeProxy(options.componentMethods || {});
+
     this.registerEvents();
   }
 
@@ -57,7 +64,7 @@ export default class Component {
   };
 
   componentDidMount() {
-    console.log('mount');
+    /* console.log('mount'); */
   }
 
   componentDidUpdate(i: any, b: any) {
@@ -66,8 +73,8 @@ export default class Component {
 
   render() {}
 
-  makePropsProxy = (props: any) => {
-    return new Proxy(props, {
+  makeProxy = (object: any) => {
+    return new Proxy(object, {
       get(target, prop) {
         const value = target[prop];
         return typeof value === 'function' ? value.bind(target) : value;

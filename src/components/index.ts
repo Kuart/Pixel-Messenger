@@ -1,5 +1,5 @@
-export { Modal } from './Modal';
+import Modal from './Modal';
 import Input from './Form';
-export { Button } from './Button';
+import Button from './Button';
 
-export { Input };
+export { Input, Modal, Button };

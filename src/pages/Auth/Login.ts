@@ -1,28 +1,57 @@
-import { generateUniqId } from '../../utils';
-import { Input } from '../../components';
+import { generateUniqId, IComponentModel } from '../../utils';
+import { Input, Modal, Button } from '../../components';
 import './Auth.css';
 
-function Login() {
+function Login(): IComponentModel {
   return {
-    data: {},
+    state: {
+      formFields: {
+        login: '',
+        password: '',
+      },
+    },
     methods: {
-      submitForm: (event: any) => {
+      submitForm: (event: Event) => {
+        console.log(event);
+      },
+      register: (event: Event) => {
         console.log(event);
       },
     },
     components: {
+      Modal,
       Input,
+      Button,
     },
     template: /* html */ `
-    <form class="auth-form auth-form_login" on-submit="submitForm">
-      <div class="auth-form__body">
-        <Input label="Логин" name="login" id="input-${generateUniqId()}" />
-        <Input label="Логин" name="login" id="input-${generateUniqId()}" />
-      </div>
-      <footer class="auth-form__footer">
-      hi!
-      </footer>
-    </form>`,
+    <section class="modal">
+      <header class="modal__header">
+        <h2>Вход</h2>
+      </header>
+      <div class="modal__body">
+        <form class="auth-form auth-form_login" e:submit="submitForm">
+          <div class="auth-form__body">
+            <Input 
+              s:label="Логин" 
+              name="login" 
+              type="text" 
+              id="input-${generateUniqId()}" 
+              b:value="formFields.login"/>
+
+            <Input 
+              s:label="Пароль" 
+              name="password" 
+              type="password" 
+              id="input-${generateUniqId()}" 
+              b:value="formFields.password"/>
+          </div>
+          <footer class="auth-form__footer">
+            <Button s:text="Авторизоваться" class="button button_accent" type="submit" e:click="submitForm"/>
+            <Button s:text="Нет аккаунта?" class="button button_transparent" type="button" e:click="register"/>
+          </footer>
+        </form>
+      </div>              
+    </section>`,
   };
 }
 

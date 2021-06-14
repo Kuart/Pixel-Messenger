@@ -1,4 +1,5 @@
-import Component from '../utils/Component';
+import { Attributes } from '../parser';
+import { Component } from '../utils';
 import { VNode, VTextNode } from './pixelDom.type';
 
 const NODE_TYPE = {
@@ -8,15 +9,11 @@ const NODE_TYPE = {
 };
 
 class PixelDOM {
-  createElement = (
-    type: string = NODE_TYPE.ELEMENT_NODE,
-    tagName: string,
-    props: Record<string, string | number | boolean>
-  ): VNode => ({
+  createElement = (type: string = NODE_TYPE.ELEMENT_NODE, tagName: string, attrs: Attributes): VNode => ({
     type,
     tagName,
-    props: {
-      ...props,
+    attrs: {
+      ...attrs,
     },
     parent: null,
     children: [],
@@ -36,7 +33,7 @@ class PixelDOM {
       const currentNode = nodeEl as VNode;
       domNode = window.document.createElement(currentNode.tagName);
 
-      Object.entries(currentNode.props).forEach(([key, value]) => {
+      Object.entries(currentNode.attrs).forEach(([key, value]) => {
         (domNode as HTMLElement).setAttribute(key, String(value));
       });
 

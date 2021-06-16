@@ -1,7 +1,7 @@
-import { Attributes, Methods } from '../../parser';
-import { NODE_TYPE, PixelDOM, VNode, VTextNode } from '../../pixelDom';
+import { Attributes } from '../../parser';
+import { NODE_TYPE, PixelDOM, VirtualNode } from '../../pixelDom';
 import EventBus from '../EventBus';
-import { IComponentOptions, Props, State } from './Component.type';
+import { IComponentOptions, Methods, Props, State } from './Component.type';
 
 export default class Component {
   static EVENTS = {
@@ -24,7 +24,7 @@ export default class Component {
 
   parent: HTMLElement;
 
-  children: (VNode | VTextNode | Component)[];
+  children: VirtualNode[];
 
   props: Props;
 
@@ -33,6 +33,10 @@ export default class Component {
   state: State;
 
   methods: Methods;
+
+  listeners: [] = [];
+
+  propHandlers?: Methods | undefined;
 
   constructor(options: IComponentOptions) {
     this.eventBus = new EventBus();
@@ -45,7 +49,9 @@ export default class Component {
     this.props = this.makeProxy(options.props || {});
     this.state = this.makeProxy(options.state || {});
     this.attrs = options.attrs;
-    this.methods = this.makeProxy(options.componentMethods || {});
+    this.methods = options.methods ? options.methods : null;
+
+    this.propHandlers = options.propHandlers;
 
     this.registerEvents();
   }
@@ -56,22 +62,26 @@ export default class Component {
     this.eventBus.on(Component.EVENTS.RENDER, this.render);
   }
 
-  init = () => {};
-
   setParentNode = (parent: HTMLElement) => {
     this.parent = parent;
     this.eventBus.emit(Component.EVENTS.CDM);
   };
 
-  componentDidMount() {
+  addListener = (options: Methods[], name: string) => {
+    options.forEach((eventConfig) => {
+      eventConfig.target.addEventListener(eventConfig.event, this.methods[name]);
+    });
+  };
+
+  componentDidMount = () => {
     /* console.log('mount'); */
-  }
+  };
 
-  componentDidUpdate(i: any, b: any) {
+  componentDidUpdate = (i: any, b: any) => {
     console.log(i, b);
-  }
+  };
 
-  render() {}
+  render = () => {};
 
   makeProxy = (object: any) => {
     return new Proxy(object, {
@@ -82,8 +92,6 @@ export default class Component {
       set: (target, prop, value) => {
         target[prop] = value;
 
-        // Запускаем обновление компоненты
-        // Плохой cloneDeep, в след итерации нужно заставлять добавлять cloneDeep им самим
         this.eventBus.emit(Component.EVENTS.CDU, { ...target }, target);
         return true;
       },

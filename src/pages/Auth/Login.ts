@@ -12,10 +12,14 @@ function Login(): IComponentModel {
     },
     methods: {
       submitForm: (event: Event) => {
+        event.preventDefault();
         console.log(event);
       },
       register: (event: Event) => {
         console.log(event);
+      },
+      inputHandler: (event: Event) => {
+        console.log(event.target.name);
       },
     },
     components: {
@@ -35,14 +39,14 @@ function Login(): IComponentModel {
               s:label="Логин" 
               name="login" 
               type="text" 
-              id="input-${generateUniqId()}" 
+              s:id="input${generateUniqId()}" 
               b:value="formFields.login"/>
 
             <Input 
               s:label="Пароль" 
               name="password" 
               type="password" 
-              id="input-${generateUniqId()}" 
+              s:id="input${generateUniqId()}" 
               b:value="formFields.password"/>
           </div>
           <footer class="auth-form__footer">

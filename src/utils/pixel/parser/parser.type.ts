@@ -5,7 +5,7 @@ type Attributes = Record<string, string>;
 interface IParsedTag {
   tagName: string;
   attrs: Attributes;
-  methodsType?: Methods;
+  propHandlers?: Methods;
   props?: Props;
   type?: string;
 }

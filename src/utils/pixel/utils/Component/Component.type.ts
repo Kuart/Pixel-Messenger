@@ -1,6 +1,6 @@
 import { Attributes } from '../../parser';
 
-type Methods = Record<string, { event: string; handler?: Function }>;
+type Methods = Record<string, { event: string; name: string; target: HTMLElement; handler?: Function }>;
 type Props = Record<string, string | number | boolean | [] | { [key: string]: unknown }>;
 type State = Record<string, string | number | boolean | [] | { [key: string]: unknown }>;
 
@@ -9,7 +9,8 @@ interface IComponentOptions {
   props?: Props;
   state?: State;
   attrs?: Attributes;
-  componentMethods?: Methods;
+  methods?: Methods;
+  propHandlers?: Methods;
 }
 
 interface IComponentModel {

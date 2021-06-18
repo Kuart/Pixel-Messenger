@@ -1,2 +1,3 @@
 export { VElement, VTextNode, VirtualNode } from './pixelDom.type';
-export { NODE_TYPE, PixelDOM } from './pixelDom';
+export { PixelDOM } from './pixelDom';
+export { NODE_TYPE } from './const';

@@ -1,18 +1,34 @@
-import { Pixel } from './utils/pixel/pixel';
-import { Login } from './pages';
+import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './pages';
+import { Pixel } from './utils/pixel';
 import './index.css';
+
+const ROUTES = {
+  login: 'login',
+  register: 'register',
+  messanger: 'messanger',
+};
 
 const root = new Pixel({
   el: '#root',
-
+  routes: {
+    default: {
+      path: ROUTES.login,
+      component: 'Login',
+    },
+    routes: {
+      [ROUTES.register]: 'Registration',
+      [ROUTES.messanger]: 'Messanger',
+      wrong: 'UserMissPage',
+      error: 'ServerMissPage',
+    },
+  },
   components: {
     Login,
+    Registration,
+    Messanger,
+    UserMissPage,
+    ServerMissPage,
   },
-  template: /* html */ `
-    <div class="container">
-      <Login />
-    </div>
-  `,
 });
 
-export default root;
+export { root, ROUTES };

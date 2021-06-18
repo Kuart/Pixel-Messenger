@@ -1,51 +1,23 @@
-import IStackNode from './stack.type';
-
 export default class Stack<T> {
-  private size: number;
-
-  private head: IStackNode<T>;
-
-  private tail: IStackNode<T>;
-
-  constructor() {
-    this.size = 0;
-    this.head = null;
-    this.tail = null;
-  }
+  private stack: T[] = [];
 
   push(value: T) {
-    const node: IStackNode<T> = { value, next: null, prev: null };
-    if (!this.head) {
-      this.head = node;
-      this.tail = node;
-    } else {
-      this.tail.next = node;
-      node.prev = this.tail;
-      this.tail = node;
-    }
-
-    this.size += 1;
+    this.stack.push(value);
   }
 
-  pop(): T | null {
-    const local = this.tail;
-    if (this.size) {
-      if (this.tail.prev) {
-        this.tail = this.tail.prev;
-      } else {
-        this.tail = null;
-        this.head = null;
-      }
-      this.size -= 1;
+  pop(): T {
+    if (this.isEmpty()) {
+      throw Error();
     }
-    return local ? local.value : null;
+
+    return this.stack.pop() as T;
   }
 
   peek() {
-    return this.tail;
+    return this.stack[this.stack.length - 1];
   }
 
   isEmpty(): boolean {
-    return this.size === 0;
+    return this.stack.length === 0;
   }
 }

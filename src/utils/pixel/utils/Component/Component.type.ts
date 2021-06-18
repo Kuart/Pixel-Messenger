@@ -1,8 +1,8 @@
 import { Attributes } from '../../parser';
 
 type Methods = Record<string, { event: string; name: string; target: HTMLElement; handler?: Function }>;
-type Props = Record<string, string | number | boolean | [] | { [key: string]: unknown }>;
-type State = Record<string, string | number | boolean | [] | { [key: string]: unknown }>;
+type Props = Record<string, string | number | boolean | [] | { [key: string]: unknown } | null | undefined | object>;
+type State = Record<string, unknown>;
 
 interface IComponentOptions {
   tagName: string;

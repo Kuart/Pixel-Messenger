@@ -20,7 +20,7 @@ export default class Component {
 
   keyIndex: number | null;
 
-  domEl: HTMLElement | Text;
+  domEl: HTMLElement;
 
   parent: HTMLElement;
 
@@ -47,7 +47,7 @@ export default class Component {
     this.keyIndex = null;
 
     this.props = this.makeProxy(options.props || {});
-    this.state = this.makeProxy(options.state || {});
+    this.state = this.createState(options.state || {});
     this.attrs = options.attrs;
     this.methods = options.methods ? options.methods : null;
 
@@ -69,7 +69,7 @@ export default class Component {
 
   addListener = (options: Methods[], name: string) => {
     options.forEach((eventConfig) => {
-      eventConfig.target.addEventListener(eventConfig.event, this.methods[name]);
+      eventConfig.target.addEventListener(eventConfig.event, this.methods[name].bind(this));
     });
   };
 
@@ -91,7 +91,7 @@ export default class Component {
       },
       set: (target, prop, value) => {
         target[prop] = value;
-
+        console.log(value);
         this.eventBus.emit(Component.EVENTS.CDU, { ...target }, target);
         return true;
       },
@@ -100,4 +100,25 @@ export default class Component {
       },
     });
   };
+
+  createState(state: State) {
+    const validator = {
+      get: function (target: State, key: keyof State): unknown {
+        if (typeof target[key] === 'object' && target[key] !== null) {
+          return new Proxy(target[key] as State, validator);
+        } else {
+          return target[key];
+        }
+      },
+      set: function (target: State, prop: string, value: unknown) {
+        target[prop] = value;
+        return true;
+      },
+      deleteProperty: function () {
+        return false;
+      },
+    };
+
+    return new Proxy(state, validator);
+  }
 }

@@ -1,4 +1,4 @@
-import PixelParser from './parser';
-import { IParsedTag, Methods, Attributes } from './parser.type';
+import Parser from './parser';
+import { IParsedTag, Attributes } from './parser.type';
 
-export { PixelParser, IParsedTag, Methods, Attributes };
+export { Parser, IParsedTag, Attributes };

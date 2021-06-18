@@ -9,7 +9,7 @@ interface VElement {
   attrs: Attributes;
   children: (VTextNode | VElement | Component)[];
   keyIndex?: number;
-  domEl?: HTMLElement | null;
+  domEl?: HTMLElement;
   parent?: VElement | Component | null;
   propHandlers?: Methods | undefined;
 }
@@ -17,7 +17,7 @@ interface VElement {
 interface VTextNode {
   type: string;
   text: string;
-  domEl?: Text | null;
+  domEl?: Text;
   keyIndex?: number;
   parent?: VElement | Component | null;
 }

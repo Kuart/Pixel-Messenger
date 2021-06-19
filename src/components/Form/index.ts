@@ -1,3 +1,3 @@
-import Input from './Input';
-
-export default Input;
+export { Input } from './Input';
+export { SearchInput } from './SearchInput';
+export { Textarea } from './Textarea';

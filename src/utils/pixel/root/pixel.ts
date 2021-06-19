@@ -24,6 +24,8 @@ class Pixel {
 
   private router: Router;
 
+  private VDOM: Component | VElement;
+
   public components: Record<string, Function> = {};
 
   public initiatedComponents: Record<string, IComponentModel> = {};
@@ -70,12 +72,17 @@ class Pixel {
 
   render = (template: string) => {
     try {
-      const VDOM = this.parser.parseHTML(template);
+      if (this.VDOM) {
+        this.unmount(this.VDOM);
+      }
 
-      if (!VDOM) {
+      this.VDOM = this.parser.parseHTML(template);
+
+      if (!this.VDOM) {
         throw Error(Pixel.ERROR.VDOM_NF);
       }
-      this.mount(VDOM);
+
+      this.mount(this.VDOM);
     } catch (error) {
       console.error(error);
     }
@@ -86,15 +93,18 @@ class Pixel {
       if (!VDOM.domEl) {
         throw Error(Pixel.ERROR.ROOT_DOM_NF(VDOM.tagName));
       }
-
       if (this.root.childNodes.length) {
-        this.root.replaceWith(VDOM.domEl);
+        this.root.replaceChild(VDOM.domEl, this.root.childNodes[0]);
       } else {
         this.root.appendChild(VDOM.domEl);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  unmount = (VDOM: Component | VElement) => {
+    console.log(VDOM);
   };
 }
 

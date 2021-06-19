@@ -69,7 +69,7 @@ export default class Component {
 
   addListener = (options: Methods[], name: string) => {
     options.forEach((eventConfig) => {
-      eventConfig.target.addEventListener(eventConfig.event, this.methods[name].bind(this));
+      eventConfig.target.addEventListener(eventConfig.event, this.methods[name].bind(this), true);
     });
   };
 

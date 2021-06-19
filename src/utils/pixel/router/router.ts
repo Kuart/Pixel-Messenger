@@ -85,21 +85,25 @@ class Router {
   initRouting = () => {
     window.onhashchange = (event: HashChangeEvent) => {
       const target = event.currentTarget as Window;
-      this.state.currentRoute = this.routes[target.location.hash.slice(1)];
+      this.checkHash(target);
     };
-    const hash = window.location.hash.slice(1);
 
-    if (!window.location.hash) {
-      window.location.hash = this.defaultRoute.path;
-    } else if (!this.routes[hash]) {
-      window.location.hash = this.routes.wrong;
-    } else {
-      this.state.currentRoute = this.routes[hash];
+    this.checkHash(window);
+  };
+
+  checkHash = (target: Window) => {
+    let currentRout = target.location.hash.slice(1);
+    if (!currentRout) {
+      currentRout = this.defaultRoute.path;
+    } else if (!this.routes[currentRout]) {
+      currentRout = 'wrong';
     }
+
+    this.state.currentRoute = this.routes[currentRout];
   };
 
   changeLayout = (componentName: string) => {
-    this.instant.render(`<div><${componentName}/></div>`);
+    this.instant.render(`<${componentName}/>`);
   };
 }
 

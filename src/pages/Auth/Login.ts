@@ -1,7 +1,8 @@
 import { generateUniqId, IComponentModel } from '../../utils';
-import { Input, Modal, Button } from '../../components';
+import { Input, Modal, Button, PagesContainer } from '../../components';
 import { ROUTES } from '../..';
 import './Auth.css';
+import { CustomEventTarget } from '../../types';
 
 function Login(): IComponentModel {
   return {
@@ -13,19 +14,28 @@ function Login(): IComponentModel {
       item: '',
     },
     methods: {
-      submitForm: (event: Event) => {
+      formFocusHandler: function (event: Event) {
         event.preventDefault();
-        console.log(event);
+        console.log('f', event);
       },
-      register: (event: Event) => {
+      formBlurHandler: function (event: Event) {
+        event.preventDefault();
+        console.log('b', event);
+      },
+      submitForm: function (event: Event) {
+        event.preventDefault();
+        window.location.hash = ROUTES.messanger;
+      },
+      replaceToRegister: function () {
         window.location.hash = ROUTES.register;
       },
-      inputHandler: function (event: { target: HTMLInputElement }) {
+      inputHandler: function (event: CustomEventTarget<HTMLInputElement>) {
         this.state.formFields.login = event.target.value;
       },
     },
     components: {
       Modal,
+      PagesContainer,
       Input,
       Button,
     },
@@ -36,7 +46,7 @@ function Login(): IComponentModel {
           <h2>Вход</h2>
         </header>
         <div class="modal__body">
-          <form class="auth-form auth-form_login" e:submit="submitForm">
+          <form class="auth-form auth-form_login" e:submit="submitForm" e:focus="formFocusHandler" e:blur="formBlurHandler">
             <div class="auth-form__body">
               <Input 
                 s:label="Логин" 
@@ -54,7 +64,7 @@ function Login(): IComponentModel {
             </div>
             <footer class="auth-form__footer">
               <Button s:text="Авторизоваться" class="button button_accent" type="submit" e:click="submitForm"/>
-              <Button s:text="Нет аккаунта?" class="button button_transparent" type="button" e:click="register"/>
+              <Button s:text="Нет аккаунта?" class="button button_transparent" type="button" e:click="replaceToRegister"/>
             </footer>
           </form>
         </div>             

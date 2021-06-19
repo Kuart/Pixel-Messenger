@@ -1,5 +1,13 @@
 export default class Stack<T> {
-  private stack: T[] = [];
+  static ERRORS = {
+    EMPTY_POP: `Can't pop, stack is empty`,
+  };
+
+  private stack: T[];
+
+  constructor() {
+    this.stack = [];
+  }
 
   push(value: T) {
     this.stack.push(value);
@@ -7,7 +15,7 @@ export default class Stack<T> {
 
   pop(): T {
     if (this.isEmpty()) {
-      throw Error();
+      throw Error(Stack.ERRORS.EMPTY_POP);
     }
 
     return this.stack.pop() as T;

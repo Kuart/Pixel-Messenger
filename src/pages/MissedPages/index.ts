@@ -1,4 +1,2 @@
-import UserMissPage from './UserMissPage';
-import ServerMissPage from './ServerMissPage';
-
-export { UserMissPage, ServerMissPage };
+export { ServerMissPage } from './ServerMissPage';
+export { UserMissPage } from './UserMissPage';

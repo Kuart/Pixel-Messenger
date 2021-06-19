@@ -8,6 +8,8 @@ const PREFIXES = {
   STATIC: 's:',
   HANLDER: 'e:',
   PROPS: 'p:',
+  IF_CONDITION: 'if:',
+  ELSE_CONDITION: 'else:',
 };
 export default class PixelParser {
   tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
@@ -34,7 +36,6 @@ export default class PixelParser {
     const reg = new RegExp(this.tagRegExp);
 
     if (parentComponent) {
-      console.log(parentComponent);
       stack.push(parentComponent);
     }
 
@@ -45,8 +46,8 @@ export default class PixelParser {
         const tag = el[0];
         const { index } = el;
 
-        const isComponent = tag.match(this.componentRegExp);
-        const isXHTML = tag[tag.length - 2] === '/';
+        const isComponent = this.isComponent(tag);
+        const isXHTML = this.isXHTML(tag);
 
         if (isComponent) {
           const parentTag = stack.peek();
@@ -55,6 +56,8 @@ export default class PixelParser {
 
           if (parentTag) {
             parentTag.children.push(component);
+          } else {
+            stack.push(component);
           }
         } else if (isXHTML) {
           const { propHandlers, tagName, attrs } = this.parseTag(tag, [], parentComponent);
@@ -125,23 +128,18 @@ export default class PixelParser {
     const [_, componentName] = tag.match(this.tagNameRegExp);
     const { template, components, state, usedProps, methods } = this.instance.components[componentName]();
 
+    const [firstTag, ...tags] = template.match(this.tagRegExp);
+
     if (components) {
       this.instance.registerComponents(components);
     }
 
-    const [firstTag, ...tags] = template.match(this.tagRegExp);
-
-    /* //TODO  component inside component */
-    /* if (firstTag.match(this.componentRegExp)) {
-      const component = this.parseComponent(firstTag);
-    } */
-
-    const { tagName, attrs, props, propHandlers } = this.parseTag(firstTag, usedProps, parentComponent, tag);
-
-    const component = new Component({ tagName, props, attrs, state, methods, propHandlers });
     const start = firstTag.length;
     const end = template.trim().length - tags[tags.length - 1].length;
-    console.log(template);
+
+    const { tagName, attrs, props, propHandlers } = this.parseTag(firstTag, usedProps, parentComponent, tag);
+    const component = new Component({ tagName, props, attrs, state, methods, propHandlers });
+
     return this.parseHTML(`${template.trim().substring(start, end)}`, component);
   }
 
@@ -169,9 +167,16 @@ export default class PixelParser {
       attr = reg.exec(currentTag);
       if (attr) {
         const [name, value] = attr[0].trim().split('=');
-        const currentValue = value.substring(1, value.length - 1);
-        const cleanName = name.substring(2);
-        const type = name.substring(0, 2);
+        let cleanName = name;
+        let type = name;
+
+        const currentValue = value ? value.substring(1, value.length - 1) : '';
+        const mod = name.indexOf(':');
+
+        if (mod !== -1) {
+          cleanName = cleanName.substring(mod + 1);
+          type = type.substring(0, mod + 1);
+        }
 
         if (type === PREFIXES.STATIC) {
           props[cleanName] = currentValue;
@@ -193,10 +198,11 @@ export default class PixelParser {
           if (!propHandlers) {
             propHandlers = {};
           }
-          propHandlers[currentValue] = { event: name.substring(2), name: currentValue };
+          propHandlers[currentValue] = { event: cleanName, name: currentValue };
+        } else if (type === PREFIXES.IF_CONDITION || type === PREFIXES.ELSE_CONDITION) {
+          console.log(type);
         } else {
           attrs[name] = currentValue;
-          props[name] = currentValue;
         }
       }
     } while (attr);
@@ -258,4 +264,7 @@ export default class PixelParser {
       console.log(error);
     }
   };
+
+  isComponent = (tag: string) => tag.match(this.componentRegExp);
+  isXHTML = (tag: string) => tag[tag.length - 2] === '/';
 }

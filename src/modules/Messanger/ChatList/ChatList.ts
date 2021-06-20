@@ -2,8 +2,8 @@ import { IComponentModel } from '../../../utils';
 import { SearchInput } from '../../../components';
 import { CustomEventTarget } from '../../../types';
 import { ListItem } from './ListItem';
-import './ChatList.css';
 import { chats } from './const';
+import './ChatList.css';
 
 export function ChatList(): IComponentModel {
   return {
@@ -14,6 +14,7 @@ export function ChatList(): IComponentModel {
     state: {
       chats,
     },
+    /* eslint-disable */
     methods: {
       formFocusHandler: function (event: Event) {
         console.log(event.target);
@@ -26,6 +27,7 @@ export function ChatList(): IComponentModel {
         console.log(`${name} ${value}`);
       },
     },
+    /* eslint-enable */
     template: /* html */ ` 
     <aside class="messanger__chat-list" >
       <form class="search-form" e:blur="formFocusHandler" e:blur="formBlurHandler">

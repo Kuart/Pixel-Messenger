@@ -1,21 +1,6 @@
 import { METHODS } from './const';
 import { IRequestOptions, IXMLHttpRequestOptions } from './HTTPTransport.type';
 
-function queryStringify(data: string | Record<string, unknown>) {
-  if (typeof data === 'string') {
-    if (data.startsWith('?')) {
-      return data;
-    } else return '?' + data;
-  } else {
-    let query = parseObject(data);
-    if (query.length) {
-      return (query = `?${query.substring(1)}`);
-    }
-
-    return '';
-  }
-}
-
 function parseObject(obj: Record<string, unknown>) {
   let query = '';
   for (const key in obj) {
@@ -30,6 +15,24 @@ function parseObject(obj: Record<string, unknown>) {
   return query;
 }
 
+function queryStringify(data: string | Record<string, unknown>) {
+  if (typeof data === 'string') {
+    if (data.startsWith('?')) {
+      return data;
+    }
+    return `? + ${data}`;
+  }
+
+  let query = parseObject(data);
+
+  if (query.length) {
+    query = `?${query.substring(1)}`;
+    return query;
+  }
+
+  return '';
+}
+
 export class HTTPTransport {
   get = (url: string, options: IRequestOptions = {}) => {
     let currentUrl = url;
@@ -41,36 +44,34 @@ export class HTTPTransport {
     return this.request(currentUrl, { ...options, method: METHODS.GET }, options.timeout);
   };
 
-  put = (url: string, options: IRequestOptions = {}) => {
+  put(url: string, options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
-  };
+  }
 
-  post = (url: string, options: IRequestOptions = {}) => {
+  post(url: string, options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
-  };
+  }
 
-  delete = (url: string, options: IRequestOptions = {}) => {
+  delete(url: string, options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
-  };
+  }
 
   request = (url: string, options: IXMLHttpRequestOptions, timeout = 5000) => {
-    return new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(options.method, url);
 
-      if (options.headers) {
-        for (const key in options.headers) {
-          xhr.setRequestHeader(key, options.headers[key]);
-        }
+      if (options && options.headers) {
+        Object.keys(options.headers).forEach((key) => {
+          xhr.setRequestHeader(key, options.headers![key]);
+        });
       }
 
       if (timeout) {
         xhr.timeout = timeout;
       }
 
-      xhr.onload = function () {
-        resolve(xhr);
-      };
+      xhr.onload = () => resolve(xhr);
 
       xhr.onabort = reject;
       xhr.ontimeout = reject;
@@ -82,5 +83,7 @@ export class HTTPTransport {
         xhr.send(JSON.stringify(options.data ? options.data : {}));
       }
     });
+
+    return promise;
   };
 }

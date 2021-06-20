@@ -1,5 +1,5 @@
 import { IComponentModel } from '../../utils';
-import './MissedPages';
+import './MissedPages.css';
 
 export function UserMissPage(): IComponentModel {
   return {

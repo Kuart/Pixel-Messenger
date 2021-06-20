@@ -22,6 +22,8 @@ export class TagParser {
     let attr: RegExpExecArray | null = null;
     const attrs: Attributes = {};
     const propHandlers: Methods = {};
+    const usedPropsList: string[] = [];
+
     const props = reqProps.reduce((acc: Props, item: string) => {
       acc[item] = null;
       return acc;
@@ -46,6 +48,7 @@ export class TagParser {
         } else if (type === PREFIXES.PROPS) {
           this.setProps(cleanName, currentValue, props, attrs, parentComponent);
         } else if (type === PREFIXES.BIND) {
+          usedPropsList.push(currentValue);
           this.bindProps(cleanName, currentValue, props, parentComponent);
         } else if (type === PREFIXES.HANLDER) {
           this.handleEvent(cleanName, currentValue, propHandlers);
@@ -57,9 +60,10 @@ export class TagParser {
       }
     } while (attr);
 
-    return { tagName, attrs, propHandlers, props };
+    return { tagName, attrs, propHandlers, props, usedPropsList };
   };
 
+  /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["props", "attrs"] }] */
   setProps(name: string, currentValue: string, props: Props, attrs: Attributes, parentComponent?: Component) {
     if (parentComponent && currentValue) {
       let value = currentValue;
@@ -84,23 +88,24 @@ export class TagParser {
     }
   }
 
+  /* eslint-disable no-param-reassign */
   bindProps(name: string, currentValue: string, props: Props, parentComponent?: Component) {
     if (parentComponent) {
       const [propName] = currentValue.split('.');
 
       if (propName in parentComponent.props) {
         props[name] = this.parseObjectPathTag(parentComponent.props, currentValue);
-      } else if (parentComponent && propName in parentComponent.state) {
+      } else if (propName in parentComponent.state) {
         props[name] = this.parseObjectPathTag(parentComponent.state as Props, currentValue);
       }
     }
   }
 
-  handleEvent(name: string, currentValue: string, propHandlers: Methods) {
+  handleEvent = (name: string, currentValue: string, propHandlers: Methods) => {
     propHandlers[currentValue] = { event: name, name: currentValue };
-  }
+  };
 
-  conditionHandler(name: string, currentValue: string, attrs: Attributes, parentComponent?: Component) {
+  conditionHandler = (name: string, currentValue: string, attrs: Attributes, parentComponent?: Component) => {
     if (parentComponent) {
       const isFalseType = name[0] === '!';
       let parentProp = false;
@@ -122,12 +127,11 @@ export class TagParser {
         attrs.style = 'display: none';
       }
     }
-  }
+  };
 
   parseObjectPathTag = (props: Props, path: string) => {
     try {
       const keys = path.split('.');
-
       let result: Props = props;
 
       for (const key of keys) {
@@ -142,7 +146,7 @@ export class TagParser {
 
       return result;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 }

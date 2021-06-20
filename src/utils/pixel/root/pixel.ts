@@ -1,7 +1,7 @@
 import { Parser } from '../parser';
 import { VElement } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
-import { Component, IComponentModel, State } from '../utils/Component';
+import { Component, IComponentModel, State } from '../component';
 
 export interface IPixelInstance {
   el: string;
@@ -99,12 +99,13 @@ class Pixel {
         this.root.appendChild(VDOM.domEl);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
+  /* !TODO */
   unmount = (VDOM: Component | VElement) => {
-    console.log(VDOM);
+    console.error(VDOM);
   };
 }
 

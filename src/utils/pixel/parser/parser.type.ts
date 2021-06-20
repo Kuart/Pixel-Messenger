@@ -7,6 +7,7 @@ interface IParsedTag {
   attrs: Attributes;
   propHandlers?: Methods;
   props?: Props;
+  usedPropsList?: string[];
   type?: string;
 }
 

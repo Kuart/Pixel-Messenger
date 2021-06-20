@@ -6,11 +6,12 @@ import { VElement, VTextNode } from './pixelDom.type';
 class PixelDOM {
   eventCache: Record<string, Methods[]> = {};
 
+  /* prettier-ignore */
   createElement = (
     type: string = NODE_TYPE.ELEMENT_NODE,
     tagName: string,
     attrs: Attributes,
-    handlers?: Methods
+    handlers?: Methods,
   ): VElement => {
     const node: VElement = {
       type,
@@ -44,32 +45,27 @@ class PixelDOM {
     Object.entries(node.attrs).forEach(([key, value]) => {
       domNode.setAttribute(key, String(value));
     });
+
     /* link between parent and children */
     node.children.forEach((child: VElement | Component, index: number) => {
       if (child.type !== NODE_TYPE.TEXT_NODE) {
-        this.parentConnection(node, child, index, domNode as HTMLElement);
+        this.parentConnection(node, child, index);
       }
       if (child.domEl) {
         domNode.appendChild(child.domEl);
       }
     });
-
     return domNode;
   };
 
   /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["node"] }] */
-  parentConnection = (
-    currentNode: Component | VElement,
-    node: Component | VElement,
-    index: number,
-    domNode: HTMLElement
-  ) => {
+  parentConnection = (currentNode: Component | VElement, node: Component | VElement, index: number) => {
     node.keyIndex = index;
 
     if (node.type === NODE_TYPE.COMPONENT_NODE) {
-      (node as Component).setParentNode(domNode);
+      (node as Component).setParentVNode(currentNode);
     } else {
-      node.parent = domNode;
+      node.parent = currentNode;
     }
 
     if (node.propHandlers) {

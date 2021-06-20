@@ -1,6 +1,6 @@
-export default class Stack<T> {
+export class Stack<T> {
   static ERRORS = {
-    EMPTY_POP: `Can't pop, stack is empty`,
+    EMPTY_POP: "Can't pop, stack is empty",
   };
 
   private stack: T[];

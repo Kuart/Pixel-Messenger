@@ -1,6 +1,5 @@
 import user1 from '../../../../static/assets/images/Icon/_emj12.png';
 import user2 from '../../../../static/assets/images/Icon/_emj14.png';
-import user3 from '../../../../static/assets/images/Icon/shock.png';
 import user6 from '../../../../static/assets/images/Icon/alien.png';
 import user4 from '../../../../static/assets/images/Icon/U.png';
 import user7 from '../../../../static/assets/images/Icon/alianGtransp.png';
@@ -14,7 +13,7 @@ export const chats = [
   {
     userPhotoUrl: user1,
     userName: 'Даник',
-    message: `{{:rebel}}`,
+    message: '{{:rebel}}',
     time: '14:25',
     messageCount: 0,
     isAuther: true,

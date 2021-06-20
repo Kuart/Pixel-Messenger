@@ -1,4 +1,3 @@
-import Stack from './stack';
-import IStackNode from './stack.type';
-
-export { Stack, IStackNode };
+export { Stack } from './stack';
+export { Queue } from './queue';
+export { IQueueNode, IStackNode } from './structures.type';

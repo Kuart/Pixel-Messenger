@@ -4,11 +4,11 @@ import { IRouterState, IDefaultRoute, IRoutes } from './router.state';
 
 class Router {
   static ERRORS: Record<string, string> = {
-    NO_DEF_CONF: `Router default config not found`,
-    NO_DEF_ROUTES: `Router default path not found`,
-    WRONG_DEF_COMP: `Router default component has not found`,
-    NO_ROUTES: `Path has not been added to the router`,
-    WRONG_COMP: `Router has not found required component`,
+    NO_DEF_CONF: 'Router default config not found',
+    NO_DEF_ROUTES: 'Router default path not found',
+    WRONG_DEF_COMP: 'Router default component has not found',
+    NO_ROUTES: 'Path has not been added to the router',
+    WRONG_COMP: 'Router has not found required component',
   };
 
   static EVENTS: Record<string, string> = {
@@ -26,7 +26,7 @@ class Router {
 
   state: IRouterState;
 
-  urlListener: WindowEventHandlers;
+  urlListener: any;
 
   constructor(instant: Pixel) {
     this.instant = instant;
@@ -59,11 +59,12 @@ class Router {
         throw Error(Router.ERRORS.NO_ROUTES);
       }
 
-      for (const key in routes) {
+      Object.keys(routes).forEach((key) => {
         if (!routes[key] || !this.instant.components[routes[key]]) {
           throw Error(Router.ERRORS.WRONG_COMP);
         }
-      }
+      });
+
       this.defaultRoute = defaultRoute;
       this.routes = { ...routes, [defaultRoute.path]: defaultRoute.component };
       this.eventBus.emit(Router.EVENTS.INIT);
@@ -73,13 +74,15 @@ class Router {
   }
 
   createState = (state: IRouterState) => {
-    return new Proxy(state, {
+    const handler = {
       set: (target: IRouterState, prop: keyof IRouterState, value: string) => {
         target[prop] = value;
         this.eventBus.emit(Router.EVENTS.UPDATE, value);
         return true;
       },
-    });
+    };
+
+    return new Proxy(state, handler);
   };
 
   initRouting = () => {

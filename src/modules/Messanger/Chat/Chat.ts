@@ -4,7 +4,6 @@ import { Message } from './Message';
 
 import avatar from '../../../../static/assets/images/Icon/ava.png';
 import clip from '../../../../static/assets/images/Icon/clip1.png';
-
 import alien from '../../../../static/assets/images/Icon/alien.png';
 import pink from '../../../../static/assets/images/Icon/_emj14.png';
 import fire from '../../../../static/assets/images/Icon/emoji3.png';
@@ -34,7 +33,9 @@ export function Chat(): IComponentModel {
           <Message loop:messages />
         </div>
         <div class="chat__input-area">
-          <UserPhoto s:containerClass="user-avatar__container_input" s:imgClass="user-avatar__img_input" s:photo="${avatar}" />
+          <UserPhoto 
+            s:containerClass="user-avatar__container_input" s
+            :imgClass="user-avatar__img_input" s:photo="${avatar}" />
           <form class="chat__message-form" >
             <div class="message-form__textarea-wraper">
               <Textarea s:placeholder="Сообщение" s:name="newMessage"/>
@@ -52,7 +53,9 @@ export function Chat(): IComponentModel {
             </div>
             
           </form>
-          <UserPhoto s:containerClass="user-avatar__container_input" s:imgClass="user-avatar__img_input" s:photo="${user9}" />
+          <UserPhoto 
+            s:containerClass="user-avatar__container_input" 
+            s:imgClass="user-avatar__img_input" s:photo="${user9}" />
         </div>
       </div>
     </main>

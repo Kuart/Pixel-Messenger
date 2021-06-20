@@ -7,7 +7,11 @@
 
 .auth-form__body {
   flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+
 .auth-form__footer {
   flex: 0 0 auto;
 }

@@ -1,6 +1,6 @@
 .container {
-  background-color: var(--lightFocus);
   background: url('/assets/images/BG/RootBG.png') no-repeat;
+  background-color: var(--lightFocus);
   display: flex;
   justify-content: center;
   align-items: center;

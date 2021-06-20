@@ -1,8 +1,9 @@
-import { generateUniqId, IComponentModel } from '../../utils';
+import { FormValidator, generateUniqId, IComponentModel } from '../../utils';
 import { Input, Modal, Button } from '../../components';
 import './Auth.css';
 import { ROUTES } from '../..';
 import { CustomEventTarget } from '../../types';
+import { FIELD_TYPE } from './const';
 
 function Registration(): IComponentModel {
   return {
@@ -16,29 +17,44 @@ function Registration(): IComponentModel {
         password: '',
         passwordRepeat: '',
       },
+
+      errors: {
+        email: '',
+        login: '',
+        firstName: '',
+        secondName: '',
+        phoneNumber: '',
+        password: '',
+        passwordRepeat: '',
+      },
     },
+    /* eslint-disable */
     methods: {
       formFocusHandler: function (event: Event) {
         event.preventDefault();
-        console.log(event);
+        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
       formBlurHandler: function (event: Event) {
         event.preventDefault();
-        console.log(event);
+        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
       submitForm: function (event: Event) {
         event.preventDefault();
-        window.location.hash = ROUTES.messanger;
-        console.log(event);
+
+        const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+        if (isValid) {
+          window.location.hash = ROUTES.messanger;
+        }
       },
       replaceToLogin: function () {
         window.location.hash = ROUTES.login;
       },
       inputHandler: function (event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
-        console.log(`Field: ${name}, Value: ${value}`);
+        this.state.formFields[name] = value;
       },
     },
+    /* eslint-enable */
     components: {
       Modal,
       Input,
@@ -51,56 +67,66 @@ function Registration(): IComponentModel {
           <h2>Регистрация</h2>
         </header>
         <div class="modal__body">
-          <form class="auth-form auth-form_login" e:submit="submitForm" e:blur="formBlurHandler" e:focus="formFocusHandler">
+          <form class="auth-form auth-form_login" 
+                e:submit="submitForm" 
+                e:blur="formBlurHandler" 
+                e:focus="formFocusHandler">
             <div class="auth-form__body">
               <Input 
                 s:label="Почта" 
-                name="email" 
-                type="email" 
+                s:name="email" 
+                s:type="email" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.email"/>
+                b:value="formFields.email"
+                b:errors="errors.email"/>
 
               <Input 
                 s:label="Логин" 
-                name="login" 
-                type="text" 
+                s:name="login" 
+                s:type="text" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.login"/>
+                b:value="formFields.login"
+                b:errors="errors.login"/>
 
               <Input 
                 s:label="Имя" 
-                name="firstName" 
-                type="text" 
+                s:name="firstName" 
+                s:type="text" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.firstName"/>
+                b:value="formFields.firstName"
+                b:errors="errors.firstName"/>
 
               <Input 
                 s:label="Фамилия" 
-                name="secondName" 
-                type="text" 
+                s:name="secondName" 
+                s:type="text" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.secondName"/>
+                b:value="formFields.secondName"
+                b:errors="errors.secondName"/>
 
               <Input 
                 s:label="Телефон" 
-                name="phoneNumber" 
-                type="tel" 
+                s:name="phoneNumber" 
+                s:type="tel" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.phoneNumber"/>
+                b:value="formFields.phoneNumber"
+                b:errors="errors.phoneNumber"/>
 
               <Input 
                 s:label="Пароль" 
-                name="password" 
-                type="password" 
+                s:name="password" 
+                s:type="password" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.password"/>
+                b:value="formFields.password"
+                b:errors="errors.password"/>
 
               <Input 
                 s:label="Повторите пароль" 
-                name="passwordRepeat" 
-                type="password" 
+                s:name="passwordRepeat" 
+                s:type="password" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.passwordRepeat"/>
+                b:value="formFields.passwordRepeat"
+                b:errors="errors.passwordRepeat"/>
 
             </div>
             <footer class="auth-form__footer">

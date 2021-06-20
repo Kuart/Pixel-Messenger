@@ -6,7 +6,7 @@ export function Input(): IComponentModel {
     state: {
       error: '',
     },
-    usedProps: ['name', 'type', 'id', 'placeholder', 'label'],
+    usedProps: ['name', 'type', 'id', 'placeholder', 'label', 'errors'],
     template: /* html */ `
     <div class="input">
       <label class="input__label" p:for="id">{{label}}</label>
@@ -20,7 +20,7 @@ export function Input(): IComponentModel {
           e:input="inputHandler"/>
         <span class="input__underline"></span>
       </div>
-      <div class="input__error">{{error}}</div>
+      <div class="input__error">{{errors}}</div>
     </div>`,
   };
 }

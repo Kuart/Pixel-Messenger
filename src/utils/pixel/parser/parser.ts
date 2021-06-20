@@ -25,7 +25,7 @@ export default class PixelParser {
     this.instance = instance;
   }
 
-  parseHTML(html: string, parentComponent?: Component): Component {
+  parseHTML(html: string, parentComponent?: Component) {
     const stack = new Stack<VElement | Component>();
     const reg = new RegExp(this.tagRegExp);
     if (parentComponent) {
@@ -47,21 +47,21 @@ export default class PixelParser {
           const isArray: boolean = Array.isArray(component);
 
           if (isArray) {
-            component.forEach((element) => {
+            (component as Component[]).forEach((element: Component) => {
               element.domEl = this.pixelDOM.mountNode(element);
             });
           } else {
-            component.domEl = this.pixelDOM.mountNode(component);
+            (component as Component).domEl = this.pixelDOM.mountNode(component as Component);
           }
 
           if (parentTag) {
             if (isArray) {
-              parentTag.children.push(...component);
+              parentTag.children.push(...(component as Component[]));
             } else {
-              parentTag.children.push(component);
+              parentTag.children.push(component as Component);
             }
           } else {
-            stack.push(component);
+            stack.push(component as Component);
           }
         } else if (isXHTML) {
           const { propHandlers, tagName, attrs } = this.tagParser.parse(tag, [], parentComponent);
@@ -96,7 +96,7 @@ export default class PixelParser {
             /* text node */
             if (nextChar && nextChar !== '<') {
               const text = html.slice(start, html.indexOf('<', start)).trim();
-              this.parseText(text, parentComponent, element);
+              this.parseText(text, parentComponent!, element);
             }
             stack.push(element);
           }
@@ -118,12 +118,12 @@ export default class PixelParser {
       const reg = new RegExp(this.replaceRegExp);
       const prop = reg.exec(text);
       let replacedText = text;
-
       /* check for template replacement */
       if (prop && prop[0]) {
         const replaced = this.findPropInParent(prop[1], parentComponent) as Props;
-        let emojiReg = emoji.exec(replaced.toString());
-        let emojiText = replaced.toString();
+        const stringValue = replaced ? replaced.toString() : '';
+        let emojiReg = emoji.exec(stringValue);
+        let emojiText = stringValue;
 
         /* checking for the presence of emoji in the template string */
         if (emojiReg && emojiReg[0]) {
@@ -141,12 +141,12 @@ export default class PixelParser {
               } else {
                 this.handleEmoji(emojiReg[1].substring(1), parentNode, parentComponent);
               }
-              emojiReg = emoji.exec(replaced.toString());
+              emojiReg = emoji.exec(stringValue);
             }
           } while (emojiReg);
         } else {
-          replacedText = text.replace(prop[0], replaced.toString());
-          this.handleTextNode(replacedText, parentNode);
+          replacedText = text.replace(prop[0], stringValue);
+          this.handleTextNode(replacedText, parentNode, prop[1]);
         }
       } else {
         this.handleTextNode(replacedText, parentNode);
@@ -154,8 +154,9 @@ export default class PixelParser {
     }
   }
 
-  handleTextNode(replacedText: string, parentNode: VElement | Component) {
+  handleTextNode(replacedText: string, parentNode: VElement | Component, usedProp?: string) {
     const textNode = this.pixelDOM.createTextNode(replacedText);
+    textNode.usedProps = [usedProp!];
     textNode.parent = parentNode;
     textNode.domEl = this.pixelDOM.mountTextNode(textNode) as Text;
     parentNode.children.push(textNode);
@@ -171,8 +172,9 @@ export default class PixelParser {
   }
 
   parseComponent(tag: string, parentComponent?: Component): Component | Component[] {
+    /* eslint no-unused-vars: "off" */
     const [_, componentName] = tag.match(this.tagNameRegExp)!;
-    const { template, components, state, usedProps, methods } = this.instance.components[componentName]();
+    const { template, components, state, usedProps = [], methods } = this.instance.components[componentName]();
 
     const [firstTag, ...tags] = template.match(this.tagRegExp);
 
@@ -184,15 +186,32 @@ export default class PixelParser {
 
     if (isLoop !== -1) {
       return this.loopHandler({ isLoop, componentName, parentComponent, tag });
-    } else {
-      const start = firstTag.length;
-      const end = template.trim().length - tags[tags.length - 1].length;
-
-      const { tagName, attrs, props, propHandlers } = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
-      const component = new Component({ tagName, props, attrs, state, methods, propHandlers });
-
-      return this.parseHTML(`${template.trim().substring(start, end)}`, component);
     }
+
+    const start = firstTag.length;
+    const end = template.trim().length - tags[tags.length - 1].length;
+
+    const {
+      tagName,
+      attrs,
+      props,
+      propHandlers,
+      usedPropsList = [],
+    } = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
+
+    const component = new Component({
+      template: `${template.trim().substring(start, end)}`,
+      tagName,
+      props,
+      attrs,
+      state,
+      methods,
+      propHandlers,
+      usedProps: [...usedPropsList, ...usedProps],
+      parserInstant: this,
+    });
+
+    return this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component;
   }
 
   loopHandler = (config: any) => {
@@ -216,6 +235,8 @@ export default class PixelParser {
           state,
           methods,
           propHandlers,
+          template,
+          parserInstant: this,
         });
         components.push(this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component);
       });
@@ -236,6 +257,7 @@ export default class PixelParser {
     return null;
   };
 
+  /* eslint consistent-return: "off" */
   parseObjectPath = (props: Props, path: string) => {
     try {
       const clearPath = path.substring(2, path.length - 2).trim();
@@ -253,10 +275,11 @@ export default class PixelParser {
       }
       return result;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   isComponent = (tag: string) => tag.match(this.componentRegExp);
+
   isXHTML = (tag: string) => tag[tag.length - 2] === '/';
 }

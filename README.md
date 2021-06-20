@@ -38,4 +38,4 @@
 
 - «[Макеты Figma](https://www.figma.com/file/J0pgivTE3a1LNOoGOEZOAV/PixelChat?node-id=1%3A20)»,
 - «[PR Sprint 1](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/1)»,
-- «[PR Sprint 2](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/3)»,
+- «[PR Sprint 2](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/4)»,

@@ -14,7 +14,7 @@ export const chats = [
   {
     userPhotoUrl: user1,
     userName: 'Даник',
-    message: `<img src="${user3}" width="30" height="30"/>`,
+    message: `{{:rebel}}`,
     time: '14:25',
     messageCount: 0,
     isAuther: true,

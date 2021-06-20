@@ -1,7 +1,7 @@
 import { Pixel } from '..';
 import { NODE_TYPE, PixelDOM, VElement } from '../pixelDom';
 import { Stack, Component, Props } from '../utils';
-import { PREFIXES } from './const';
+import { EMOJI, PREFIXES } from './const';
 import { TagParser } from './tagParser';
 
 export default class PixelParser {
@@ -114,23 +114,64 @@ export default class PixelParser {
 
   parseText(text: string, parentComponent: Component, parentNode: VElement | Component) {
     if (text.length) {
-      const prop = text.match(this.replaceRegExp);
+      const emoji = new RegExp(/{{([^{}]*)}}/g);
+      const reg = new RegExp(this.replaceRegExp);
+      const prop = reg.exec(text);
       let replacedText = text;
 
-      if (prop) {
-        const replaced: string = this.findPropInParent(prop[0], parentComponent) ?? text;
-        replacedText = replaced.toString();
-      }
+      /* check for template replacement */
+      if (prop && prop[0]) {
+        const replaced = this.findPropInParent(prop[1], parentComponent) as Props;
+        let emojiReg = emoji.exec(replaced.toString());
+        let emojiText = replaced.toString();
 
-      const textNode = this.pixelDOM.createTextNode(replacedText);
-      textNode.parent = parentNode;
-      textNode.domEl = this.pixelDOM.mountTextNode(textNode) as Text;
-      parentNode.children.push(textNode);
+        /* checking for the presence of emoji in the template string */
+        if (emojiReg && emojiReg[0]) {
+          /* if the replacement is not at the beginning of the line create/mount textnode for this part */
+          if (prop.index > 0) {
+            this.handleTextNode(replacedText.substring(0, prop.index), parentNode);
+          }
+
+          do {
+            if (emojiReg) {
+              if (emojiReg.index > 0) {
+                this.handleTextNode(emojiText.substring(0, emojiReg.index), parentNode);
+                emojiText = emojiText.substring(emojiReg.index);
+                this.handleEmoji(emojiReg[1].substring(1), parentNode, parentComponent);
+              } else {
+                this.handleEmoji(emojiReg[1].substring(1), parentNode, parentComponent);
+              }
+              emojiReg = emoji.exec(replaced.toString());
+            }
+          } while (emojiReg);
+        } else {
+          replacedText = text.replace(prop[0], replaced.toString());
+          this.handleTextNode(replacedText, parentNode);
+        }
+      } else {
+        this.handleTextNode(replacedText, parentNode);
+      }
     }
   }
 
+  handleTextNode(replacedText: string, parentNode: VElement | Component) {
+    const textNode = this.pixelDOM.createTextNode(replacedText);
+    textNode.parent = parentNode;
+    textNode.domEl = this.pixelDOM.mountTextNode(textNode) as Text;
+    parentNode.children.push(textNode);
+  }
+
+  handleEmoji(emojiName: string, parentNode: VElement | Component, parentComponent: Component) {
+    const { propHandlers, tagName, attrs } = this.tagParser.parse(EMOJI[emojiName], [], parentComponent);
+
+    const emojiNode = this.pixelDOM.createElement(NODE_TYPE.ELEMENT_NODE, tagName, attrs, propHandlers);
+    emojiNode.parent = parentNode;
+    emojiNode.domEl = this.pixelDOM.mountNode(emojiNode);
+    parentNode.children.push(emojiNode);
+  }
+
   parseComponent(tag: string, parentComponent?: Component): Component | Component[] {
-    const [_, componentName] = tag.match(this.tagNameRegExp);
+    const [_, componentName] = tag.match(this.tagNameRegExp)!;
     const { template, components, state, usedProps, methods } = this.instance.components[componentName]();
 
     const [firstTag, ...tags] = template.match(this.tagRegExp);
@@ -166,7 +207,7 @@ export default class PixelParser {
     const end = template.trim().length - tags[tags.length - 1].length;
 
     if (parentComponent && arrayName in parentComponent!.state) {
-      parentComponent.state[arrayName].forEach((element) => {
+      parentComponent.state[arrayName].forEach((element: Record<string, Props>) => {
         const { tagName, attrs, props, propHandlers } = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
         const component = new Component({
           tagName,
@@ -184,14 +225,12 @@ export default class PixelParser {
   };
 
   findPropInParent = (prop: string, component: Component) => {
-    const cleanProp = prop.substring(2, prop.length - 2).trim();
-
-    if (cleanProp in component.props) {
-      return component.props[cleanProp];
+    if (prop in component.props) {
+      return component.props[prop];
     }
 
-    if (cleanProp in component.state) {
-      return component.state[cleanProp];
+    if (prop in component.state) {
+      return component.state[prop];
     }
 
     return null;
@@ -210,7 +249,7 @@ export default class PixelParser {
         if (!value) {
           return '';
         }
-        result = value;
+        result = value as Props;
       }
       return result;
     } catch (error) {

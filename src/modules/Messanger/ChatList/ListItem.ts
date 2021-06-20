@@ -13,15 +13,15 @@ export function ListItem(): IComponentModel {
         </div>
         <div class="list-item__text">
           <h3 class="list-item__title">{{userName}}</h3>
-            <p class="list-item__message">Вы: {{message}}</p>
-            <p class="list-item__message">{{message}}</p>
+          <p class="list-item__message" if:isAuther>Вы: {{message}}</p>
+          <p class="list-item__message" if:!isAuther>{{message}}</p>
         </div>
         <div class="list-item__info">
           <h4 class="list-item__time">{{time}}</h4>
-            <div class="list-item__budge message-budge">
-              <img class="message-budge__icon" src="${badge}" />
-              <span class="message-budge__count">{{messageCount}}</span>
-            </div>
+          <div class="list-item__budge message-budge" if:messageCount>
+            <img class="message-budge__icon" src="${badge}" />
+            <span class="message-budge__count">{{messageCount}}</span>
+          </div>
         </div>
       </li>
     `,

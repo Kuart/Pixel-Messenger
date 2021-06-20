@@ -10,7 +10,7 @@ class PixelDOM {
     type: string = NODE_TYPE.ELEMENT_NODE,
     tagName: string,
     attrs: Attributes,
-    handlers: Methods
+    handlers?: Methods
   ): VElement => {
     const node: VElement = {
       type,

@@ -50,7 +50,6 @@ export class TagParser {
         } else if (type === PREFIXES.HANLDER) {
           this.handleEvent(cleanName, currentValue, propHandlers);
         } else if (type === PREFIXES.IF_CONDITION || type === PREFIXES.ELSE_CONDITION) {
-          console.log(tag);
           this.conditionHandler(cleanName, currentValue, attrs, parentComponent);
         } else {
           attrs[name] = currentValue;
@@ -101,7 +100,29 @@ export class TagParser {
     propHandlers[currentValue] = { event: name, name: currentValue };
   }
 
-  conditionHandler(name: string, currentValue: string, attrs: Attributes, parentComponent?: Component) {}
+  conditionHandler(name: string, currentValue: string, attrs: Attributes, parentComponent?: Component) {
+    if (parentComponent) {
+      const isFalseType = name[0] === '!';
+      let parentProp = false;
+      let prop = isFalseType ? name.slice(1) : name;
+
+      if (prop[prop.length - 1] === '>') {
+        prop = prop.slice(0, -1);
+      }
+
+      if (prop in parentComponent.props) {
+        parentProp = parentComponent.props[prop] as boolean;
+      } else if (prop in parentComponent.state) {
+        parentProp = parentComponent.props[prop] as boolean;
+      }
+
+      if (!parentProp && !isFalseType) {
+        attrs.style = 'display: none';
+      } else if (parentProp && isFalseType) {
+        attrs.style = 'display: none';
+      }
+    }
+  }
 
   parseObjectPathTag = (props: Props, path: string) => {
     try {

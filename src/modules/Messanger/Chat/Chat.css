@@ -27,7 +27,6 @@
 .message-form__textarea-wraper {
   position: relative;
 }
-
 .message-form__textarea {
   resize: none;
   height: 70px;

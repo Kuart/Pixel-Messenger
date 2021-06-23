@@ -1,7 +1,7 @@
 # Pixel Chat
 
-  ## Команды
-  
+## And coding style tests
+
     Запуск в режиме serve
 
     ```
@@ -24,13 +24,19 @@
 
 ### Описание
 
+    Вариант для второго спринта, попытка изменить подход на VDOM, на данный момент получилось сделать чтоб рендерилось статика, роутер и текстовые ноды, написана реализация для ререндера компонентов, но над ней еще надо работать,
+    ближайший план (без учета основных задач):  unmount, component/Velement update, добавление возможности прокидывания компонент в верстку другого компонента (как children в React)
 
-    * /#login - по умолчанию
+
+    * /#login || '/' - по умолчанию
     * /#register
     * /#messanger
-    * /#500
-    * /#404
+    * /#error
+    * /#wrong
+    * /#profile - временная страница профиля (будет через портал/модалка)
 
 ### **Ссылки**
 
 - «[Макеты Figma](https://www.figma.com/file/J0pgivTE3a1LNOoGOEZOAV/PixelChat?node-id=1%3A20)»,
+- «[PR Sprint 1](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/1)»,
+- «[PR Sprint 2](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/4)»,

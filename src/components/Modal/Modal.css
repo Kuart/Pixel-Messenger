@@ -4,15 +4,14 @@
   padding: 16px 24px;
   border-radius: 6px;
   box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
+  display: grid;
   justify-items: center;
+  grid-template-rows: 40px auto;
   gap: 65px;
   position: flex;
 }
 
 .modal__body {
-  flex-grow: 1;
 }
 
 .modal__header {

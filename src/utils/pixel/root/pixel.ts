@@ -105,7 +105,7 @@ class Pixel {
 
   /* !TODO */
   unmount = (VDOM: Component | VElement) => {
-    console.error(VDOM);
+    console.error('Unmount:', VDOM);
   };
 }
 

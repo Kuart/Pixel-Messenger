@@ -24,7 +24,6 @@ export function ChatList(): IComponentModel {
       },
       filterChartList: function (event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
-        console.log(`${name} ${value}`);
       },
     },
     /* eslint-enable */

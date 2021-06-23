@@ -74,7 +74,7 @@ export function TempProfileEditPassword(): IComponentModel {
             e:blur="formBlurHandler" 
             id="id-prfole_form2">
 
-            <div class="profile-form__body">
+            <div class="profile-form__body profile-form__body--full">
               <Input 
               s:label="Почта" 
               s:name="email" 

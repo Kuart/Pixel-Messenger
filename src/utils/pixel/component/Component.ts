@@ -12,17 +12,21 @@ export default class Component {
     RENDER: 'render',
   };
 
-  eventBus: EventBus;
+  private eventBus: EventBus;
 
-  pixelDom: PixelDOM;
+  private pixelDom: PixelDOM;
 
-  parserInstant: Parser;
+  private parserInstant: Parser;
+
+  private methods: Methods;
+
+  private propHandlers?: Methods | undefined;
+
+  template: string;
 
   type: string = NODE_TYPE.COMPONENT_NODE;
 
   tagName: string;
-
-  template: string;
 
   keyIndex: number;
 
@@ -39,12 +43,6 @@ export default class Component {
   attrs: Attributes;
 
   state: State;
-
-  methods: Methods;
-
-  listeners: [] = [];
-
-  propHandlers?: Methods | undefined;
 
   constructor(options: IComponentOptions) {
     this.eventBus = new EventBus();

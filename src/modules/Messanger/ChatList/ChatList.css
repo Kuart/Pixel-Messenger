@@ -27,6 +27,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: auto;
+  height: calc(100vh - 140px);
 }
 
 .chat-list__item {

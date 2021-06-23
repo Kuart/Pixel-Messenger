@@ -1,16 +1,11 @@
-export interface IMETHODS {
-  GET: 'GET';
-  POST: 'POST';
-  PUT: 'PUT';
-  DELETE: 'DELETE';
-}
+import { METHODS } from './const';
 
 export interface IRequestOptions {
-  data?: string | Record<string, unknown>;
+  data?: string | Record<string, object>;
   timeout?: number;
   headers?: Record<string, string>;
 }
 
 export interface IXMLHttpRequestOptions extends IRequestOptions {
-  method: keyof IMETHODS;
+  method: METHODS;
 }

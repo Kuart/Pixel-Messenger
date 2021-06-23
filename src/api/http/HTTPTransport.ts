@@ -1,21 +1,22 @@
 import { METHODS } from './const';
 import { IRequestOptions, IXMLHttpRequestOptions } from './HTTPTransport.type';
 
-function parseObject(obj: Record<string, unknown>) {
-  let query = '';
-  for (const key in obj) {
-    if (typeof obj[key] !== 'object') {
-      query += `&${key}=${obj[key]}`;
-    } else if (Array.isArray(obj[key])) {
-      query += `&${key}=${(obj[key] as []).join(',')}`;
+function parseObject(obj: Record<string, object>) {
+  return Object.entries(obj).reduce((acc: string, [key, value]: [string, any]) => {
+    if (typeof value !== 'object') {
+      acc += `&${key}=${value}`;
+    } else if (Array.isArray(value)) {
+      acc += `&${key}=${value.join(',')}`;
+    } else if (typeof value === 'object' && value !== null) {
+      acc += `${parseObject(value)}`;
     } else {
-      query += `&${key}=${obj[key]}`;
+      acc += `&${key}=null`;
     }
-  }
-  return query;
+    return acc;
+  }, '');
 }
 
-function queryStringify(data: string | Record<string, unknown>) {
+function queryStringify(data: string | Record<string, object>) {
   if (typeof data === 'string') {
     if (data.startsWith('?')) {
       return data;
@@ -23,11 +24,10 @@ function queryStringify(data: string | Record<string, unknown>) {
     return `? + ${data}`;
   }
 
-  let query = parseObject(data);
+  const query = parseObject(data);
 
   if (query.length) {
-    query = `?${query.substring(1)}`;
-    return query;
+    return `?${query.substring(1)}`;
   }
 
   return '';

@@ -71,7 +71,7 @@ function Registration(): IComponentModel {
                 e:submit="submitForm" 
                 e:blur="formBlurHandler" 
                 e:focus="formFocusHandler">
-            <div class="auth-form__body">
+            <div class="auth-form__body auth-form__body--register">
               <Input 
                 s:label="Почта" 
                 s:name="email" 

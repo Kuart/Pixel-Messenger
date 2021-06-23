@@ -127,7 +127,7 @@ function Registration(): IComponentModel {
                 s:id="input${generateUniqId()}" 
                 b:value="formFields.passwordRepeat"
                 b:errors="errors.passwordRepeat"/>
-
+              
             </div>
             <footer class="auth-form__footer">
               <Button s:text="Войти" class="button button_accent" type="submit" e:click="submitForm"/>

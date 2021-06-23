@@ -1,4 +1,5 @@
 import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './pages';
+import { ProfileTempPage } from './modules';
 import { Pixel } from './utils/pixel';
 import './index.css';
 
@@ -6,6 +7,7 @@ const ROUTES = {
   login: 'login',
   register: 'register',
   messanger: 'messanger',
+  profile: 'profile',
 };
 
 const root = new Pixel({
@@ -18,6 +20,7 @@ const root = new Pixel({
     routes: {
       [ROUTES.register]: 'Registration',
       [ROUTES.messanger]: 'Messanger',
+      [ROUTES.profile]: 'ProfileTempPage',
       wrong: 'UserMissPage',
       error: 'ServerMissPage',
     },
@@ -28,6 +31,7 @@ const root = new Pixel({
     Messanger,
     UserMissPage,
     ServerMissPage,
+    ProfileTempPage,
   },
 });
 

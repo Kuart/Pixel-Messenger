@@ -1,6 +1,7 @@
 .messanger__chat {
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .chat__container {
@@ -86,4 +87,6 @@
   flex-direction: column-reverse;
   padding: 12px;
   gap: 20px;
+  overflow: auto;
+  height: calc(100vh - 260px);
 }

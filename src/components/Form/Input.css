@@ -15,7 +15,7 @@
 }
 
 .input__control {
-  font-family: PerfectDOSVGA437;
+  font-family: var(--secondFont);
   height: 30px;
   outline: none;
   border: none;
@@ -43,6 +43,6 @@
 
 .input__error {
   color: var(--warning);
-  font-family: PerfectDOSVGA437;
+  font-family: var(--secondFont);
   height: 10px;
 }

@@ -38,3 +38,21 @@
 .button_transparent:active {
   color: var(--accentFocus);
 }
+
+.button_text {
+  color: var(--accent);
+  font-size: 14px;
+  font-family: PerfectDOSVGA437;
+  height: 14px;
+  display: inline;
+  text-align: start;
+  width: inherit;
+  background: transparent;
+  transition: color 0.2s linear;
+  padding: 2px 0px;
+  text-shadow: 0 0 1px solid #000;
+}
+
+.button_text:hover {
+  color: var(--accentFocus);
+}

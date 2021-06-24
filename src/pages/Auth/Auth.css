@@ -1,0 +1,21 @@
+.auth-form {
+  width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.auth-form__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-form__footer {
+  flex: 0 0 auto;
+}
+
+.auth-form__body--register {
+  height: 56vh;
+  overflow: auto;
+}

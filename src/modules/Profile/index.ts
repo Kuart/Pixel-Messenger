@@ -1,0 +1,1 @@
+export { ProfileTempPage } from './ProfileTempPage';

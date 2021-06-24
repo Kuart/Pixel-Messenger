@@ -11,6 +11,7 @@
   border-radius: 6px;
   overflow: hidden;
   align-self: baseline;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
 }
 
 .profile__header {
@@ -50,7 +51,7 @@
 .profile-row__value {
   width: 150px;
   max-width: 150px;
-  font-family: PerfectDOSVGA437;
+  font-family: var(--secondFont);
   font-size: 14px;
   color: #fff;
   align-self: flex-end;

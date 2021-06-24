@@ -28,17 +28,16 @@ function Registration(): IComponentModel {
         passwordRepeat: '',
       },
     },
-    /* eslint-disable */
     methods: {
-      formFocusHandler: function (event: Event) {
+      formFocusHandler(event: Event) {
         event.preventDefault();
         FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
-      formBlurHandler: function (event: Event) {
+      formBlurHandler(event: Event) {
         event.preventDefault();
         FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
-      submitForm: function (event: Event) {
+      submitForm(event: Event) {
         event.preventDefault();
 
         const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
@@ -46,15 +45,14 @@ function Registration(): IComponentModel {
           window.location.hash = ROUTES.messanger;
         }
       },
-      replaceToLogin: function () {
+      replaceToLogin() {
         window.location.hash = ROUTES.login;
       },
-      inputHandler: function (event: CustomEventTarget<HTMLInputElement>) {
+      inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
       },
     },
-    /* eslint-enable */
     components: {
       Modal,
       Input,

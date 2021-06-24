@@ -1,4 +1,4 @@
-import { METHODS } from './const';
+import { METHODS } from './methods.enum';
 
 export interface IRequestOptions {
   data?: string | Record<string, object>;

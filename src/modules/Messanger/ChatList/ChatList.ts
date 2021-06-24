@@ -5,6 +5,7 @@ import { ListItem } from './ListItem';
 import { chats } from './const';
 import './ChatList.css';
 
+/* eslint no-console: "off" */
 export function ChatList(): IComponentModel {
   return {
     components: {
@@ -14,19 +15,18 @@ export function ChatList(): IComponentModel {
     state: {
       chats,
     },
-    /* eslint-disable */
     methods: {
-      formFocusHandler: function (event: Event) {
+      formFocusHandler(event: Event) {
         console.log(event.target);
       },
-      formBlurHandler: function (event: Event) {
+      formBlurHandler(event: Event) {
         console.log(event.target);
       },
-      filterChartList: function (event: CustomEventTarget<HTMLInputElement>) {
+      filterChartList(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
+        console.log(`${name} ${value}`);
       },
     },
-    /* eslint-enable */
     template: /* html */ ` 
     <aside class="messanger__chat-list" >
       <form class="search-form" e:blur="formFocusHandler" e:blur="formBlurHandler">

@@ -22,25 +22,24 @@ export function TempProfileEdit(): IComponentModel {
         phoneNumber: '',
       },
     },
-    /* eslint-disable */
     methods: {
-      formFocusHandler: function (event: Event) {
+      formFocusHandler(event: Event) {
         event.preventDefault();
         FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE_INFO);
       },
-      formBlurHandler: function (event: Event) {
+      formBlurHandler(event: Event) {
         event.preventDefault();
         FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE_INFO);
       },
-      submitForm: function (event: Event) {
+      submitForm(event: Event) {
         event.preventDefault();
 
         FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE_INFO);
       },
-      cancel: function (event: Event) {
+      cancel(event: Event) {
         event.preventDefault();
       },
-      inputHandler: function (event: CustomEventTarget<HTMLInputElement>) {
+      inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
       },

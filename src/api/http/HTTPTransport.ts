@@ -1,4 +1,4 @@
-import { METHODS } from './const';
+import { METHODS } from './methods.enum';
 import { IRequestOptions, IXMLHttpRequestOptions } from './HTTPTransport.type';
 
 function parseObject(obj: Record<string, object>) {
@@ -9,9 +9,8 @@ function parseObject(obj: Record<string, object>) {
       acc += `&${key}=${value.join(',')}`;
     } else if (typeof value === 'object' && value !== null) {
       acc += `${parseObject(value)}`;
-    } else {
-      acc += `&${key}=null`;
     }
+
     return acc;
   }, '');
 }

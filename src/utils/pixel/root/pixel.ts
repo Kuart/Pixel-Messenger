@@ -18,6 +18,8 @@ class Pixel {
     VDOM_NF: 'Failed to build VDOM',
   };
 
+  static instance: Pixel;
+
   private root: Element;
 
   private parser: Parser;
@@ -31,12 +33,18 @@ class Pixel {
   public initiatedComponents: Record<string, IComponentModel> = {};
 
   constructor(config: IPixelInstance) {
+    if (Pixel.instance) {
+      return Pixel.instance;
+    }
+
     this.parser = new Parser(this);
     this.router = new Router(this);
 
     this.setRootEl(config.el);
     this.registerComponents(config.components);
     this.init(config.routes, config.template);
+
+    Pixel.instance = this;
   }
 
   registerComponents(components: { [key: string]: Function } | undefined): void {

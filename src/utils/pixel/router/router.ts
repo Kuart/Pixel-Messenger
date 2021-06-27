@@ -16,7 +16,9 @@ class Router {
     UPDATE: 'update',
   };
 
-  instant: Pixel;
+  static instantce: Router;
+
+  pixelInstantce: Pixel;
 
   eventBus: EventBus;
 
@@ -28,12 +30,18 @@ class Router {
 
   urlListener: any;
 
-  constructor(instant: Pixel) {
-    this.instant = instant;
+  constructor(pixelInstantce: Pixel) {
+    if (Router.instantce) {
+      return Router.instantce;
+    }
+
+    this.pixelInstantce = pixelInstantce;
     this.eventBus = new EventBus();
     this.state = this.createState({ currentRoute: '' });
 
     this.registerEvent();
+
+    Router.instantce = this;
   }
 
   registerEvent = () => {
@@ -51,7 +59,7 @@ class Router {
         throw Error(Router.ERRORS.NO_DEF_ROUTES);
       }
 
-      if (!this.instant.components[defaultRoute.component]) {
+      if (!this.pixelInstantce.components[defaultRoute.component]) {
         throw Error(Router.ERRORS.WRONG_DEF_COMP);
       }
 
@@ -60,7 +68,7 @@ class Router {
       }
 
       Object.keys(routes).forEach((key) => {
-        if (!routes[key] || !this.instant.components[routes[key]]) {
+        if (!routes[key] || !this.pixelInstantce.components[routes[key]]) {
           throw Error(Router.ERRORS.WRONG_COMP);
         }
       });
@@ -106,7 +114,7 @@ class Router {
   };
 
   changeLayout = (componentName: string) => {
-    this.instant.render(`<${componentName}/>`);
+    this.pixelInstantce.render(`<${componentName}/>`);
   };
 }
 

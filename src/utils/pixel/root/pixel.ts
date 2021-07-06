@@ -24,7 +24,7 @@ class Pixel {
 
   private parser: Parser;
 
-  private router: Router;
+  public router: Router;
 
   private VDOM: Component | VElement;
 

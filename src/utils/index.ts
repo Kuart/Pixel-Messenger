@@ -1,3 +1,3 @@
 export { generateUniqId } from './helpers';
-export { IComponentModel } from './pixel';
+export { IComponentModel, Router } from './pixel';
 export { FormValidator } from './FormValidator';

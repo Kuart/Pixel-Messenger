@@ -2,29 +2,11 @@ import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './
 import { ProfileTempPage } from './modules';
 import { Pixel } from './utils/pixel';
 import './index.css';
-
-const ROUTES = {
-  login: 'login',
-  register: 'register',
-  messanger: 'messanger',
-  profile: 'profile',
-};
+import { routesConfig } from './routes';
 
 const root = new Pixel({
   el: '#root',
-  routes: {
-    default: {
-      path: ROUTES.login,
-      component: 'Login',
-    },
-    routes: {
-      [ROUTES.register]: 'Registration',
-      [ROUTES.messanger]: 'Messanger',
-      [ROUTES.profile]: 'ProfileTempPage',
-      wrong: 'UserMissPage',
-      error: 'ServerMissPage',
-    },
-  },
+  routes: routesConfig,
   components: {
     Login,
     Registration,
@@ -35,4 +17,4 @@ const root = new Pixel({
   },
 });
 
-export { root, ROUTES };
+export { root };

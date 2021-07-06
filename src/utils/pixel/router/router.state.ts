@@ -1,16 +1,21 @@
 interface IRouterState {
-  currentRoute: string;
+  history: History;
 }
 
 interface IDefaultRoute {
   path: string;
   component: string;
+  title: string;
 }
 
+interface IRouteConfig {
+  component: string;
+  title: string;
+}
 interface IRoutes {
-  wrong: string;
-  error: string;
-  [key: string]: string;
+  wrong: IRouteConfig;
+  error: IRouteConfig;
+  [key: string]: IRouteConfig;
 }
 
 interface IRoutesConfig {

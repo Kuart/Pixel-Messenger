@@ -1,9 +1,10 @@
 import { FormValidator, generateUniqId, IComponentModel } from '../../utils';
 import { Input, Modal, Button, PagesContainer } from '../../components';
-import { ROUTES } from '../..';
-import './Auth.css';
 import { CustomEventTarget } from '../../types';
 import { FIELD_TYPE } from './const';
+import './Auth.css';
+import { ROUTES } from '../../routes';
+import { root } from '../..';
 
 function Login(): IComponentModel {
   return {
@@ -31,11 +32,11 @@ function Login(): IComponentModel {
 
         const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
         if (isValid) {
-          window.location.hash = ROUTES.messanger;
+          root.router.go(ROUTES.messanger);
         }
       },
       replaceToRegister() {
-        window.location.hash = ROUTES.register;
+        root.router.go(ROUTES.register);
       },
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;

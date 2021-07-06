@@ -1,6 +1,5 @@
 import { Pixel } from '..';
-import EventBus from '../utils/EventBus';
-import { IRouterState, IDefaultRoute, IRoutes } from './router.state';
+import { IDefaultRoute, IRoutes } from './router.state';
 
 class Router {
   static ERRORS: Record<string, string> = {
@@ -18,38 +17,28 @@ class Router {
 
   static instantce: Router;
 
-  pixelInstantce: Pixel;
+  private pixelInstantce: Pixel;
 
-  eventBus: EventBus;
+  public defaultRoute: IDefaultRoute;
 
-  defaultRoute: IDefaultRoute;
+  public routes: IRoutes;
 
-  routes: IRoutes;
+  private history: History;
 
-  state: IRouterState;
-
-  urlListener: any;
-
-  constructor(pixelInstantce: Pixel) {
+  constructor(pixelInstantce?: Pixel) {
     if (Router.instantce) {
       return Router.instantce;
     }
 
-    this.pixelInstantce = pixelInstantce;
-    this.eventBus = new EventBus();
-    this.state = this.createState({ currentRoute: '' });
-
-    this.registerEvent();
+    if (pixelInstantce) {
+      this.pixelInstantce = pixelInstantce;
+      this.history = window.history;
+    }
 
     Router.instantce = this;
   }
 
-  registerEvent = () => {
-    this.eventBus.on(Router.EVENTS.INIT, this.initRouting);
-    this.eventBus.on(Router.EVENTS.UPDATE, this.changeLayout);
-  };
-
-  setRoutes(defaultRoute: IDefaultRoute, routes?: IRoutes) {
+  public setRoutes(defaultRoute: IDefaultRoute, routes?: IRoutes) {
     try {
       if (!defaultRoute) {
         throw Error(Router.ERRORS.NO_DEF_CONF);
@@ -68,52 +57,54 @@ class Router {
       }
 
       Object.keys(routes).forEach((key) => {
-        if (!routes[key] || !this.pixelInstantce.components[routes[key]]) {
+        if (!routes[key] || !this.pixelInstantce.components[routes[key].component]) {
           throw Error(Router.ERRORS.WRONG_COMP);
         }
       });
 
       this.defaultRoute = defaultRoute;
-      this.routes = { ...routes, [defaultRoute.path]: defaultRoute.component };
-      this.eventBus.emit(Router.EVENTS.INIT);
+      this.routes = { ...routes, [defaultRoute.path]: defaultRoute };
+      this.start();
     } catch (error) {
       console.error(error);
     }
   }
 
-  createState = (state: IRouterState) => {
-    const handler = {
-      set: (target: IRouterState, prop: keyof IRouterState, value: string) => {
-        target[prop] = value;
-        this.eventBus.emit(Router.EVENTS.UPDATE, value);
-        return true;
-      },
-    };
-
-    return new Proxy(state, handler);
-  };
-
-  initRouting = () => {
-    window.onhashchange = (event: HashChangeEvent) => {
+  public start = () => {
+    window.onpopstate = (event: any) => {
       const target = event.currentTarget as Window;
-      this.checkHash(target);
+      this.checkRoute(target);
     };
 
-    this.checkHash(window);
+    this.checkRoute(window);
   };
 
-  checkHash = (target: Window) => {
-    let currentRout = target.location.hash.slice(1);
+  public go(pathname: string) {
+    this.history.pushState({}, '', pathname);
+    this.checkRoute(window);
+  }
+
+  public back() {
+    this.history.back();
+  }
+
+  public forward() {
+    this.history.forward();
+  }
+
+  public checkRoute = (target: Window) => {
+    let currentRout = target.location.pathname.slice(1);
+
     if (!currentRout) {
       currentRout = this.defaultRoute.path;
     } else if (!this.routes[currentRout]) {
       currentRout = 'wrong';
     }
 
-    this.state.currentRoute = this.routes[currentRout];
+    this.changeLayout(this.routes[currentRout].component);
   };
 
-  changeLayout = (componentName: string) => {
+  public changeLayout = (componentName: string) => {
     this.pixelInstantce.render(`<${componentName}/>`);
   };
 }

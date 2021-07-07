@@ -11,3 +11,10 @@ export const FIELD_TYPE = {
     field: 'passwordRepeat',
   },
 };
+
+export enum AUTH {
+  signup = 'signup',
+  signin = 'signin',
+  user = 'user',
+  logout = 'logout',
+}

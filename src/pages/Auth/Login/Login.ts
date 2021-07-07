@@ -1,10 +1,13 @@
-import { FormValidator, generateUniqId, IComponentModel } from '../../utils';
-import { Input, Modal, Button, PagesContainer } from '../../components';
-import { CustomEventTarget } from '../../types';
-import { FIELD_TYPE } from './const';
-import './Auth.css';
-import { ROUTES } from '../../routes';
-import { root } from '../..';
+import { FormValidator, generateUniqId, IComponentModel } from '../../../utils';
+import { Input, Modal, Button, PagesContainer } from '../../../components';
+import { CustomEventTarget } from '../../../types';
+import { FIELD_TYPE } from '../const';
+import { ROUTES } from '../../../routes';
+import { root } from '../../..';
+import '../Auth.css';
+import { LoginController } from './login.controller';
+
+const loginController = new LoginController();
 
 function Login(): IComponentModel {
   return {
@@ -42,6 +45,9 @@ function Login(): IComponentModel {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
       },
+    },
+    componentDidMount() {
+      loginController.autoLogin();
     },
     components: {
       Modal,

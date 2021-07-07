@@ -1,1 +1,1 @@
-export { HTTPTransport } from './http';
+export { BASE_URLS, ENDPOINTS } from './const';

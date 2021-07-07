@@ -1,3 +1,4 @@
+import { COMPONENT_EVENTS } from '../../const';
 import { Attributes, Parser } from '../parser';
 import { NODE_TYPE, PixelDOM, VElement, VirtualNode } from '../pixelDom';
 import EventBus from '../utils/EventBus';
@@ -6,19 +7,22 @@ import { IComponentOptions, Methods, Props, State } from './Component.type';
 
 export default class Component {
   static EVENTS = {
-    CDM: 'component-did-mount',
+    CDM: COMPONENT_EVENTS.CDM,
     SDU: 'state-did-update',
     PDU: 'props-did-update',
     RENDER: 'render',
+    UNMOUNT: COMPONENT_EVENTS.CU,
   };
 
-  private eventBus: EventBus;
+  public eventBus: EventBus;
 
   private pixelDom: PixelDOM;
 
   private parserInstant: Parser;
 
   private methods: Methods;
+
+  private componentDidMountFunc: Function | null;
 
   private propHandlers?: Methods | undefined;
 
@@ -55,10 +59,12 @@ export default class Component {
     this.keyIndex = 0;
 
     this.props = this.createProxyProps(options.props || {});
-    this.usedProps = options.usedProps || [];
     this.state = this.createState(options.state || {});
+    this.usedProps = options.usedProps || [];
     this.attrs = options.attrs || {};
     this.methods = options.methods || {};
+
+    this.componentDidMountFunc = options.componentDidMount || null;
 
     this.propHandlers = options.propHandlers;
 
@@ -66,10 +72,11 @@ export default class Component {
   }
 
   registerEvents() {
-    this.eventBus.on(Component.EVENTS.CDM, this.componentDidMount);
-    this.eventBus.on(Component.EVENTS.SDU, this.stateDidUpdate);
-    this.eventBus.on(Component.EVENTS.PDU, this.render);
-    this.eventBus.on(Component.EVENTS.RENDER, this.render);
+    this.eventBus.on(Component.EVENTS.CDM, this.componentDidMount.bind(this));
+    this.eventBus.on(Component.EVENTS.SDU, this.stateDidUpdate.bind(this));
+    this.eventBus.on(Component.EVENTS.PDU, this.render.bind(this));
+    this.eventBus.on(Component.EVENTS.RENDER, this.render.bind(this));
+    this.eventBus.on(Component.EVENTS.UNMOUNT, this.unmount.bind(this));
   }
 
   setParentVNode = (parent: Component | VElement) => {
@@ -84,9 +91,11 @@ export default class Component {
     });
   }
 
-  componentDidMount = () => {
-    /* console.log('mount'); */
-  };
+  componentDidMount() {
+    if (this.componentDidMountFunc) {
+      this.componentDidMountFunc();
+    }
+  }
 
   stateDidUpdate = (current: Props, next: Props, propName: string) => {
     if (current !== next) {
@@ -189,4 +198,6 @@ export default class Component {
       }
     }
   }
+
+  private unmount() {}
 }

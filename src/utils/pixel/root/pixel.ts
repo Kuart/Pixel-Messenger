@@ -1,7 +1,9 @@
 import { Parser } from '../parser';
-import { VElement } from '../pixelDom';
+import { VElement, VirtualNode } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
 import { Component, IComponentModel, State } from '../component';
+import { COMPONENT_EVENTS } from '../../const';
+import { BFS } from '../utils';
 
 export interface IPixelInstance {
   el: string;
@@ -16,6 +18,11 @@ class Pixel {
     ROOT_NF: (selector: string) => `Root element ${selector} is not found`,
     ROOT_DOM_NF: (tagName: string) => `Root dom element ${tagName} has not created valid dom node`,
     VDOM_NF: 'Failed to build VDOM',
+  };
+
+  static CONST = {
+    CDM: COMPONENT_EVENTS.CDM,
+    CU: COMPONENT_EVENTS.CU,
   };
 
   static instance: Pixel;
@@ -106,14 +113,32 @@ class Pixel {
       } else {
         this.root.appendChild(VDOM.domEl);
       }
+
+      this.didMount();
     } catch (error) {
       console.error(error);
     }
   };
 
+  didMount() {
+    const callCDM = (node: VirtualNode) => {
+      if (node instanceof Component) {
+        node.eventBus.emit(Pixel.CONST.CDM);
+      }
+    };
+
+    BFS(this.VDOM, callCDM);
+  }
+
   /* !TODO */
-  unmount = (VDOM: Component | VElement) => {
-    console.error('Unmount:', VDOM);
+  unmount = (VDOM: VirtualNode) => {
+    const callUnmount = (node: VirtualNode) => {
+      if (node instanceof Component) {
+        node.eventBus.emit(Pixel.CONST.CU);
+      }
+    };
+
+    BFS(VDOM, callUnmount);
   };
 }
 

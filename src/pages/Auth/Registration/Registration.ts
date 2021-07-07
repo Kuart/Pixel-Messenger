@@ -1,10 +1,13 @@
-import { FormValidator, generateUniqId, IComponentModel } from '../../utils';
-import { Input, Modal, Button } from '../../components';
-import './Auth.css';
-import { root } from '../..';
-import { CustomEventTarget } from '../../types';
-import { FIELD_TYPE } from './const';
-import { ROUTES } from '../../routes';
+import { FormValidator, generateUniqId, IComponentModel } from '../../../utils';
+import { Input, Modal, Button } from '../../../components';
+import { root } from '../../..';
+import { FIELD_TYPE } from '../const';
+import '../Auth.css';
+import { CustomEventTarget } from '../../../types';
+import { ROUTES } from '../../../routes';
+import { RegisterController } from './registration.controller';
+
+const registerController = new RegisterController();
 
 function Registration(): IComponentModel {
   return {
@@ -40,11 +43,7 @@ function Registration(): IComponentModel {
       },
       submitForm(event: Event) {
         event.preventDefault();
-
-        const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
-        if (isValid) {
-          root.router.go(ROUTES.messanger);
-        }
+        registerController.register(this.state);
       },
       replaceToLogin() {
         root.router.go(ROUTES.login);

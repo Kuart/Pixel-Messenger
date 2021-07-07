@@ -33,7 +33,13 @@ function queryStringify(data: string | Record<string, object>) {
 }
 
 export class HTTPTransport {
-  get = (url: string, options: IRequestOptions = {}) => {
+  baseUrl: string;
+
+  constructor(base: string) {
+    this.baseUrl = base;
+  }
+
+  get = (url: string = '', options: IRequestOptions = {}) => {
     let currentUrl = url;
 
     if (options.data) {
@@ -43,22 +49,22 @@ export class HTTPTransport {
     return this.request(currentUrl, { ...options, method: METHODS.GET }, options.timeout);
   };
 
-  put(url: string, options: IRequestOptions = {}) {
+  put(url: string = '', options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
   }
 
-  post(url: string, options: IRequestOptions = {}) {
+  post(url: string = '', options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
   }
 
-  delete(url: string, options: IRequestOptions = {}) {
+  delete(url: string = '', options: IRequestOptions = {}) {
     return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
-  request = (url: string, options: IXMLHttpRequestOptions, timeout = 5000) => {
+  request = (url: string = '', options: IXMLHttpRequestOptions, timeout = 5000) => {
     const promise = new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(options.method, url);
+      xhr.open(options.method, this.baseUrl + url);
 
       if (options && options.headers) {
         Object.keys(options.headers).forEach((key) => {

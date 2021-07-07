@@ -174,7 +174,14 @@ export default class PixelParser {
   parseComponent(tag: string, parentComponent?: Component): Component | Component[] {
     /* eslint no-unused-vars: "off" */
     const [_, componentName] = tag.match(this.tagNameRegExp)!;
-    const { template, components, state, usedProps = [], methods } = this.instance.components[componentName]();
+    const {
+      template,
+      components,
+      state,
+      usedProps = [],
+      methods,
+      componentDidMount,
+    } = this.instance.components[componentName]();
 
     const [firstTag, ...tags] = template.match(this.tagRegExp);
 
@@ -209,6 +216,7 @@ export default class PixelParser {
       propHandlers,
       usedProps: [...usedPropsList, ...usedProps],
       parserInstant: this,
+      componentDidMount,
     });
 
     return this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component;

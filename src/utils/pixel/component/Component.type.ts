@@ -14,6 +14,7 @@ interface IComponentOptions {
   methods?: Methods;
   propHandlers?: Methods;
   usedProps?: string[];
+  componentDidMount?: Function;
 }
 
 interface IComponentModel {
@@ -21,6 +22,7 @@ interface IComponentModel {
   usedProps?: string[];
   state?: State;
   methods?: Record<string, Function>;
+  componentDidMount?: Function;
   components?: Record<string, Function>;
 }
 

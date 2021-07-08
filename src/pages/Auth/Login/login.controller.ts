@@ -1,13 +1,24 @@
+import { root } from '../../..';
 import { BASE_URLS } from '../../../api';
+import { ROUTES } from '../../../routes';
+import { FormValidator } from '../../../utils';
+import { AUTH_ERRORS, FIELD_TYPE } from '../const';
 import { LoginAPI } from './login.api';
 
 const loginApi = new LoginAPI(BASE_URLS.auth);
+const validatorConfig = { form: 'formFields', errors: 'errors' };
 
 export class LoginController {
-  login = async (data: Record<string, string>) => {
+  login = async (data: Record<string, any>) => {
     try {
-      const userID = await loginApi.login(data);
-      console.log(userID);
+      const isValid = FormValidator.validate(data, validatorConfig, FIELD_TYPE);
+
+      if (!isValid) {
+        throw Error(AUTH_ERRORS.LFNV);
+      }
+      const userID = await loginApi.login(data[validatorConfig.form]);
+
+      root.router.go(ROUTES.messanger);
     } catch (error) {
       console.error(error);
     }
@@ -16,7 +27,8 @@ export class LoginController {
   autoLogin = async () => {
     try {
       const userID = await loginApi.checkAuth();
-      console.log(userID);
+
+      root.router.go(ROUTES.messanger);
     } catch (error) {
       console.error(error);
     }

@@ -35,8 +35,11 @@ function queryStringify(data: string | Record<string, object>) {
 export class HTTPTransport {
   baseUrl: string;
 
-  constructor(base: string) {
+  baseHeaders: Record<string, string | boolean>;
+
+  constructor(base: string, baseHeaders: Record<string, string | boolean>) {
     this.baseUrl = base;
+    this.baseHeaders = baseHeaders;
   }
 
   get = (url: string = '', options: IRequestOptions = {}) => {
@@ -61,10 +64,13 @@ export class HTTPTransport {
     return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
   }
 
-  request = (url: string = '', options: IXMLHttpRequestOptions, timeout = 5000) => {
-    const promise = new Promise((resolve, reject) => {
+  request(url: string = '', options: IXMLHttpRequestOptions, timeout = 5000) {
+    return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(options.method, this.baseUrl + url);
+      xhr.withCredentials = true;
+
+      options.headers = { ...this.baseHeaders, ...options.headers };
 
       if (options && options.headers) {
         Object.keys(options.headers).forEach((key) => {
@@ -76,7 +82,13 @@ export class HTTPTransport {
         xhr.timeout = timeout;
       }
 
-      xhr.onload = () => resolve(xhr);
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(xhr.response);
+        } else {
+          reject(JSON.parse(xhr.response));
+        }
+      };
 
       xhr.onabort = reject;
       xhr.ontimeout = reject;
@@ -88,7 +100,5 @@ export class HTTPTransport {
         xhr.send(JSON.stringify(options.data ? options.data : {}));
       }
     });
-
-    return promise;
-  };
+  }
 }

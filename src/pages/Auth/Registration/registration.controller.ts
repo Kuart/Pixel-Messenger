@@ -1,40 +1,24 @@
 import { BASE_URLS } from '../../../api';
-import { FormValidator, IValidatorConfig } from '../../../utils';
-import { IRegistrationForm } from '../auth.type';
+import { FormValidator } from '../../../utils';
 import { RegistrationAPI } from './registration.api';
-import { FIELD_TYPE } from '../const';
-const api = new RegistrationAPI(BASE_URLS.auth);
+import { FIELD_TYPE, AUTH_ERRORS } from '../const';
+import { root } from '../../..';
+import { ROUTES } from '../../../routes';
 
+const api = new RegistrationAPI(BASE_URLS.auth);
 const validationConfig = { form: 'formFields', errors: 'errors' };
 
-/* const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
-if (isValid) {
-  root.router.go(ROUTES.messanger);
-} */
-
-/*  prettier-ignore */
-const validate = (stateFields:IValidatorConfig, fieldsConfig: Record<string, string | Record<string, string>>) => {
-  /* FormValidator.validate('data', stateFields, fieldsConfig); */
-  /* console.log(data) */
-  return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    console.log(target, propertyKey, descriptor);
-  };
-}
-
-const handleError = () => {
-  return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    console.log(target, propertyKey, descriptor);
-  };
-};
-
 export class RegisterController {
-  @validate(validationConfig, FIELD_TYPE)
-  @handleError()
-  register = async (data: IRegistrationForm) => {
+  register = async (data: Record<string, any>) => {
     try {
-      console.log(data);
-      /* const userID = await api.register(data);
-      console.log(userID); */
+      const isValid = FormValidator.validate(data, validationConfig, FIELD_TYPE);
+
+      if (!isValid) {
+        throw Error(AUTH_ERRORS.RFNV);
+      }
+
+      await api.register(data[validationConfig.form]);
+      root.router.go(ROUTES.login);
     } catch (error) {
       console.error(error);
     }

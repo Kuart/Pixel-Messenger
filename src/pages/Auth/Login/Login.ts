@@ -32,11 +32,7 @@ function Login(): IComponentModel {
       },
       submitForm(event: Event) {
         event.preventDefault();
-
-        const isValid = FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
-        if (isValid) {
-          root.router.go(ROUTES.messanger);
-        }
+        loginController.login(this.state);
       },
       replaceToRegister() {
         root.router.go(ROUTES.register);

@@ -15,9 +15,9 @@ function Registration(): IComponentModel {
       formFields: {
         email: '',
         login: '',
-        firstName: '',
-        secondName: '',
-        phoneNumber: '',
+        first_name: '',
+        second_name: '',
+        phone: '',
         password: '',
         passwordRepeat: '',
       },
@@ -25,9 +25,9 @@ function Registration(): IComponentModel {
       errors: {
         email: '',
         login: '',
-        firstName: '',
-        secondName: '',
-        phoneNumber: '',
+        first_name: '',
+        second_name: '',
+        phone: '',
         password: '',
         passwordRepeat: '',
       },
@@ -88,27 +88,27 @@ function Registration(): IComponentModel {
 
               <Input 
                 s:label="Имя" 
-                s:name="firstName" 
+                s:name="first_name" 
                 s:type="text" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.firstName"
-                b:errors="errors.firstName"/>
+                b:value="formFields.first_name"
+                b:errors="errors.first_name"/>
 
               <Input 
                 s:label="Фамилия" 
-                s:name="secondName" 
+                s:name="second_name" 
                 s:type="text" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.secondName"
-                b:errors="errors.secondName"/>
+                b:value="formFields.second_name"
+                b:errors="errors.second_name"/>
 
               <Input 
                 s:label="Телефон" 
-                s:name="phoneNumber" 
+                s:name="phone" 
                 s:type="tel" 
                 s:id="input${generateUniqId()}" 
-                b:value="formFields.phoneNumber"
-                b:errors="errors.phoneNumber"/>
+                b:value="formFields.phone"
+                b:errors="errors.phone"/>
 
               <Input 
                 s:label="Пароль" 

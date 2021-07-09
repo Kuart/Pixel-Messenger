@@ -3,7 +3,7 @@ import { Attributes, Parser } from '../parser';
 import { NODE_TYPE, PixelDOM, VElement, VirtualNode } from '../pixelDom';
 import EventBus from '../utils/EventBus';
 import { Queue } from '../utils/structures';
-import { IComponentOptions, Methods, Props, State } from './Component.type';
+import { EventHadnlerConfig, IComponentOptions, Listaner, Methods, Props, State } from './Component.type';
 
 export default class Component {
   static EVENTS = {
@@ -12,6 +12,7 @@ export default class Component {
     PDU: 'props-did-update',
     RENDER: 'render',
     UNMOUNT: COMPONENT_EVENTS.CU,
+    PSU: COMPONENT_EVENTS.PSU,
   };
 
   public eventBus: EventBus;
@@ -20,13 +21,17 @@ export default class Component {
 
   private parserInstant: Parser;
 
-  private methods: Methods;
+  public methods: Methods;
 
   private componentDidMountFunc: Function | null;
 
-  private propHandlers?: Methods | undefined;
+  public propHandlers?: Methods | undefined;
+
+  private eventHandlers: Map<string, Listaner> = new Map();
 
   template: string;
+
+  name: string;
 
   type: string = NODE_TYPE.COMPONENT_NODE;
 
@@ -44,6 +49,8 @@ export default class Component {
 
   usedProps: string[] = [];
 
+  pixelStore: Set<string> = new Set();
+
   attrs: Attributes;
 
   state: State;
@@ -51,7 +58,9 @@ export default class Component {
   constructor(options: IComponentOptions) {
     this.eventBus = new EventBus();
     this.pixelDom = new PixelDOM();
+
     this.parserInstant = options.parserInstant;
+    this.name = options.componentName;
 
     this.tagName = options.tagName;
     this.template = options.template;
@@ -60,6 +69,7 @@ export default class Component {
 
     this.props = this.createProxyProps(options.props || {});
     this.state = this.createState(options.state || {});
+
     this.usedProps = options.usedProps || [];
     this.attrs = options.attrs || {};
     this.methods = options.methods || {};
@@ -69,6 +79,7 @@ export default class Component {
     this.propHandlers = options.propHandlers;
 
     this.registerEvents();
+    this.conectToPixelStore(options);
   }
 
   registerEvents() {
@@ -77,24 +88,47 @@ export default class Component {
     this.eventBus.on(Component.EVENTS.PDU, this.render.bind(this));
     this.eventBus.on(Component.EVENTS.RENDER, this.render.bind(this));
     this.eventBus.on(Component.EVENTS.UNMOUNT, this.unmount.bind(this));
+    this.eventBus.on(Component.EVENTS.PSU, this.pixelStoreUpdate.bind(this));
+  }
+
+  conectToPixelStore(options: IComponentOptions) {
+    if (options.pixelStore) {
+      options.pixelStore.forEach((field: string) => {
+        this.pixelStore.add(field);
+        this.parserInstant.instance.store.subscribe(field, this);
+      });
+    }
   }
 
   setParentVNode = (parent: Component | VElement) => {
     this.parent = parent;
-    this.eventBus.emit(Component.EVENTS.CDM);
   };
 
-  addListener(options: Methods[], name: string) {
+  addListener(options: EventHadnlerConfig, name: string) {
     const self = this;
-    options.forEach((eventConfig) => {
-      eventConfig.target.addEventListener(eventConfig.event, self.methods[name].bind(self), true);
-    });
+    let listener = null;
+
+    const { target, event } = options;
+
+    if (target) {
+      if (self.eventHandlers.has(name)) {
+        this.removeEventListener(name);
+      }
+
+      listener = self.methods[name].bind(self);
+      target.addEventListener(options.event, listener, true);
+      self.eventHandlers.set(name, { target, type: event, listener });
+    }
   }
 
   componentDidMount() {
     if (this.componentDidMountFunc) {
       this.componentDidMountFunc();
     }
+  }
+
+  pixelStoreUpdate() {
+    this.render();
   }
 
   stateDidUpdate = (current: Props, next: Props, propName: string) => {
@@ -105,7 +139,8 @@ export default class Component {
 
   render = () => {
     this.children = [];
-    const updated = this.parserInstant.parseHTML(this.template, this);
+    this.unmount();
+    const updated = this.parserInstant.parseHTML(`<${this.name} />`, this);
     this.domEl = this.pixelDom.mountNode(this);
     this.parent.children[this.keyIndex] = updated;
     this.parent.domEl?.replaceChild(updated.domEl!, this.parent.domEl.childNodes[this.keyIndex]);
@@ -199,5 +234,20 @@ export default class Component {
     }
   }
 
-  private unmount() {}
+  private unmount() {
+    if (this.eventHandlers.size) {
+      this.eventHandlers.forEach((_, key) => {
+        this.removeEventListener(key);
+      });
+    }
+  }
+
+  private removeEventListener(name: string) {
+    if (this.eventHandlers.has(name)) {
+      const { target, type, listener } = this.eventHandlers.get(name)!;
+      this.pixelDom.clearUnmountHadnler(name);
+      (target as any).removeEventListener(type, listener);
+      this.eventHandlers.delete(name);
+    }
+  }
 }

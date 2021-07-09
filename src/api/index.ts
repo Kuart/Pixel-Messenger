@@ -1,1 +1,2 @@
-export { BASE_URLS, ENDPOINTS } from './const';
+export { BASE_URLS } from './const';
+export { CookieAuthAPI } from './cookie-auth.api';

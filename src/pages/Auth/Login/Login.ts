@@ -1,9 +1,8 @@
-import { FormValidator, generateUniqId, IComponentModel } from '../../../utils';
+import { FormValidator, generateUniqId, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button, PagesContainer } from '../../../components';
 import { CustomEventTarget } from '../../../types';
 import { FIELD_TYPE } from '../const';
 import { ROUTES } from '../../../routes';
-import { root } from '../../..';
 import '../Auth.css';
 import { LoginController } from './login.controller';
 
@@ -35,15 +34,12 @@ function Login(): IComponentModel {
         loginController.login(this.state);
       },
       replaceToRegister() {
-        root.router.go(ROUTES.register);
+        PixelRouter.go(ROUTES.register);
       },
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
       },
-    },
-    componentDidMount() {
-      loginController.autoLogin();
     },
     components: {
       Modal,

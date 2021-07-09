@@ -1,3 +1,7 @@
+import { CookieAuthController } from './controllers';
+
+const cookieAuthController = new CookieAuthController();
+
 const ROUTES = {
   login: 'login',
   register: 'register',
@@ -5,8 +9,13 @@ const ROUTES = {
   profile: 'profile',
 };
 
-const routesConfig = {
-  default: {
+const routerConfig = {
+  auth: {
+    check: cookieAuthController.checkAuth,
+    redirect: ROUTES.login,
+    permittedRoutes: [ROUTES.login, ROUTES.register],
+  },
+  defaultRoute: {
     path: ROUTES.login,
     component: 'Login',
     title: 'Вход',
@@ -35,4 +44,4 @@ const routesConfig = {
   },
 };
 
-export { ROUTES, routesConfig };
+export { ROUTES, routerConfig };

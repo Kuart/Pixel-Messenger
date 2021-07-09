@@ -1,11 +1,10 @@
-import { FormValidator, generateUniqId, IComponentModel } from '../../../utils';
+import { FormValidator, generateUniqId, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button } from '../../../components';
-import { root } from '../../..';
 import { FIELD_TYPE } from '../const';
-import '../Auth.css';
 import { CustomEventTarget } from '../../../types';
 import { ROUTES } from '../../../routes';
 import { RegisterController } from './registration.controller';
+import '../Auth.css';
 
 const registerController = new RegisterController();
 
@@ -46,7 +45,7 @@ function Registration(): IComponentModel {
         registerController.register(this.state);
       },
       replaceToLogin() {
-        root.router.go(ROUTES.login);
+        PixelRouter.go(ROUTES.login);
       },
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;

@@ -2,8 +2,10 @@ import { IComponentModel } from '../../../utils';
 import { SearchInput } from '../../../components';
 import { CustomEventTarget } from '../../../types';
 import { ListItem } from './ListItem';
-import { chats } from './const';
+import { ChatListController } from './chat-list.controller';
 import './ChatList.css';
+
+const chatListController = new ChatListController();
 
 /* eslint no-console: "off" */
 export function ChatList(): IComponentModel {
@@ -12,28 +14,29 @@ export function ChatList(): IComponentModel {
       SearchInput,
       ListItem,
     },
-    state: {
-      chats,
+    state: {},
+    pixelStore: ['chats', 'filteredChats'],
+    componentDidMount() {
+      chatListController.getChats();
     },
     methods: {
-      formFocusHandler(event: Event) {
-        console.log(event.target);
-      },
-      formBlurHandler(event: Event) {
-        console.log(event.target);
-      },
-      filterChartList(event: CustomEventTarget<HTMLInputElement>) {
-        const { name, value } = event.target;
-        console.log(`${name} ${value}`);
+      filterChatList(event: CustomEventTarget<HTMLInputElement>) {
+        const { value } = event.target;
+        chatListController.filterChats(value);
       },
     },
     template: /* html */ ` 
     <aside class="messanger__chat-list" >
-      <form class="search-form" e:blur="formFocusHandler" e:blur="formBlurHandler">
-        <SearchInput s:name="search" s:class="search-form__contol" e:input="filterChartList" s:placeholder="Поиск"/>
+      <form class="search-form">
+        <SearchInput 
+          s:name="search" 
+          s:class="search-form__contol" 
+          e:input="filterChatList" 
+          s:placeholder="Поиск" 
+          d:value="searchValue" />
       </form>
       <ul class="chat-list__list">
-        <ListItem loop:chats />
+        <ListItem loop:filteredChats />
       </ul>
     </aside>
     `,

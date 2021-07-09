@@ -2,6 +2,12 @@ interface IRouterState {
   history: History;
 }
 
+interface IBaseAuth {
+  check: () => Promise<any>;
+  redirect: string;
+  permittedRoutes: string[];
+}
+
 interface IDefaultRoute {
   path: string;
   component: string;
@@ -19,8 +25,9 @@ interface IRoutes {
 }
 
 interface IRoutesConfig {
-  default: IDefaultRoute;
+  auth: IBaseAuth;
   routes: IRoutes;
+  defaultRoute: IDefaultRoute;
 }
 
 export { IRouterState, IRoutesConfig, IDefaultRoute, IRoutes };

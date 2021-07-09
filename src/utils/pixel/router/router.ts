@@ -1,5 +1,5 @@
 import { Pixel } from '..';
-import { IDefaultRoute, IRoutes } from './router.state';
+import { IDefaultRoute, IRoutes, IRoutesConfig } from './router.state';
 
 class Router {
   static ERRORS: Record<string, string> = {
@@ -17,7 +17,7 @@ class Router {
 
   static instantce: Router;
 
-  private pixelInstantce: Pixel;
+  private pixelInstantce: typeof Pixel;
 
   public defaultRoute: IDefaultRoute;
 
@@ -25,7 +25,13 @@ class Router {
 
   private history: History;
 
-  constructor(pixelInstantce?: Pixel) {
+  private isAuth: boolean = true;
+
+  private permittedRoutes: string[];
+
+  private redirectPage: string;
+
+  constructor(pixelInstantce?: typeof Pixel) {
     if (Router.instantce) {
       return Router.instantce;
     }
@@ -38,7 +44,15 @@ class Router {
     Router.instantce = this;
   }
 
-  public setRoutes(defaultRoute: IDefaultRoute, routes?: IRoutes) {
+  public handleAuthChange(isAuth: boolean) {
+    if (!isAuth) {
+      this.checkRouteAuth();
+    }
+  }
+
+  public async setRoutes(routesConfig: IRoutesConfig) {
+    const { routes, defaultRoute, auth } = routesConfig;
+
     try {
       if (!defaultRoute) {
         throw Error(Router.ERRORS.NO_DEF_CONF);
@@ -61,6 +75,15 @@ class Router {
           throw Error(Router.ERRORS.WRONG_COMP);
         }
       });
+
+      if (auth) {
+        const { redirect, check, permittedRoutes } = auth;
+        this.redirectPage = redirect;
+        this.permittedRoutes = permittedRoutes;
+        await check();
+      } else {
+        this.isAuth = false;
+      }
 
       this.defaultRoute = defaultRoute;
       this.routes = { ...routes, [defaultRoute.path]: defaultRoute };
@@ -101,12 +124,26 @@ class Router {
       currentRout = 'wrong';
     }
 
-    this.changeLayout(this.routes[currentRout].component);
+    if (this.isAuth && !this.pixelInstantce.store.currentUser.isAuth) {
+      this.checkRouteAuth();
+    } else {
+      this.changeLayout(this.routes[currentRout].component);
+    }
   };
 
   public changeLayout = (componentName: string) => {
     this.pixelInstantce.render(`<${componentName}/>`);
   };
+
+  private checkRouteAuth() {
+    const currentRout = window.location.pathname.slice(1);
+    const isPermitted = this.permittedRoutes.some((route) => route === currentRout);
+    if (!isPermitted) {
+      this.go(this.redirectPage);
+    } else {
+      this.changeLayout(this.routes[currentRout].component);
+    }
+  }
 }
 
 export default Router;

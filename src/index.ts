@@ -1,12 +1,12 @@
 import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './pages';
 import { ProfileTempPage } from './modules';
-import { Pixel } from './utils/pixel';
-import { routesConfig } from './routes';
+import { routerConfig } from './routes';
+import { Pixel } from './utils';
 import './index.css';
 
-const root = new Pixel({
+Pixel.config({
   el: '#root',
-  routes: routesConfig,
+  routerConfig,
   components: {
     Login,
     Registration,
@@ -16,5 +16,3 @@ const root = new Pixel({
     ProfileTempPage,
   },
 });
-
-export { root };

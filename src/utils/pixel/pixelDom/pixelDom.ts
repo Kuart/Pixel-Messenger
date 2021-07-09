@@ -1,10 +1,10 @@
 import { Attributes } from '../parser';
-import { Component, Methods } from '../utils';
+import { Component, Methods, EventHadnlerConfig } from '../utils';
 import { NODE_TYPE } from './const';
 import { VElement, VTextNode } from './pixelDom.type';
 
 class PixelDOM {
-  eventCache: Record<string, Methods[]> = {};
+  eventCache: Map<string, EventHadnlerConfig> = new Map();
 
   /* prettier-ignore */
   createElement = (
@@ -71,22 +71,24 @@ class PixelDOM {
     if (node.propHandlers) {
       Object.keys(node.propHandlers).forEach((event: string) => {
         const { name } = node.propHandlers![event];
-        if (this.eventCache[name]) {
-          this.eventCache[name].push({ ...node.propHandlers![event], target: node.domEl! });
-        } else {
-          this.eventCache[name] = [{ ...node.propHandlers![event], target: node.domEl! }];
-        }
+        this.eventCache.set(name, { ...node.propHandlers![event], target: node.domEl! });
       });
     }
 
     if ((currentNode as Component).methods) {
       Object.keys((currentNode as Component).methods).forEach((handlerName: string) => {
-        if (this.eventCache[handlerName]) {
-          (currentNode as Component).addListener(this.eventCache[handlerName], handlerName);
+        if (this.eventCache.has(handlerName)) {
+          (currentNode as Component).addListener(this.eventCache.get(handlerName)!, handlerName);
         }
       });
     }
   };
+
+  clearUnmountHadnler(name: string) {
+    if (this.eventCache.has(name)) {
+      this.eventCache.delete(name);
+    }
+  }
 }
 
 export { PixelDOM, NODE_TYPE };

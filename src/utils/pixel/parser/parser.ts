@@ -17,9 +17,9 @@ export default class PixelParser {
 
   tagParser: TagParser;
 
-  instance: Pixel;
+  instance: typeof Pixel;
 
-  constructor(instance: Pixel) {
+  constructor(instance: typeof Pixel) {
     this.pixelDOM = new PixelDOM();
     this.tagParser = new TagParser(this);
     this.instance = instance;
@@ -181,6 +181,7 @@ export default class PixelParser {
       usedProps = [],
       methods,
       componentDidMount,
+      pixelStore,
     } = this.instance.components[componentName]();
 
     const [firstTag, ...tags] = template.match(this.tagRegExp);
@@ -198,25 +199,18 @@ export default class PixelParser {
     const start = firstTag.length;
     const end = template.trim().length - tags[tags.length - 1].length;
 
-    const {
-      tagName,
-      attrs,
-      props,
-      propHandlers,
-      usedPropsList = [],
-    } = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
+    const parsedData = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
 
     const component = new Component({
+      ...parsedData,
       template: `${template.trim().substring(start, end)}`,
-      tagName,
-      props,
-      attrs,
       state,
       methods,
-      propHandlers,
-      usedProps: [...usedPropsList, ...usedProps],
+      usedProps: [...(parsedData.usedPropsList || []), ...usedProps],
       parserInstant: this,
       componentDidMount,
+      pixelStore,
+      componentName,
     });
 
     return this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component;
@@ -233,18 +227,19 @@ export default class PixelParser {
     const start = firstTag.length;
     const end = template.trim().length - tags[tags.length - 1].length;
 
-    if (parentComponent && arrayName in parentComponent!.state) {
-      parentComponent.state[arrayName].forEach((element: Record<string, Props>) => {
-        const { tagName, attrs, props, propHandlers } = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
+    const renderData = parentComponent && this.findPropInParent(arrayName, parentComponent);
+
+    if (renderData) {
+      renderData.forEach((element: Record<string, Props>) => {
+        const parsedData = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
         const component = new Component({
-          tagName,
-          props: { ...props, ...element },
-          attrs,
+          ...parsedData,
+          props: { ...parsedData.props, ...element },
           state,
           methods,
-          propHandlers,
           template,
           parserInstant: this,
+          componentName,
         });
         components.push(this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component);
       });
@@ -254,6 +249,10 @@ export default class PixelParser {
   };
 
   findPropInParent = (prop: string, component: Component) => {
+    if (component.pixelStore.has(prop)) {
+      return this.instance.store.store[prop];
+    }
+
     if (prop in component.props) {
       return component.props[prop];
     }

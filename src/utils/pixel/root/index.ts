@@ -1,3 +1,4 @@
 import Pixel from './pixel';
 
-export default Pixel;
+export { PixelRouter, PixelStore } from './pixel';
+export { Pixel };

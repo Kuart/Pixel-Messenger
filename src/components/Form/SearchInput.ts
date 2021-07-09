@@ -3,7 +3,7 @@ import './Input.css';
 
 export function SearchInput(): IComponentModel {
   return {
-    usedProps: ['name', 'placeholder', 'class'],
+    usedProps: ['name', 'placeholder', 'class', 'value'],
     template: /* html */ `
     <div class="input">
       <input 
@@ -11,7 +11,9 @@ export function SearchInput(): IComponentModel {
         p:name="name" 
         type="search" 
         p:placeholder="placeholder" 
-        e:input="inputHandler"/>
+        e:input="inputHandler"
+        p:value="value"
+        />
     </div>`,
   };
 }

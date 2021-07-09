@@ -1,6 +1,6 @@
 import { Parser } from '.';
 import { PREFIXES } from './const';
-import { Component, Methods, Props } from '../utils';
+import { Component, EventHadnlerConfig, Props } from '../utils';
 import { Attributes, IParsedTag } from './parser.type';
 
 export class TagParser {
@@ -21,7 +21,7 @@ export class TagParser {
 
     let attr: RegExpExecArray | null = null;
     const attrs: Attributes = {};
-    const propHandlers: Methods = {};
+    const propHandlers: Record<string, EventHadnlerConfig> = {};
     const usedPropsList: string[] = [];
 
     const props = reqProps.reduce((acc: Props, item: string) => {
@@ -101,7 +101,7 @@ export class TagParser {
     }
   }
 
-  handleEvent = (name: string, currentValue: string, propHandlers: Methods) => {
+  handleEvent = (name: string, currentValue: string, propHandlers: Record<string, EventHadnlerConfig>) => {
     propHandlers[currentValue] = { event: name, name: currentValue };
   };
 

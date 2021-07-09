@@ -6,7 +6,7 @@ export class LoginAPI extends BaseAPI {
     return this.http.post(AUTH_SERVICE.signin, { data });
   }
 
-  checkAuth() {
+  getUserInfo() {
     return this.http.get(AUTH_SERVICE.user);
   }
 }

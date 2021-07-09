@@ -42,26 +42,26 @@ export class HTTPTransport {
     this.baseHeaders = baseHeaders;
   }
 
-  get = (url: string = '', options: IRequestOptions = {}) => {
+  get = <T>(url: string = '', options: IRequestOptions = {}): Promise<T> => {
     let currentUrl = url;
 
     if (options.data) {
       currentUrl = url + queryStringify(options.data);
     }
 
-    return this.request(currentUrl, { ...options, method: METHODS.GET }, options.timeout);
+    return this.request(currentUrl, { ...options, method: METHODS.GET }, options.timeout) as Promise<T>;
   };
 
-  put(url: string = '', options: IRequestOptions = {}) {
-    return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
+  put<T>(url: string = '', options: IRequestOptions = {}): Promise<T> {
+    return this.request(url, { ...options, method: METHODS.PUT }, options.timeout) as Promise<T>;
   }
 
-  post(url: string = '', options: IRequestOptions = {}) {
-    return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
+  post<T>(url: string = '', options: IRequestOptions = {}): Promise<T> {
+    return this.request(url, { ...options, method: METHODS.POST }, options.timeout) as Promise<T>;
   }
 
-  delete(url: string = '', options: IRequestOptions = {}) {
-    return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
+  delete<T>(url: string = '', options: IRequestOptions = {}): Promise<T> {
+    return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout) as Promise<T>;
   }
 
   request(url: string = '', options: IXMLHttpRequestOptions, timeout = 5000) {
@@ -84,7 +84,7 @@ export class HTTPTransport {
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(xhr.response);
+          resolve(JSON.parse(xhr.response));
         } else {
           reject(JSON.parse(xhr.response));
         }

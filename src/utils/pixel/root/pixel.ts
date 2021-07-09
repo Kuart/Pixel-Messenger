@@ -4,11 +4,12 @@ import { IRoutesConfig, Router } from '../router';
 import { Component, IComponentModel, State } from '../component';
 import { COMPONENT_EVENTS } from '../../const';
 import { BFS } from '../utils';
+import { Store } from '../store';
 
 export interface IPixelInstance {
   el: string;
   template?: string;
-  routes?: IRoutesConfig;
+  routerConfig?: IRoutesConfig;
   state?: State;
   components?: Record<string, Function>;
 }
@@ -18,6 +19,8 @@ class Pixel {
     ROOT_NF: (selector: string) => `Root element ${selector} is not found`,
     ROOT_DOM_NF: (tagName: string) => `Root dom element ${tagName} has not created valid dom node`,
     VDOM_NF: 'Failed to build VDOM',
+    PIXEL_ISALRE: 'Failed to build VDOM',
+    INITIATED: 'Pixel already in use',
   };
 
   static CONST = {
@@ -25,33 +28,45 @@ class Pixel {
     CU: COMPONENT_EVENTS.CU,
   };
 
-  static instance: Pixel;
+  protected static instance: Pixel;
+
+  public router: Router;
+
+  public store: Store;
 
   private root: Element;
 
   private parser: Parser;
 
-  public router: Router;
-
   private VDOM: Component | VElement;
 
   public components: Record<string, Function> = {};
 
+  protected isInitiated: boolean = false;
+
   public initiatedComponents: Record<string, IComponentModel> = {};
 
-  constructor(config: IPixelInstance) {
+  constructor() {
     if (Pixel.instance) {
       return Pixel.instance;
     }
 
     this.parser = new Parser(this);
     this.router = new Router(this);
+    this.store = new Store(this);
+
+    Pixel.instance = this;
+  }
+
+  config(config: IPixelInstance) {
+    if (this.isInitiated) {
+      throw new Error(Pixel.ERROR.INITIATED);
+    }
 
     this.setRootEl(config.el);
     this.registerComponents(config.components);
-    this.init(config.routes, config.template);
-
-    Pixel.instance = this;
+    this.init(config.routerConfig, config.template);
+    this.isInitiated = true;
   }
 
   registerComponents(components: { [key: string]: Function } | undefined): void {
@@ -77,9 +92,9 @@ class Pixel {
     }
   };
 
-  init = (routes: IRoutesConfig | null = null, template: string | null = null) => {
-    if (routes) {
-      this.router.setRoutes(routes.default, routes.routes);
+  init = (routerConfig: IRoutesConfig | null = null, template: string | null = null) => {
+    if (routerConfig) {
+      this.router.setRoutes(routerConfig);
     } else if (template) {
       this.render(template);
     }
@@ -142,4 +157,9 @@ class Pixel {
   };
 }
 
-export default Pixel;
+const PixelRoot = new Pixel();
+
+export default PixelRoot;
+
+export const PixelRouter = PixelRoot.router;
+export const PixelStore = PixelRoot.store;

@@ -1,44 +1,19 @@
-import { Attributes } from '../parser';
-import { Component, Methods, EventHadnlerConfig } from '../utils';
 import { NODE_TYPE } from './const';
-import { VElement, VTextNode } from './pixelDom.type';
+import NodeFabric from './NodeFabric';
+import { EventHadnlerConfig, ParentNodeType, VComponentNode, VTextNode } from './Nodes';
 
 class PixelDOM {
-  eventCache: Map<string, EventHadnlerConfig> = new Map();
+  nodeFabric: NodeFabric;
 
-  /* prettier-ignore */
-  createElement = (
-    type: string = NODE_TYPE.ELEMENT_NODE,
-    tagName: string,
-    attrs: Attributes,
-    handlers?: Methods,
-  ): VElement => {
-    const node: VElement = {
-      type,
-      tagName,
-      attrs: {
-        ...attrs,
-      },
-      parent: null,
-      children: [],
-    };
+  eventCache: Map<string, EventHadnlerConfig[]> = new Map();
 
-    if (handlers) {
-      node.propHandlers = handlers;
-    }
-
-    return node;
-  };
-
-  createTextNode = (text: string): VTextNode => ({
-    type: NODE_TYPE.TEXT_NODE,
-    text,
-    parent: null,
-  });
+  constructor() {
+    this.nodeFabric = new NodeFabric();
+  }
 
   mountTextNode = (node: VTextNode): Text => document.createTextNode(node.text);
 
-  mountNode = (node: VElement | Component): HTMLElement => {
+  mountNode = (node: ParentNodeType): HTMLElement => {
     const domNode = window.document.createElement(node.tagName);
 
     /* attribute setting */
@@ -47,10 +22,11 @@ class PixelDOM {
     });
 
     /* link between parent and children */
-    node.children.forEach((child: VElement | Component, index: number) => {
-      if (child.type !== NODE_TYPE.TEXT_NODE) {
+    node.children.forEach((child: ParentNodeType, index: number) => {
+      if (!(child instanceof VTextNode)) {
         this.parentConnection(node, child, index);
       }
+
       if (child.domEl) {
         domNode.appendChild(child.domEl);
       }
@@ -59,34 +35,45 @@ class PixelDOM {
   };
 
   /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["node"] }] */
-  parentConnection = (currentNode: Component | VElement, node: Component | VElement, index: number) => {
+  parentConnection = (currentNode: ParentNodeType, node: ParentNodeType, index: number) => {
     node.keyIndex = index;
 
-    if (node.type === NODE_TYPE.COMPONENT_NODE) {
-      (node as Component).setParentVNode(currentNode);
-    } else {
-      node.parent = currentNode;
-    }
+    node.setParentNode(currentNode);
 
     if (node.propHandlers) {
       Object.keys(node.propHandlers).forEach((event: string) => {
         const { name } = node.propHandlers![event];
-        this.eventCache.set(name, { ...node.propHandlers![event], target: node.domEl! });
+        if (this.eventCache.has(name)) {
+          this.clearUnmountHadnler(name, node.domEl!);
+          this.eventCache.get(name)!.push({ ...node.propHandlers![event], target: node.domEl! });
+        } else {
+          this.eventCache.set(name, [{ ...node.propHandlers![event], target: node.domEl! }]);
+        }
       });
     }
 
-    if ((currentNode as Component).methods) {
-      Object.keys((currentNode as Component).methods).forEach((handlerName: string) => {
+    if (currentNode instanceof VComponentNode && currentNode.methods) {
+      Object.keys(currentNode.methods).forEach((handlerName: string) => {
         if (this.eventCache.has(handlerName)) {
-          (currentNode as Component).addListener(this.eventCache.get(handlerName)!, handlerName);
+          this.eventCache.get(handlerName)!.forEach((handler) => {
+            currentNode.addListener(handler, handlerName);
+          });
         }
       });
     }
   };
 
-  clearUnmountHadnler(name: string) {
+  clearUnmountHadnler(name: string, target: HTMLElement) {
+    let local = null;
     if (this.eventCache.has(name)) {
-      this.eventCache.delete(name);
+      this.eventCache.get(name)!.forEach((handler, index) => {
+        if (handler.target === target) {
+          local = this.eventCache.get(name)!;
+          local.splice(index, 1);
+
+          this.eventCache.set(name, local);
+        }
+      });
     }
   }
 }

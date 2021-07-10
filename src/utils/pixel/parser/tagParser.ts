@@ -1,7 +1,7 @@
 import { Parser } from '.';
 import { PREFIXES } from './const';
-import { Component, EventHadnlerConfig, Props } from '../utils';
 import { Attributes, IParsedTag } from './parser.type';
+import { VComponentNode, EventHadnlerConfig, Props } from '../pixelDom';
 
 export class TagParser {
   parserInstant: Parser;
@@ -14,7 +14,13 @@ export class TagParser {
     this.parserInstant = parser;
   }
 
-  parse = (tag: string, reqProps: string[] = [], parentComponent?: Component, componentTag?: string): IParsedTag => {
+  /* prettier-ignore */
+  parse = (
+    tag: string,
+    reqProps: string[] = [],
+    parentComponent?: VComponentNode,
+    componentTag?: string,
+  ): IParsedTag => {
     const tagName = tag.split(' ')[0].trim().substr(1).split('>')[0];
     const currentTag = `${tag} ${componentTag ?? ''}`;
     const reg = new RegExp(this.attrRegExp);
@@ -22,8 +28,9 @@ export class TagParser {
     let attr: RegExpExecArray | null = null;
     const attrs: Attributes = {};
     const propHandlers: Record<string, EventHadnlerConfig> = {};
-    const usedPropsList: string[] = [];
+    const usedPropsList: Set<string> = new Set(reqProps);
 
+    /* eslint-disable no-param-reassign */
     const props = reqProps.reduce((acc: Props, item: string) => {
       acc[item] = null;
       return acc;
@@ -48,7 +55,7 @@ export class TagParser {
         } else if (type === PREFIXES.PROPS) {
           this.setProps(cleanName, currentValue, props, attrs, parentComponent);
         } else if (type === PREFIXES.BIND) {
-          usedPropsList.push(currentValue);
+          usedPropsList.add(currentValue);
           this.bindProps(cleanName, currentValue, props, parentComponent);
         } else if (type === PREFIXES.HANLDER) {
           this.handleEvent(cleanName, currentValue, propHandlers);
@@ -64,7 +71,7 @@ export class TagParser {
   };
 
   /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["props", "attrs"] }] */
-  setProps(name: string, currentValue: string, props: Props, attrs: Attributes, parentComponent?: Component) {
+  setProps(name: string, currentValue: string, props: Props, attrs: Attributes, parentComponent?: VComponentNode) {
     if (parentComponent && currentValue) {
       let value = currentValue;
       const reg = new RegExp(this.replaceRegExp);
@@ -89,13 +96,14 @@ export class TagParser {
   }
 
   /* eslint-disable no-param-reassign */
-  bindProps(name: string, currentValue: string, props: Props, parentComponent?: Component) {
+  bindProps(name: string, currentValue: string, props: Props, parentComponent?: VComponentNode) {
     if (parentComponent) {
       const [propName] = currentValue.split('.');
 
       if (propName in parentComponent.props) {
         props[name] = this.parseObjectPathTag(parentComponent.props, currentValue);
       } else if (propName in parentComponent.state) {
+        console.log(currentValue);
         props[name] = this.parseObjectPathTag(parentComponent.state as Props, currentValue);
       }
     }
@@ -105,7 +113,7 @@ export class TagParser {
     propHandlers[currentValue] = { event: name, name: currentValue };
   };
 
-  conditionHandler = (name: string, currentValue: string, attrs: Attributes, parentComponent?: Component) => {
+  conditionHandler = (name: string, currentValue: string, attrs: Attributes, parentComponent?: VComponentNode) => {
     if (parentComponent) {
       const isFalseType = name[0] === '!';
       let parentProp = false;

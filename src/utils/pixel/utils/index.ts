@@ -1,3 +1,6 @@
+import EventBus from './EventBus';
+
+export { EventBus };
 export { IStackNode, Stack, Queue, IQueueNode } from './structures';
-export { BFS } from './bfs';
-export { Component, IComponentOptions, Methods, Props, IComponentModel, EventHadnlerConfig } from '../component';
+export { BFS, bfsFirstParents } from './bfs';
+export { createProxyObject } from './proxy';

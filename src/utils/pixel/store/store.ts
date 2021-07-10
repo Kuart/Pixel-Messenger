@@ -1,12 +1,7 @@
 import { COMPONENT_EVENTS } from '../../const';
-import { Component } from '../component';
+import { ParentNodeType } from '../pixelDom';
 import { Pixel } from '../root';
-import { Router } from '../router';
-
-interface ICurrentUserStore {
-  isAuth: boolean;
-  [key: string]: any;
-}
+import { ICurrentUserStore } from './store.type';
 
 export class Store {
   pixelInstantce: typeof Pixel;
@@ -17,7 +12,7 @@ export class Store {
 
   store: Record<string, any>;
 
-  listeners: Record<string, Component[]> = {};
+  listeners: Record<string, ParentNodeType[]> = {};
 
   constructor(pixelInstantce: typeof Pixel) {
     this.pixelInstantce = pixelInstantce;
@@ -49,7 +44,7 @@ export class Store {
       set: (target: ICurrentUserStore, prop: string, value: unknown) => {
         target[prop] = value;
         if (prop === 'isAuth') {
-          self.emitAuthListenters(value);
+          self.emitAuthListenters(value as boolean);
         }
         return true;
       },
@@ -59,7 +54,7 @@ export class Store {
     return new Proxy({ isAuth: false }, validator);
   }
 
-  subscribe(field: string, listener: Component) {
+  subscribe(field: string, listener: ParentNodeType) {
     if (!this.listeners[field]) {
       this.listeners[field] = [];
       this.store[field] = null;
@@ -68,24 +63,28 @@ export class Store {
     this.listeners[field].push(listener);
   }
 
-  unsubscribe = (event: string, component: Component) => {
+  unsubscribe = (event: string, listener: ParentNodeType) => {
     if (!this.listeners[event]) {
       throw new Error(`Event ${event} is undefined `);
     }
 
-    this.listeners[event] = this.listeners[event].filter((listener) => listener !== component);
+    this.listeners[event] = this.listeners[event].filter((item) => item !== listener);
   };
 
   dispatch(field: string, value: any) {
-    if (field in this.store) {
-      this.store[field] = value;
-    }
+    this.store[field] = value;
+  }
+
+  setUserData(data: ICurrentUserStore) {
+    Object.keys(data).forEach((key) => {
+      this.currentUser[key] = data[key];
+    });
   }
 
   protected emit = (field: string) => {
     if (this.listeners[field]) {
-      this.listeners[field].forEach((component) => {
-        component.eventBus.emit(COMPONENT_EVENTS.PSU, this.store[field]);
+      this.listeners[field].forEach((listener) => {
+        listener.eventBus.emit(COMPONENT_EVENTS.PSU, [field, this.store[field]]);
       });
     }
   };

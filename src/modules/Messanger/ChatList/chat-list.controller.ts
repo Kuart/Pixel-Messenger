@@ -39,4 +39,11 @@ export class ChatListController {
       PixelStore.store.chats.filter((chat: IChat) => chat.title.indexOf(filter) !== -1)
     );
   };
+
+  selectChat = () => {
+    PixelStore.dispatch(
+      'filteredChats',
+      PixelStore.store.chats.filter((chat: IChat) => chat.title.indexOf(filter) !== -1)
+    );
+  };
 }

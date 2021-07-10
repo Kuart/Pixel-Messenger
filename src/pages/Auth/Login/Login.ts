@@ -3,8 +3,8 @@ import { Input, Modal, Button, PagesContainer } from '../../../components';
 import { CustomEventTarget } from '../../../types';
 import { FIELD_TYPE } from '../const';
 import { ROUTES } from '../../../routes';
-import '../Auth.css';
 import { LoginController } from './login.controller';
+import '../Auth.css';
 
 const loginController = new LoginController();
 
@@ -39,6 +39,7 @@ function Login(): IComponentModel {
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
+        console.log(this.state.formFields);
       },
     },
     components: {
@@ -67,7 +68,7 @@ function Login(): IComponentModel {
                 s:type="${FIELD_TYPE.login}" 
                 s:id="input${generateUniqId()}" 
                 b:errors="errors.login"
-                b:value="formFields.login"/>
+                b:value="formFields.login" />
 
               <Input 
                 s:label="Пароль" 

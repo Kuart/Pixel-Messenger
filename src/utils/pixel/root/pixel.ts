@@ -1,7 +1,6 @@
 import { Parser } from '../parser';
-import { VElement, VirtualNode } from '../pixelDom';
+import { ParentNodeType, VComponentNode, VirtualNode, State, IComponentModel } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
-import { Component, IComponentModel, State } from '../component';
 import { COMPONENT_EVENTS } from '../../const';
 import { BFS } from '../utils';
 import { Store } from '../store';
@@ -38,7 +37,7 @@ class Pixel {
 
   private parser: Parser;
 
-  private VDOM: Component | VElement;
+  private VDOM: ParentNodeType;
 
   public components: Record<string, Function> = {};
 
@@ -118,7 +117,7 @@ class Pixel {
     }
   };
 
-  mount = (VDOM: Component | VElement) => {
+  mount = (VDOM: ParentNodeType) => {
     try {
       if (!VDOM.domEl) {
         throw Error(Pixel.ERROR.ROOT_DOM_NF(VDOM.tagName));
@@ -137,7 +136,7 @@ class Pixel {
 
   didMount() {
     const callCDM = (node: VirtualNode) => {
-      if (node instanceof Component) {
+      if (node instanceof VComponentNode) {
         node.eventBus.emit(Pixel.CONST.CDM);
       }
     };
@@ -145,11 +144,11 @@ class Pixel {
     BFS(this.VDOM, callCDM);
   }
 
-  /* !TODO */
   unmount = (VDOM: VirtualNode) => {
+    const isRootUnmount = true;
     const callUnmount = (node: VirtualNode) => {
-      if (node instanceof Component) {
-        node.eventBus.emit(Pixel.CONST.CU);
+      if (node instanceof VComponentNode) {
+        node.eventBus.emit(Pixel.CONST.CU, isRootUnmount);
       }
     };
 

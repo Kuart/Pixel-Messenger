@@ -1,6 +1,6 @@
 import { Pixel } from '..';
-import { NODE_TYPE, PixelDOM, VElement } from '../pixelDom';
-import { Stack, Component, Props } from '../utils';
+import { PixelDOM, ParentNodeType, VComponentNode, Props } from '../pixelDom';
+import { Stack } from '../utils';
 import { EMOJI, PREFIXES } from './const';
 import { TagParser } from './tagParser';
 
@@ -25,12 +25,14 @@ export default class PixelParser {
     this.instance = instance;
   }
 
-  parseHTML(html: string, parentComponent?: Component) {
-    const stack = new Stack<VElement | Component>();
+  parseHTML(html: string, parentComponent?: VComponentNode) {
+    const stack = new Stack<ParentNodeType>();
     const reg = new RegExp(this.tagRegExp);
+
     if (parentComponent) {
       stack.push(parentComponent);
     }
+
     let el = null;
     do {
       el = reg.exec(html);
@@ -47,25 +49,26 @@ export default class PixelParser {
           const isArray: boolean = Array.isArray(component);
 
           if (isArray) {
-            (component as Component[]).forEach((element: Component) => {
+            (component as VComponentNode[]).forEach((element) => {
               element.domEl = this.pixelDOM.mountNode(element);
             });
           } else {
-            (component as Component).domEl = this.pixelDOM.mountNode(component as Component);
+            (component as VComponentNode).domEl = this.pixelDOM.mountNode(component as VComponentNode);
           }
 
           if (parentTag) {
             if (isArray) {
-              parentTag.children.push(...(component as Component[]));
+              parentTag.children.push(...(component as VComponentNode[]));
             } else {
-              parentTag.children.push(component as Component);
+              parentTag.children.push(component as VComponentNode);
             }
           } else {
-            stack.push(component as Component);
+            stack.push(component as VComponentNode);
           }
         } else if (isXHTML) {
           const { propHandlers, tagName, attrs } = this.tagParser.parse(tag, [], parentComponent);
-          const element = this.pixelDOM.createElement(NODE_TYPE.ELEMENT_NODE, tagName, attrs, propHandlers);
+
+          const element = this.pixelDOM.nodeFabric.createNode({ tagName, attrs, handlers: propHandlers });
           element.domEl = this.pixelDOM.mountNode(element);
 
           const parentTag = stack.peek();
@@ -91,7 +94,8 @@ export default class PixelParser {
             const nextChar = html[start];
 
             const { propHandlers, tagName, attrs } = this.tagParser.parse(tag, [], parentComponent);
-            const element = this.pixelDOM.createElement(NODE_TYPE.ELEMENT_NODE, tagName, attrs, propHandlers);
+
+            const element = this.pixelDOM.nodeFabric.createNode({ tagName, attrs, handlers: propHandlers });
 
             /* text node */
             if (nextChar && nextChar !== '<') {
@@ -112,7 +116,7 @@ export default class PixelParser {
     return stack.pop();
   }
 
-  parseText(text: string, parentComponent: Component, parentNode: VElement | Component) {
+  parseText(text: string, parentComponent: VComponentNode, parentNode: ParentNodeType) {
     if (text.length) {
       const emoji = new RegExp(/{{([^{}]*)}}/g);
       const reg = new RegExp(this.replaceRegExp);
@@ -154,26 +158,28 @@ export default class PixelParser {
     }
   }
 
-  handleTextNode(replacedText: string, parentNode: VElement | Component, usedProp?: string) {
-    const textNode = this.pixelDOM.createTextNode(replacedText);
-    textNode.usedProps = [usedProp!];
+  handleTextNode(text: string, parentNode: ParentNodeType, usedProp?: string) {
+    const textNode = this.pixelDOM.nodeFabric.createText({ text });
+    textNode.usedProps.add(usedProp!);
     textNode.parent = parentNode;
     textNode.domEl = this.pixelDOM.mountTextNode(textNode) as Text;
     parentNode.children.push(textNode);
   }
 
-  handleEmoji(emojiName: string, parentNode: VElement | Component, parentComponent: Component) {
+  handleEmoji(emojiName: string, parentNode: ParentNodeType, parentComponent: VComponentNode) {
     const { propHandlers, tagName, attrs } = this.tagParser.parse(EMOJI[emojiName], [], parentComponent);
 
-    const emojiNode = this.pixelDOM.createElement(NODE_TYPE.ELEMENT_NODE, tagName, attrs, propHandlers);
+    const emojiNode = this.pixelDOM.nodeFabric.createNode({ tagName, attrs, handlers: propHandlers });
+
     emojiNode.parent = parentNode;
     emojiNode.domEl = this.pixelDOM.mountNode(emojiNode);
     parentNode.children.push(emojiNode);
   }
 
-  parseComponent(tag: string, parentComponent?: Component): Component | Component[] {
+  parseComponent(tag: string, parentComponent?: VComponentNode): VComponentNode | VComponentNode[] {
     /* eslint no-unused-vars: "off" */
     const [_, componentName] = tag.match(this.tagNameRegExp)!;
+
     const {
       template,
       components,
@@ -201,19 +207,19 @@ export default class PixelParser {
 
     const parsedData = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
 
-    const component = new Component({
+    const component = this.pixelDOM.nodeFabric.createComponent({
       ...parsedData,
       template: `${template.trim().substring(start, end)}`,
       state,
       methods,
-      usedProps: [...(parsedData.usedPropsList || []), ...usedProps],
+      usedProps: parsedData.usedPropsList,
       parserInstant: this,
       componentDidMount,
       pixelStore,
       componentName,
     });
 
-    return this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component;
+    return this.parseHTML(`${template.trim().substring(start, end)}`, component);
   }
 
   loopHandler = (config: any) => {
@@ -221,7 +227,7 @@ export default class PixelParser {
     const { template, state, usedProps, methods } = this.instance.components[componentName]();
     const [firstTag, ...tags] = template.match(this.tagRegExp);
 
-    const components: Component[] = [];
+    const components: VComponentNode[] = [];
     const arrayName = tag.substring(isLoop + PREFIXES.LOOP.length).split(' ')[0];
 
     const start = firstTag.length;
@@ -232,7 +238,7 @@ export default class PixelParser {
     if (renderData) {
       renderData.forEach((element: Record<string, Props>) => {
         const parsedData = this.tagParser.parse(firstTag, usedProps, parentComponent, tag);
-        const component = new Component({
+        const component = this.pixelDOM.nodeFabric.createComponent({
           ...parsedData,
           props: { ...parsedData.props, ...element },
           state,
@@ -240,15 +246,16 @@ export default class PixelParser {
           template,
           parserInstant: this,
           componentName,
+          usedProps: parsedData.usedPropsList,
         });
-        components.push(this.parseHTML(`${template.trim().substring(start, end)}`, component) as Component);
+        components.push(this.parseHTML(`${template.trim().substring(start, end)}`, component) as VComponentNode);
       });
     }
 
     return components;
   };
 
-  findPropInParent = (prop: string, component: Component) => {
+  findPropInParent = (prop: string, component: VComponentNode) => {
     if (component.pixelStore.has(prop)) {
       return this.instance.store.store[prop];
     }

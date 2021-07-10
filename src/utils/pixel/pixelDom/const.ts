@@ -1,7 +1,7 @@
-const NODE_TYPE = {
-  TEXT_NODE: 'text',
-  ELEMENT_NODE: 'element',
-  COMPONENT_NODE: 'component',
-};
+enum NODE_TYPE {
+  TEXT_NODE = 'NODE_TYPE',
+  COMMON_NODE = 'COMMON_NODE',
+  COMPONENT_NODE = 'COMPONENT_NODE',
+}
 
 export { NODE_TYPE };

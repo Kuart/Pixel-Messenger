@@ -13,6 +13,7 @@ const routerConfig = {
   auth: {
     check: cookieAuthController.checkAuth,
     redirect: ROUTES.login,
+    authRedirect: ROUTES.messanger,
     permittedRoutes: [ROUTES.login, ROUTES.register],
   },
   defaultRoute: {

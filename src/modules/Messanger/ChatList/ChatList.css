@@ -88,3 +88,15 @@
   margin-bottom: 4px;
   font-size: 11px;
 }
+
+.chat-list__list_blank {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  color: var(--accent);
+  margin-top: 10px;
+}
+
+.chat-list__list_blank i {
+  text-shadow: 0 0 2px #000;
+}

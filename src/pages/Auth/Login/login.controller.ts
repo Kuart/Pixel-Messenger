@@ -1,10 +1,11 @@
 import { BASE_URLS } from '../../../api';
-import { ROUTES } from '../../../routes';
-import { FormValidator, PixelStore, PixelRouter } from '../../../utils';
+import { CookieAuthController } from '../../../controllers';
+import { FormValidator } from '../../../utils';
 import { AUTH_ERRORS, FIELD_TYPE } from '../const';
 import { LoginAPI } from './login.api';
 
 const loginApi = new LoginAPI(BASE_URLS.auth);
+const cookieAuthAPI = new CookieAuthController();
 const validatorConfig = { form: 'formFields', errors: 'errors' };
 
 export class LoginController {
@@ -17,10 +18,7 @@ export class LoginController {
       }
 
       await loginApi.login(data[validatorConfig.form]);
-      const userInfo = await loginApi.getUserInfo();
-
-      PixelStore.currentUser = { ...userInfo, isAuth: true };
-      PixelRouter.go(ROUTES.messanger);
+      await cookieAuthAPI.checkAuth();
     } catch (error) {
       console.error(error);
     }

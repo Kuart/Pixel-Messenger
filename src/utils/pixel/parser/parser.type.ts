@@ -1,4 +1,4 @@
-import { Methods, Props } from '../utils';
+import { Methods, Props } from '../pixelDom';
 
 type Attributes = Record<string, string>;
 
@@ -7,7 +7,7 @@ interface IParsedTag {
   attrs: Attributes;
   propHandlers?: Methods;
   props?: Props;
-  usedPropsList?: string[];
+  usedPropsList: Set<string>;
   type?: string;
 }
 

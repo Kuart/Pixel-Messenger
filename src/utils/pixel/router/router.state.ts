@@ -5,6 +5,7 @@ interface IRouterState {
 interface IBaseAuth {
   check: () => Promise<any>;
   redirect: string;
+  authRedirect: string;
   permittedRoutes: string[];
 }
 

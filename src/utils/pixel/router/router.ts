@@ -25,11 +25,15 @@ class Router {
 
   private history: History;
 
-  private isAuth: boolean = true;
+  private withAuth: boolean = true;
+
+  private isAuth: boolean = false;
 
   private permittedRoutes: string[];
 
-  private redirectPage: string;
+  private redirect: string;
+
+  private authRedirect: string;
 
   constructor(pixelInstantce?: typeof Pixel) {
     if (Router.instantce) {
@@ -46,8 +50,12 @@ class Router {
 
   public handleAuthChange(isAuth: boolean) {
     if (!isAuth) {
-      this.checkRouteAuth();
+      this.isAuth = false;
+    } else {
+      this.isAuth = true;
     }
+
+    this.checkRoute();
   }
 
   public async setRoutes(routesConfig: IRoutesConfig) {
@@ -76,24 +84,26 @@ class Router {
         }
       });
 
+      this.defaultRoute = defaultRoute;
+      this.routes = { ...routes, [defaultRoute.path]: defaultRoute };
+
       if (auth) {
-        const { redirect, check, permittedRoutes } = auth;
-        this.redirectPage = redirect;
+        const { redirect, check, permittedRoutes, authRedirect } = auth;
+        this.redirect = redirect;
+        this.authRedirect = authRedirect;
         this.permittedRoutes = permittedRoutes;
         await check();
       } else {
-        this.isAuth = false;
+        this.withAuth = false;
       }
 
-      this.defaultRoute = defaultRoute;
-      this.routes = { ...routes, [defaultRoute.path]: defaultRoute };
       this.start();
     } catch (error) {
       console.error(error);
     }
   }
 
-  public start = () => {
+  private start = () => {
     window.onpopstate = (event: any) => {
       const target = event.currentTarget as Window;
       this.checkRoute(target);
@@ -115,35 +125,37 @@ class Router {
     this.history.forward();
   }
 
-  public checkRoute = (target: Window) => {
-    let currentRout = target.location.pathname.slice(1);
+  private checkRoute = (target: Window = window) => {
+    let currentRoute = target.location.pathname.slice(1);
 
-    if (!currentRout) {
-      currentRout = this.defaultRoute.path;
-    } else if (!this.routes[currentRout]) {
-      currentRout = 'wrong';
+    if (!currentRoute) {
+      currentRoute = this.defaultRoute.path;
+    } else if (!this.routes[currentRoute]) {
+      currentRoute = 'wrong';
     }
 
-    if (this.isAuth && !this.pixelInstantce.store.currentUser.isAuth) {
-      this.checkRouteAuth();
+    if (this.withAuth) {
+      this.replaceWithAuth(currentRoute);
     } else {
-      this.changeLayout(this.routes[currentRout].component);
+      this.changeLayout(this.routes[currentRoute].component);
     }
   };
+
+  private replaceWithAuth(currentRoute: string) {
+    const isFromBasePermitted = this.permittedRoutes.some((route) => route === currentRoute);
+
+    if (!this.isAuth && !isFromBasePermitted) {
+      this.go(this.redirect);
+    } else if (this.isAuth && isFromBasePermitted) {
+      this.go(this.authRedirect);
+    } else {
+      this.changeLayout(this.routes[currentRoute].component);
+    }
+  }
 
   public changeLayout = (componentName: string) => {
     this.pixelInstantce.render(`<${componentName}/>`);
   };
-
-  private checkRouteAuth() {
-    const currentRout = window.location.pathname.slice(1);
-    const isPermitted = this.permittedRoutes.some((route) => route === currentRout);
-    if (!isPermitted) {
-      this.go(this.redirectPage);
-    } else {
-      this.changeLayout(this.routes[currentRout].component);
-    }
-  }
 }
 
 export default Router;

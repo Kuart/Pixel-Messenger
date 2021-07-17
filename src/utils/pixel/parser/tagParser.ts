@@ -1,9 +1,14 @@
 import { Parser } from '.';
-import { PREFIXES } from './const';
-import { Attributes, IParsedTag } from './parser.type';
-import { VComponentNode, EventHadnlerConfig, Props } from '../pixelDom';
+import { PREFIXES, PROP_STORAGES } from './const';
+import { IData, IParsedTag, IPropStorages } from './parser.type';
+import { VComponentNode, EventHadnlerConfig, Props, State } from '../pixelDom';
 
 export class TagParser {
+  static ERRORS = {
+    missedBindStore: 'The binding string does not refer to valid objects - IPropStorages',
+    missedBindProperty: (prop: string) => `IPropStorages storage does't have "${prop}"`,
+  };
+
   parserInstant: Parser;
 
   attrRegExp: RegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
@@ -14,61 +19,44 @@ export class TagParser {
     this.parserInstant = parser;
   }
 
-  /* prettier-ignore */
-  parse = (
-    tag: string,
-    reqProps: string[] = [],
-    parentComponent?: VComponentNode,
-    componentTag?: string,
-  ): IParsedTag => {
-    const tagName = tag.split(' ')[0].trim().substr(1).split('>')[0];
-    const currentTag = `${tag} ${componentTag ?? ''}`;
-    const reg = new RegExp(this.attrRegExp);
-
+  parse(tagString: string, data: IData): IParsedTag {
+    const attrReg = new RegExp(this.attrRegExp);
     let attr: RegExpExecArray | null = null;
-    const attrs: Attributes = {};
-    const propHandlers: Record<string, EventHadnlerConfig> = {};
-    const usedPropsList: Set<string> = new Set(reqProps);
+    let cleanName = '';
+    let type = '';
+    let currentValue = '';
+    let isMod = -1;
 
-    /* eslint-disable no-param-reassign */
-    const props = reqProps.reduce((acc: Props, item: string) => {
-      acc[item] = null;
-      return acc;
-    }, {});
+    const props: Props = {};
 
     do {
-      attr = reg.exec(currentTag);
+      attr = attrReg.exec(tagString);
+
       if (attr) {
         const [name, value] = attr[0].trim().split('=');
-        let cleanName = name;
-        let type = name;
-        const mod = name.indexOf(':');
-        const currentValue = value ? value.substring(1, value.length - 1) : '';
+        currentValue = value ? value.substring(1, value.length - 1) : '';
+        isMod = name.indexOf(':');
 
-        if (mod !== -1) {
-          cleanName = cleanName.substring(mod + 1);
-          type = type.substring(0, mod + 1);
+        if (isMod !== -1) {
+          type = name.substring(0, isMod + 1);
+          cleanName = name.substring(isMod + 1);
         }
 
-        if (type === PREFIXES.STATIC) {
-          props[cleanName] = currentValue;
-        } else if (type === PREFIXES.PROPS) {
-          this.setProps(cleanName, currentValue, props, attrs, parentComponent);
+        if (!type) {
+          props[name] = currentValue;
         } else if (type === PREFIXES.BIND) {
-          usedPropsList.add(currentValue);
-          this.bindProps(cleanName, currentValue, props, parentComponent);
-        } else if (type === PREFIXES.HANLDER) {
-          this.handleEvent(cleanName, currentValue, propHandlers);
-        } else if (type === PREFIXES.IF_CONDITION || type === PREFIXES.ELSE_CONDITION) {
-          this.conditionHandler(cleanName, currentValue, attrs, parentComponent);
+          const [store, path] = this.slicePropStorage(currentValue);
+          this.bindProps(props, cleanName, data[store], path);
+        } else if (type === PREFIXES.EVENT) {
         } else {
-          attrs[name] = currentValue;
         }
       }
     } while (attr);
 
-    return { tagName, attrs, propHandlers, props, usedPropsList };
-  };
+    console.log(props);
+
+    return { props, tagName: this.getTagName(tagString) };
+  }
 
   /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["props", "attrs"] }] */
   setProps(name: string, currentValue: string, props: Props, attrs: Attributes, parentComponent?: VComponentNode) {
@@ -95,18 +83,8 @@ export class TagParser {
     }
   }
 
-  /* eslint-disable no-param-reassign */
-  bindProps(name: string, currentValue: string, props: Props, parentComponent?: VComponentNode) {
-    if (parentComponent) {
-      const [propName] = currentValue.split('.');
-
-      if (propName in parentComponent.props) {
-        props[name] = this.parseObjectPathTag(parentComponent.props, currentValue);
-      } else if (propName in parentComponent.state) {
-        console.log(currentValue);
-        props[name] = this.parseObjectPathTag(parentComponent.state as Props, currentValue);
-      }
-    }
+  bindProps<T>(props: Props, name: string, store: T, path: string) {
+    props[name] = this.parseObjectPathTag(store, path);
   }
 
   handleEvent = (name: string, currentValue: string, propHandlers: Record<string, EventHadnlerConfig>) => {
@@ -137,16 +115,16 @@ export class TagParser {
     }
   };
 
-  parseObjectPathTag = (props: Props, path: string) => {
+  parseObjectPathTag = (store: Props | State, path: string): unknown => {
     try {
       const keys = path.split('.');
-      let result: Props = props;
+      let result = store;
 
       for (const key of keys) {
         const value = result[key];
 
         if (!value) {
-          return '';
+          throw Error();
         }
 
         result = value as Props;
@@ -154,7 +132,19 @@ export class TagParser {
 
       return result;
     } catch (error) {
-      console.error(error);
+      throw Error(TagParser.ERRORS.missedBindProperty(path));
     }
   };
+
+  slicePropStorage = (value: string): [keyof IPropStorages, string] => {
+    const [store, ...path] = value.split('.');
+
+    if (!PROP_STORAGES[store]) {
+      throw Error(TagParser.ERRORS.missedBindStore);
+    }
+
+    return [PROP_STORAGES[store], path.join('.')];
+  };
+
+  getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim();
 }

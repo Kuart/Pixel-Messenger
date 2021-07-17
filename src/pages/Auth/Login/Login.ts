@@ -9,6 +9,7 @@ import '../Auth.css';
 const loginController = new LoginController();
 
 function Login(): IComponentModel {
+  const loginFormId = 'id-login_form';
   return {
     state: {
       formFields: {
@@ -39,7 +40,6 @@ function Login(): IComponentModel {
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
-        console.log(this.state.formFields);
       },
     },
     components: {
@@ -60,31 +60,31 @@ function Login(): IComponentModel {
             e:submit="submitForm" 
             e:focus="formFocusHandler" 
             e:blur="formBlurHandler" 
-            id="id-login_form">
+            id="${loginFormId}">
             <div class="auth-form__body">
               <Input 
-                s:label="Логин" 
-                s:name="login" 
-                s:type="${FIELD_TYPE.login}" 
-                s:id="input${generateUniqId()}" 
-                b:errors="errors.login"
-                b:value="formFields.login" />
+                label="Логин" 
+                name="login" 
+                type="${FIELD_TYPE.login}" 
+                id="input${generateUniqId()}" 
+                b:errors="state.errors.login"
+                b:value="state.formFields.login" />
 
               <Input 
-                s:label="Пароль" 
-                s:name="${FIELD_TYPE.password}" 
-                s:type="password" 
-                s:id="input${generateUniqId()}" 
-                b:errors="errors.password"
-                b:value="formFields.password"/>
+                label="Пароль" 
+                name="${FIELD_TYPE.password}" 
+                type="password" 
+                id="input${generateUniqId()}" 
+                b:errors="state.errors.password"
+                b:value="state.formFields.password"/>
             </div>
             <footer class="auth-form__footer">
               <Button 
-                s:text="Авторизоваться" 
+                text="Авторизоваться" 
                 class="button button_accent" 
-                s:type="button" 
+                type="button" 
                 e:click="submitForm" 
-                form="id-login_form"/>
+                form="${loginFormId}"/>
               <Button 
                 s:text="Нет аккаунта?" 
                 class="button button_transparent" 

@@ -20,6 +20,7 @@ class Pixel {
     VDOM_NF: 'Failed to build VDOM',
     PIXEL_ISALRE: 'Failed to build VDOM',
     INITIATED: 'Pixel already in use',
+    FRONG_COMPONENT: (name: string) => `Component "${name}" is not registered`,
   };
 
   static CONST = {
@@ -76,6 +77,16 @@ class Pixel {
         }
       });
     }
+  }
+
+  callComponentModel(componentName: string) {
+    if (this.components[componentName]) {
+      const componentModel = this.components[componentName]();
+      componentModel.name = componentName;
+      return componentModel;
+    }
+
+    throw Error(Pixel.ERROR.FRONG_COMPONENT(componentName));
   }
 
   setRootEl = (selector: string) => {

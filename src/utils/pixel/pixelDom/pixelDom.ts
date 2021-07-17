@@ -3,12 +3,20 @@ import NodeFabric from './NodeFabric';
 import { EventHadnlerConfig, ParentNodeType, VComponentNode, VTextNode } from './Nodes';
 
 class PixelDOM {
+  static instantce: PixelDOM;
+
   nodeFabric: NodeFabric;
 
   eventCache: Map<string, EventHadnlerConfig[]> = new Map();
 
   constructor() {
+    if (PixelDOM.instantce) {
+      return PixelDOM.instantce;
+    }
+
     this.nodeFabric = new NodeFabric();
+
+    PixelDOM.instantce = this;
   }
 
   mountTextNode = (node: VTextNode): Text => document.createTextNode(node.text);
@@ -78,4 +86,6 @@ class PixelDOM {
   }
 }
 
-export { PixelDOM, NODE_TYPE };
+const pixelDOM = new PixelDOM();
+
+export { pixelDOM, NODE_TYPE };

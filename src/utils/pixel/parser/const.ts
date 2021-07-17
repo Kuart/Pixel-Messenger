@@ -1,6 +1,7 @@
 import rebel from '../../../../static/assets/images/Icon/shock.png';
 import itsFine from '../../../../static/assets/images/Icon/emoji3.png';
 import alien from '../../../../static/assets/images/Icon/alien.png';
+import { IPropStorages } from './parser.type';
 
 /*  no pref - attribute
       s: - static string/number
@@ -10,12 +11,17 @@ import alien from '../../../../static/assets/images/Icon/alien.png';
 
 export const PREFIXES = {
   BIND: 'b:',
-  STATIC: 's:',
-  HANLDER: 'e:',
+  EVENT: 'e:',
   PROPS: 'p:',
   IF_CONDITION: 'if:',
   ELSE_CONDITION: 'else:',
   LOOP: 'loop:',
+};
+
+export const PROP_STORAGES: Record<string, keyof IPropStorages> = {
+  state: 'state',
+  props: 'props',
+  methods: 'methods',
 };
 
 export const EMOJI: Record<string, string> = {

@@ -1,4 +1,3 @@
-import { Attributes, Parser } from '../../parser';
 import { Methods, State, Props } from './componentNode.type';
 import { VTextNode } from './VTextNode';
 import { VCommonNode } from './VCommonNode';
@@ -6,8 +5,6 @@ import { VComponentNode } from './VComponentNode';
 
 interface INodeProps {
   tagName: string;
-  attrs: Attributes;
-  handlers: Methods | undefined;
 }
 
 interface ITextNodeProps {
@@ -15,22 +12,18 @@ interface ITextNodeProps {
 }
 
 interface IComponent {
-  template: string;
-  state?: State;
-  methods?: Record<string, Function>;
+  state: State;
+  methods: Methods;
+  componentProps: Props;
   componentDidMount?: Function;
   pixelStore?: Record<string, any>;
 }
 
-interface IComponentOptions extends Omit<IComponent, 'methods' | 'usedProps'> {
+interface IComponentOptions extends Omit<IComponent, 'methods'> {
   tagName: string;
-  usedProps: Set<string>;
-  componentName: string;
-  parserInstant: Parser;
-  props?: Props;
-  attrs?: Attributes;
-  propHandlers?: Methods;
-  methods?: Methods;
+  name: string;
+  props: Props;
+  methods: Methods;
 }
 
 /* eslint no-use-before-define: 0 */

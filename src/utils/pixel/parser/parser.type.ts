@@ -1,14 +1,19 @@
-import { Methods, Props } from '../pixelDom';
-
-type Attributes = Record<string, string>;
+import { Props, State, Methods } from '../pixelDom';
 
 interface IParsedTag {
   tagName: string;
-  attrs: Attributes;
-  propHandlers?: Methods;
-  props?: Props;
-  usedPropsList: Set<string>;
-  type?: string;
+  props: Props;
 }
 
-export { IParsedTag, Attributes };
+interface IPropStorages {
+  props: 'props';
+  state: 'state';
+  methods: 'methods';
+}
+interface IData {
+  props: Props;
+  state: State;
+  methods: Methods;
+}
+
+export { IParsedTag, IData, IPropStorages };

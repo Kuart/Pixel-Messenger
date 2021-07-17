@@ -1,6 +1,5 @@
 import { COMPONENT_EVENTS } from '../../../const';
-import { Parser } from '../../parser';
-import { NODE_TYPE, PixelDOM } from '../pixelDom';
+import { NODE_TYPE } from '../pixelDom';
 import { EventBus, bfsFirstParents, createProxyObject } from '../../utils';
 import { EventHadnlerConfig, Listaner, Methods, Props, State } from './componentNode.type';
 import { ParentNodeType, IComponentOptions } from './nodes.type';
@@ -20,15 +19,9 @@ export class VComponentNode extends VParentNode {
 
   public eventBus: EventBus;
 
-  private pixelDom: PixelDOM;
-
-  private parserInstant: Parser;
-
   public methods: Methods;
 
   private componentDidMountFunc: Function | null;
-
-  public propHandlers?: Methods | undefined;
 
   private eventHandlers: Map<string, Listaner> = new Map();
 
@@ -46,26 +39,15 @@ export class VComponentNode extends VParentNode {
     super();
 
     this.eventBus = new EventBus();
-    this.pixelDom = new PixelDOM();
-
-    this.parserInstant = options.parserInstant;
-    this.name = options.componentName;
-
+    this.name = options.name;
     this.tagName = options.tagName;
-    this.template = options.template;
-    this.children = [];
-    this.keyIndex = 0;
 
+    this.keyIndex = 0;
+    this.componentProps = createProxyObject(options.componentProps, this.defaultPropsHandler.bind(this));
     this.props = createProxyObject(options.props, this.defaultPropsHandler.bind(this));
     this.state = createProxyObject(options.state, this.defaultPropsHandler.bind(this));
-
-    this.usedProps = options.usedProps;
-    this.attrs = options.attrs || {};
     this.methods = options.methods || {};
-
     this.componentDidMountFunc = options.componentDidMount || null;
-
-    this.propHandlers = options.propHandlers;
 
     this.registerEvents();
     this.conectToPixelStore(options);
@@ -87,7 +69,7 @@ export class VComponentNode extends VParentNode {
     if (options.pixelStore) {
       options.pixelStore.forEach((field: string) => {
         this.pixelStore.add(field);
-        this.parserInstant.instance.store.subscribe(field, this);
+        /*  this.parserInstant.instance.store.subscribe(field, this); */
       });
     }
   }
@@ -138,18 +120,14 @@ export class VComponentNode extends VParentNode {
     const nodes = this.findChildNodeForUpdate(propName);
     const splited = propName.split('.');
     const field = splited[splited.length - 1];
-
-    nodes.forEach((node) => {
-      node.redraw();
-    });
   }
 
   redraw = () => {
     this.unmount();
     this.parent.domEl.removeChild(this.domEl);
-    const updated = this.parserInstant.parseHTML(this.template, this);
+    /* const updated = this.parserInstant.parseHTML(this.template, this); */
 
-    this.domEl = this.pixelDom.mountNode(updated);
+    /* this.domEl = this.pixelDom.mountNode(updated); */
 
     this.parent.domEl?.appendChild(this.domEl);
   };
@@ -161,9 +139,9 @@ export class VComponentNode extends VParentNode {
       });
     }
 
-    this.pixelStore.forEach((value: string) => {
+    /* this.pixelStore.forEach((value: string) => {
       this.parserInstant.instance.store.unsubscribe(value, this);
-    });
+    }); */
 
     if (!isRootUnmount) {
       this.children.forEach((child) => {
@@ -176,7 +154,7 @@ export class VComponentNode extends VParentNode {
   private removeEventListener(name: string) {
     if (this.eventHandlers.has(name)) {
       const { target, type, listener } = this.eventHandlers.get(name)!;
-      this.pixelDom.clearUnmountHadnler(name, target);
+      /* this.pixelDom.clearUnmountHadnler(name, target); */
       (target as any).removeEventListener(type, listener);
       this.eventHandlers.delete(name);
     }

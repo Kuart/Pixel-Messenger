@@ -1,5 +1,5 @@
 import { Parser } from '../parser';
-import { ParentNodeType, VComponentNode, VirtualNode, State, IComponentModel } from '../pixelDom';
+import { ParentNodeType, VComponentNode, VirtualNode, State, IComponentModel, pixelDOM } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
 import { COMPONENT_EVENTS } from '../../const';
 import { BFS } from '../utils';
@@ -130,6 +130,8 @@ class Pixel {
 
   mount = (VDOM: ParentNodeType) => {
     try {
+      pixelDOM.mountNode(this.VDOM);
+
       if (!VDOM.domEl) {
         throw Error(Pixel.ERROR.ROOT_DOM_NF(VDOM.tagName));
       }

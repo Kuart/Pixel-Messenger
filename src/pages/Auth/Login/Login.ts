@@ -67,7 +67,7 @@ function Login(): IComponentModel {
                 name="login" 
                 type="${FIELD_TYPE.login}" 
                 id="input${generateUniqId()}" 
-                b:errors="state.errors.login"
+                b:error="state.errors.login"
                 b:value="state.formFields.login" />
 
               <Input 
@@ -75,7 +75,7 @@ function Login(): IComponentModel {
                 name="${FIELD_TYPE.password}" 
                 type="password" 
                 id="input${generateUniqId()}" 
-                b:errors="state.errors.password"
+                b:error="state.errors.password"
                 b:value="state.formFields.password"/>
             </div>
             <footer class="auth-form__footer">
@@ -86,7 +86,7 @@ function Login(): IComponentModel {
                 e:click="submitForm" 
                 form="${loginFormId}"/>
               <Button 
-                s:text="Нет аккаунта?" 
+                text="Нет аккаунта?" 
                 class="button button_transparent" 
                 type="button" 
                 e:click="replaceToRegister"/>

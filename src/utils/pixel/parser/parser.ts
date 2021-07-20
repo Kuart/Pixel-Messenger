@@ -1,9 +1,10 @@
 import { Pixel } from '..';
-import { ParentNodeType, VComponentNode } from '../pixelDom';
+import { ParentNodeType, VComponentNode, pixelDOM, VCommonNode, VirtualNode, VTextNode } from '../pixelDom';
 import { Stack } from '../utils';
-import { EMOJI, PREFIXES } from './const';
 import { TagParser } from './tagParser';
 import { ComponentParser } from './componentParser';
+import { IData } from './parser.type';
+import { TextParser } from './textParser';
 
 export default class PixelParser {
   tagRegExp = /<[\s*]?[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
@@ -16,18 +17,28 @@ export default class PixelParser {
 
   componentParser: ComponentParser;
 
+  textParser: TextParser;
+
   instance: typeof Pixel;
 
   constructor(instance: typeof Pixel) {
     this.tagParser = new TagParser(this);
     this.componentParser = new ComponentParser(this);
+    this.textParser = new TextParser(this);
     this.instance = instance;
   }
 
-  parseHTML(html: string) {
+  parseHTML(html: string, parentComponent?: VComponentNode): ParentNodeType {
     const stack = new Stack<ParentNodeType>();
     const tagReg = new RegExp(this.tagRegExp);
     let el = null;
+
+    const { componentProps = {}, state = {}, methods = {} } = parentComponent || {};
+    const data: IData = { props: componentProps, state, methods };
+
+    if (parentComponent) {
+      stack.push(parentComponent);
+    }
 
     do {
       el = tagReg.exec(html);
@@ -37,13 +48,38 @@ export default class PixelParser {
 
         const isComponent = this.isComponent(tag);
         const isXHTML = this.isXHTML(tag);
-        const isCloseTag = tag[1] !== '/';
+        const isCloseTag = tag[1] === '/';
 
         if (isComponent) {
-          const component = this.componentParser.parse(html);
+          const component = this.componentParser.parse(tag, parentComponent);
+          this.addAsChild(stack, component);
         } else if (isXHTML) {
+          const parsedTag = this.tagParser.parse(tag, data);
+          const node: VCommonNode = pixelDOM.nodeFabric.create(parsedTag) as VCommonNode;
+
+          this.addAsChild(stack, node);
         } else if (isCloseTag) {
+          const node = stack.pop();
+
+          this.addAsChild(stack, node);
         } else {
+          let textNode = null;
+          const start = index + tag.trim().length;
+          const nextChar = html[start];
+
+          const parsedTag = this.tagParser.parse(tag, data);
+          const node: VCommonNode = pixelDOM.nodeFabric.create(parsedTag) as VCommonNode;
+
+          if (nextChar && nextChar !== '<') {
+            const text = html.slice(start, html.indexOf('<', start)).trim();
+            textNode = this.textParser.parse(text, data);
+          }
+
+          stack.push(node);
+
+          if (textNode) {
+            this.addAsChild(stack, textNode);
+          }
         }
       }
     } while (el);
@@ -51,20 +87,20 @@ export default class PixelParser {
     return stack.pop();
   }
 
-  findPropInParent = (prop: string, component: VComponentNode) => {
-    if (component.pixelStore.has(prop)) {
-      return this.instance.store.store[prop];
-    }
+  addAsChild = (stack: Stack<ParentNodeType>, node: VirtualNode) => {
+    const parent = stack.peek();
 
-    if (prop in component.props) {
-      return component.props[prop];
-    }
+    if (parent) {
+      parent.children.push(node);
 
-    if (prop in component.state) {
-      return component.state[prop];
+      if (!(node instanceof VTextNode)) {
+        pixelDOM.mountNode(node);
+      } else if (node instanceof VTextNode) {
+        pixelDOM.mountTextNode(node);
+      }
+    } else if (!(node instanceof VTextNode)) {
+      stack.push(node);
     }
-
-    return null;
   };
 
   isComponent = (tag: string) => tag.match(this.componentRegExp);

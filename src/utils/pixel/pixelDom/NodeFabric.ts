@@ -10,15 +10,35 @@ import {
 } from './Nodes';
 
 export default class NodeFabric {
-  createNode = (props: INodeProps) => new VCommonNode(props);
+  public create(
+    config: IInitiatedComponent | INodeProps | ITextNodeProps,
+    componentParsed?: IParsedTag,
+    componentParsedTag?: IParsedTag
+  ) {
+    if ('name' in config) {
+      return this.createComponent(config, componentParsed!, componentParsedTag!);
+    }
 
-  createText = (props: ITextNodeProps) => new VTextNode(props);
+    if ('tagName' in config) {
+      return this.createNode(config);
+    }
 
-  createComponent = (componentParsed: IParsedTag, tagParsed: IParsedTag, componentConfig: IInitiatedComponent) => {
+    return this.createText(config);
+  }
+
+  private createNode = (props: INodeProps): VCommonNode => new VCommonNode(props);
+
+  private createText = (props: ITextNodeProps): VTextNode => new VTextNode(props);
+
+  private createComponent = (
+    componentConfig: IInitiatedComponent,
+    parsed: IParsedTag,
+    parsedTag: IParsedTag
+  ): VComponentNode => {
     const props: IComponentOptions = {
-      tagName: tagParsed.tagName,
-      props: tagParsed.props,
-      componentProps: componentParsed.props,
+      tagName: parsedTag.tagName,
+      props: parsedTag.props,
+      componentProps: parsed.props,
       state: componentConfig.state,
       methods: componentConfig.methods,
       name: componentConfig.name,

@@ -1,12 +1,7 @@
 type ProxyObject = Record<string, any>;
 type Validator = Record<string, Function>;
 
-/* prettier-ignore */
-function createProxyObject<T>(
-  props: ProxyObject = {},
-  callback: Function,
-  name?: string,
-): T {
+function createProxyObject<T>(props: ProxyObject = {}, callback: Function, name?: string): T {
   const validator: Validator = {
     get: (target: ProxyObject, prop: keyof ProxyObject): any => {
       if (typeof target[prop] === 'object' && target[prop] !== null) {

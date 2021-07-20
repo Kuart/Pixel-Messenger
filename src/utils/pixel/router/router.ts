@@ -154,7 +154,7 @@ class Router {
   }
 
   public changeLayout = (componentName: string) => {
-    this.pixelInstantce.render(`< ${componentName}  />`);
+    this.pixelInstantce.render(`<${componentName}  />`);
   };
 }
 

@@ -26,13 +26,13 @@ export function bfsFirstParents(root: VirtualNode, target: string) {
   while (!queue.isEmpty()) {
     const node = queue.dequeue();
 
-    if (node.usedProps.has(target)) {
+    /*  if (node.usedProps.has(target)) {
       found.push(node);
     } else if (!(node instanceof VTextNode)) {
       for (let i = 0; i < node.children.length; i += 1) {
         queue.enqueue(node.children[i]);
       }
-    }
+    } */
   }
 
   return found;

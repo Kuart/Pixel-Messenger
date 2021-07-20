@@ -1,5 +1,5 @@
 import { Parser } from '.';
-import { Props, State, Methods, pixelDOM, IComponentModel, IInitiatedComponent } from '../pixelDom';
+import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode } from '../pixelDom';
 
 export class ComponentParser {
   parserInstant: Parser;
@@ -12,34 +12,44 @@ export class ComponentParser {
     this.parserInstant = parser;
   }
 
-  parse(html: string, props: Props = {}, parentState: State = {}, parentMethods: Methods = {}) {
-    const [notCleanName, componentName] = html.match(this.componentNameRegExp)!;
-    const componentConfig: IInitiatedComponent = this.parserInstant.instance.callComponentModel(componentName);
+  parse(html: string, parentData?: VComponentNode): ParentNodeType {
+    try {
+      const { componentProps = {}, state = {}, methods = {} } = parentData || {};
 
-    const [firstTag, ...tags] = componentConfig.template.match(this.tagRegExp);
-    const start = firstTag.length;
-    const end = componentConfig.template.trim().length - tags[tags.length - 1].length;
+      const [notCleanName, componentName] = html.match(this.componentNameRegExp)!;
+      const componentConfig: IInitiatedComponent = this.parserInstant.instance.callComponentModel(componentName);
 
-    if (componentConfig.components) {
-      this.parserInstant.instance.registerComponents(componentConfig.components);
+      const [firstTag, ...tags] = componentConfig.template.match(this.tagRegExp)!;
+      const start = firstTag.length;
+      const end = componentConfig.template.trim().length - tags[tags.length - 1].length;
+
+      if (componentConfig.components) {
+        this.parserInstant.instance.registerComponents(componentConfig.components);
+      }
+
+      const componentParsedData = this.parserInstant.tagParser.parse(html.slice(notCleanName.length), {
+        props: componentProps,
+        state,
+        methods,
+      });
+
+      const componentParsedTag = this.parserInstant.tagParser.parse(firstTag, {
+        props: componentParsedData.props || {},
+        state: componentConfig.state || {},
+        methods: componentConfig.methods || {},
+      });
+
+      const component: VComponentNode = pixelDOM.nodeFabric.create(
+        componentConfig,
+        componentParsedData,
+        componentParsedTag
+      ) as VComponentNode;
+
+      const subTree = this.parserInstant.parseHTML(componentConfig.template.trim().slice(start, end), component);
+
+      return subTree;
+    } catch (error) {
+      throw new Error(error);
     }
-
-    const componentParsedData = this.parserInstant.tagParser.parse(html.slice(notCleanName.length), {
-      props,
-      state: parentState,
-      methods: parentMethods,
-    });
-
-    const componentParsedTag = this.parserInstant.tagParser.parse(firstTag, {
-      props: componentParsedData.props,
-      state: componentConfig.state || {},
-      methods: componentConfig.methods || {},
-    });
-
-    const component = pixelDOM.nodeFabric.createComponent(componentParsedData, componentParsedTag, componentConfig);
-
-    console.log(component);
   }
 }
-
-/* return this.parseHTML(`${template.trim().substring(start, end)}`, component); */

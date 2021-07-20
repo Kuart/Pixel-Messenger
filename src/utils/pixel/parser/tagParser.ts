@@ -1,14 +1,10 @@
 import { Parser } from '.';
-import { PREFIXES, PROP_STORAGES } from './const';
-import { IData, IParsedTag, IPropStorages } from './parser.type';
-import { VComponentNode, EventHadnlerConfig, Props, State } from '../pixelDom';
+import { PREFIXES } from './const';
+import { IData, IParsedTag } from './parser.type';
+import { VComponentNode, EventHadnlerConfig, Props } from '../pixelDom';
+import { slicePropStorage, bindProps } from './utils';
 
 export class TagParser {
-  static ERRORS = {
-    missedBindStore: 'The binding string does not refer to valid objects - IPropStorages',
-    missedBindProperty: (prop: string) => `IPropStorages storage does't have "${prop}"`,
-  };
-
   parserInstant: Parser;
 
   attrRegExp: RegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
@@ -45,15 +41,13 @@ export class TagParser {
         if (!type) {
           props[name] = currentValue;
         } else if (type === PREFIXES.BIND) {
-          const [store, path] = this.slicePropStorage(currentValue);
-          this.bindProps(props, cleanName, data[store], path);
+          const [store, path] = slicePropStorage(currentValue);
+          bindProps(props, cleanName, data[store], path);
         } else if (type === PREFIXES.EVENT) {
         } else {
         }
       }
     } while (attr);
-
-    console.log(props);
 
     return { props, tagName: this.getTagName(tagString) };
   }
@@ -81,10 +75,6 @@ export class TagParser {
         attrs[name] = propValue as string;
       }
     }
-  }
-
-  bindProps<T>(props: Props, name: string, store: T, path: string) {
-    props[name] = this.parseObjectPathTag(store, path);
   }
 
   handleEvent = (name: string, currentValue: string, propHandlers: Record<string, EventHadnlerConfig>) => {
@@ -115,36 +105,5 @@ export class TagParser {
     }
   };
 
-  parseObjectPathTag = (store: Props | State, path: string): unknown => {
-    try {
-      const keys = path.split('.');
-      let result = store;
-
-      for (const key of keys) {
-        const value = result[key];
-
-        if (!value) {
-          throw Error();
-        }
-
-        result = value as Props;
-      }
-
-      return result;
-    } catch (error) {
-      throw Error(TagParser.ERRORS.missedBindProperty(path));
-    }
-  };
-
-  slicePropStorage = (value: string): [keyof IPropStorages, string] => {
-    const [store, ...path] = value.split('.');
-
-    if (!PROP_STORAGES[store]) {
-      throw Error(TagParser.ERRORS.missedBindStore);
-    }
-
-    return [PROP_STORAGES[store], path.join('.')];
-  };
-
-  getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim();
+  getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim().replace('>', '');
 }

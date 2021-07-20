@@ -3,11 +3,14 @@ import itsFine from '../../../../static/assets/images/Icon/emoji3.png';
 import alien from '../../../../static/assets/images/Icon/alien.png';
 import { IPropStorages } from './parser.type';
 
-/*  no pref - attribute
-      s: - static string/number
-      b: - value from parent state/props
+/*    b: - value from parent state/props
       e: - event
-  */
+*/
+
+export const ERRORS = {
+  missedBindStore: 'The binding string does not refer to valid objects - IPropStorages',
+  missedBindProperty: (prop: string) => `IPropStorages storage does't have "${prop}"`,
+};
 
 export const PREFIXES = {
   BIND: 'b:',

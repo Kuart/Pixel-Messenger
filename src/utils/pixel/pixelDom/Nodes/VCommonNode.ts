@@ -1,6 +1,5 @@
 import { NODE_TYPE } from '../const';
-import { INodeProps, ParentNodeType } from './nodes.type';
-import { Methods, Props } from './componentNode.type';
+import { ParentNodeType, INodeProps } from './nodes.type';
 import { VParentNode } from './abstract';
 import { IPixelStoreUpdateProp } from '../../store';
 import { createProxyObject } from '../../utils';
@@ -10,17 +9,11 @@ export class VCommonNode extends VParentNode {
 
   tagName: string;
 
-  propHandlers: Methods | null;
-
-  constructor(props: INodeProps) {
+  constructor({ props, tagName }: INodeProps) {
     super();
 
-    const { tagName, attrs, handlers = null } = props;
-
-    this.attrs = attrs;
     this.tagName = tagName;
-    this.propHandlers = handlers;
-    this.props = createProxyObject({}, this.update);
+    this.props = createProxyObject(props, this.update);
   }
 
   setParentNode(parent: ParentNodeType) {

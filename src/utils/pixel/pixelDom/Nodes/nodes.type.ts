@@ -5,10 +5,12 @@ import { VComponentNode } from './VComponentNode';
 
 interface INodeProps {
   tagName: string;
+  props: Props;
 }
 
 interface ITextNodeProps {
   text: string;
+  props?: Record<string, string>;
 }
 
 interface IComponent {

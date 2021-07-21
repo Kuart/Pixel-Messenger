@@ -1,27 +1,46 @@
 import { ParentNodeType, VirtualNode } from '../nodes.type';
 import { INode } from './node.type';
 import { NODE_TYPE } from '../../const';
-import { Props } from '../componentNode.type';
+import { EventHandler, Props } from '../componentNode.type';
 import { uuid } from '../../../../helpers';
+import { EventBus } from '../../../utils';
 
 export default abstract class VParentNode implements INode {
+  domEl: HTMLElement;
+
   type: NODE_TYPE;
 
   tagName: string;
 
-  domEl: HTMLElement;
+  eventBus: EventBus = new EventBus();
+
+  eventHandlers: EventHandler;
 
   parent: ParentNodeType;
 
-  componentProps: Props;
-
-  props: Props;
+  children: VirtualNode[] = [];
 
   keyIndex: number;
 
   key: string = uuid();
 
-  children: VirtualNode[] = [];
+  props: Props;
+
+  nodeWillMount() {
+    if (this.eventHandlers.size) {
+      this.eventHandlers.forEach((value: Function, key: string) => {
+        this.domEl.addEventListener(key, value as any);
+      });
+    }
+  }
+
+  nodeUnmount() {
+    if (this.eventHandlers.size) {
+      this.eventHandlers.forEach((value: Function, key: string) => {
+        this.domEl.removeEventListener(key, value as any);
+      });
+    }
+  }
 
   abstract setParentNode(parent: ParentNodeType): void;
 

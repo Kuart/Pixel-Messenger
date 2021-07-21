@@ -1,5 +1,6 @@
-export enum COMPONENT_EVENTS {
+export enum EVENTS {
+  NWM = 'node-will-mount',
   CDM = 'component-did-mount',
-  CU = 'component-unmount',
+  NU = 'node-unmount',
   PSU = 'pixel-store-update',
 }

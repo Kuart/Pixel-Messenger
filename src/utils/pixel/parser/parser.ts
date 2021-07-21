@@ -1,9 +1,9 @@
 import { Pixel } from '..';
-import { ParentNodeType, VComponentNode, pixelDOM, VCommonNode, VirtualNode, VTextNode } from '../pixelDom';
+import { ParentNodeType, pixelDOM, VCommonNode, VirtualNode, VTextNode } from '../pixelDom';
 import { Stack } from '../utils';
 import { TagParser } from './tagParser';
 import { ComponentParser } from './componentParser';
-import { IData } from './parser.type';
+import { IData, IParentData } from './parser.type';
 import { TextParser } from './textParser';
 
 export default class PixelParser {
@@ -28,17 +28,13 @@ export default class PixelParser {
     this.instance = instance;
   }
 
-  parseHTML(html: string, parentComponent?: VComponentNode): ParentNodeType {
+  parseHTML(html: string, parentProps?: IParentData): ParentNodeType {
     const stack = new Stack<ParentNodeType>();
     const tagReg = new RegExp(this.tagRegExp);
     let el = null;
 
-    const { componentProps = {}, state = {}, methods = {} } = parentComponent || {};
+    const { componentProps = {}, state = {}, methods = {} } = parentProps || {};
     const data: IData = { props: componentProps, state, methods };
-
-    if (parentComponent) {
-      stack.push(parentComponent);
-    }
 
     do {
       el = tagReg.exec(html);
@@ -51,7 +47,7 @@ export default class PixelParser {
         const isCloseTag = tag[1] === '/';
 
         if (isComponent) {
-          const component = this.componentParser.parse(tag, parentComponent);
+          const component = this.componentParser.parse(tag, parentProps);
           this.addAsChild(stack, component);
         } else if (isXHTML) {
           const parsedTag = this.tagParser.parse(tag, data);

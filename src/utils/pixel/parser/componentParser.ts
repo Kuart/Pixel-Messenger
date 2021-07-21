@@ -1,5 +1,6 @@
 import { Parser } from '.';
-import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode } from '../pixelDom';
+import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods } from '../pixelDom';
+import { IParentData } from './parser.type';
 
 export class ComponentParser {
   parserInstant: Parser;
@@ -12,16 +13,12 @@ export class ComponentParser {
     this.parserInstant = parser;
   }
 
-  parse(html: string, parentData?: VComponentNode): ParentNodeType {
+  parse(html: string, parentData?: IParentData): ParentNodeType {
     try {
       const { componentProps = {}, state = {}, methods = {} } = parentData || {};
 
       const [notCleanName, componentName] = html.match(this.componentNameRegExp)!;
       const componentConfig: IInitiatedComponent = this.parserInstant.instance.callComponentModel(componentName);
-
-      const [firstTag, ...tags] = componentConfig.template.match(this.tagRegExp)!;
-      const start = firstTag.length;
-      const end = componentConfig.template.trim().length - tags[tags.length - 1].length;
 
       if (componentConfig.components) {
         this.parserInstant.instance.registerComponents(componentConfig.components);
@@ -33,23 +30,28 @@ export class ComponentParser {
         methods,
       });
 
-      const componentParsedTag = this.parserInstant.tagParser.parse(firstTag, {
-        props: componentParsedData.props || {},
-        state: componentConfig.state || {},
-        methods: componentConfig.methods || {},
-      });
-
       const component: VComponentNode = pixelDOM.nodeFabric.create(
         componentConfig,
-        componentParsedData,
-        componentParsedTag
+        componentParsedData
       ) as VComponentNode;
 
-      const subTree = this.parserInstant.parseHTML(componentConfig.template.trim().slice(start, end), component);
+      const componentParsedTag = this.parserInstant.parseHTML(componentConfig.template, {
+        componentProps: componentParsedData.props || {},
+        state: componentConfig.state || {},
+        methods: this.bindMethods(componentConfig.methods || {}, component),
+      });
 
-      return subTree;
+      component.init(componentParsedTag);
+
+      return component;
     } catch (error) {
       throw new Error(error);
     }
   }
+
+  bindMethods = (methods: Methods, self: VComponentNode) =>
+    Object.entries(methods).reduce((acc: Methods, [key, value]: [string, Function]) => {
+      acc[key] = value.bind(self);
+      return acc;
+    }, {});
 }

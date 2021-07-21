@@ -1,7 +1,7 @@
-import { DFS, Stack } from '../utils';
 import { NODE_TYPE } from './const';
 import NodeFabric from './NodeFabric';
 import { ParentNodeType, VTextNode, VirtualNode } from './Nodes';
+import { EVENTS } from '../../const';
 
 class PixelDOM {
   static instantce: PixelDOM;
@@ -26,6 +26,8 @@ class PixelDOM {
 
   mountNode = (node: ParentNodeType): VirtualNode => {
     const domNode = window.document.createElement(node.tagName);
+    node.domEl = domNode;
+    node.eventBus.emit(EVENTS.NWM);
 
     Object.entries(node.props).forEach(([key, value]) => {
       domNode.setAttribute(key, value);
@@ -40,8 +42,6 @@ class PixelDOM {
         domNode.appendChild(child.domEl);
       }
     });
-
-    node.domEl = domNode;
 
     return node;
   };

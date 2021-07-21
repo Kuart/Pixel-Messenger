@@ -1,7 +1,7 @@
 import { Parser } from '../parser';
-import { ParentNodeType, VComponentNode, VirtualNode, State, IComponentModel, pixelDOM } from '../pixelDom';
+import { ParentNodeType, VirtualNode, State, IComponentModel, pixelDOM, VTextNode, VComponentNode } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
-import { COMPONENT_EVENTS } from '../../const';
+import { EVENTS } from '../../const';
 import { BFS } from '../utils';
 import { Store } from '../store';
 
@@ -24,8 +24,8 @@ class Pixel {
   };
 
   static CONST = {
-    CDM: COMPONENT_EVENTS.CDM,
-    CU: COMPONENT_EVENTS.CU,
+    CDM: EVENTS.CDM,
+    CU: EVENTS.NU,
   };
 
   protected static instance: Pixel;
@@ -142,6 +142,10 @@ class Pixel {
       }
 
       this.didMount();
+
+      setTimeout(() => {
+        this.unmount(this.VDOM);
+      }, 2000);
     } catch (error) {
       console.error(error);
     }
@@ -160,7 +164,7 @@ class Pixel {
   unmount = (VDOM: VirtualNode) => {
     const isRootUnmount = true;
     const callUnmount = (node: VirtualNode) => {
-      if (node instanceof VComponentNode) {
+      if (!(node instanceof VTextNode)) {
         node.eventBus.emit(Pixel.CONST.CU, isRootUnmount);
       }
     };

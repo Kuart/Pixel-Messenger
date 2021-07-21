@@ -1,8 +1,10 @@
-import { Props, State, Methods } from '../pixelDom';
+import { Props, State, Methods, VirtualNode, EventHandler } from '../pixelDom';
 
 interface IParsedTag {
   tagName: string;
   props: Props;
+  events: EventHandler;
+  children?: VirtualNode[];
 }
 
 interface IPropStorages {
@@ -16,4 +18,13 @@ interface IData {
   methods: Methods;
 }
 
-export { IParsedTag, IData, IPropStorages };
+interface IParentData {
+  componentProps: Props;
+  state: State;
+  methods: Methods;
+}
+
+type ISliceStore = [keyof IPropStorages, string];
+type ISliceStoreWithAlt = [keyof IPropStorages, string, keyof IPropStorages | string, string];
+
+export { IParsedTag, IData, IPropStorages, ISliceStore, ISliceStoreWithAlt, IParentData };

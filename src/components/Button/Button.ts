@@ -3,11 +3,8 @@ import './Button.css';
 
 export default function Button(): IComponentModel {
   return {
-    componentDidMount() {
-      console.log(this);
-    },
     template: /* html */ `
-      <button p:width="width">{{props.text}}</button>
+      <button p:class="button {{props.class}}" e:click="props.onClick">{{props.text}}</button>
     `,
   };
 }

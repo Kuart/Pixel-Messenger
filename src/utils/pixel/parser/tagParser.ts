@@ -1,15 +1,15 @@
 import { Parser } from '.';
 import { PREFIXES } from './const';
 import { IData, IParsedTag } from './parser.type';
-import { VComponentNode, EventHadnlerConfig, Props } from '../pixelDom';
-import { slicePropStorage, bindProps } from './utils';
+import { VComponentNode, EventHadnlerConfig, Props, EventHandler } from '../pixelDom';
+import { slicePropStorage, bindProps, takePropInStore } from './utils';
 
 export class TagParser {
   parserInstant: Parser;
 
-  attrRegExp: RegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
+  private attrRegExp: RegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
 
-  replaceRegExp = new RegExp(/{{([^{}]*)}}/g);
+  private replaceRegExp = /{{([^{}]*)}}/g;
 
   constructor(parser: Parser) {
     this.parserInstant = parser;
@@ -19,16 +19,18 @@ export class TagParser {
     const attrReg = new RegExp(this.attrRegExp);
     let attr: RegExpExecArray | null = null;
     let cleanName = '';
-    let type = '';
+
     let currentValue = '';
     let isMod = -1;
 
     const props: Props = {};
+    const events: EventHandler = new Map();
 
     do {
       attr = attrReg.exec(tagString);
 
       if (attr) {
+        let type = '';
         const [name, value] = attr[0].trim().split('=');
         currentValue = value ? value.substring(1, value.length - 1) : '';
         isMod = name.indexOf(':');
@@ -40,41 +42,35 @@ export class TagParser {
 
         if (!type) {
           props[name] = currentValue;
+        } else if (type === PREFIXES.PROPS) {
+          this.setProps(props, cleanName, data, currentValue);
         } else if (type === PREFIXES.BIND) {
           const [store, path] = slicePropStorage(currentValue);
           bindProps(props, cleanName, data[store], path);
         } else if (type === PREFIXES.EVENT) {
-        } else {
+          const event = takePropInStore(currentValue, data);
+          events.set(cleanName, event as Function);
         }
       }
     } while (attr);
 
-    return { props, tagName: this.getTagName(tagString) };
+    return { props, tagName: this.getTagName(tagString), events };
   }
 
-  /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor": ["props", "attrs"] }] */
-  setProps(name: string, currentValue: string, props: Props, attrs: Attributes, parentComponent?: VComponentNode) {
-    if (parentComponent && currentValue) {
-      let value = currentValue;
-      const reg = new RegExp(this.replaceRegExp);
-      const replacePaternString = reg.exec(value);
-      const isReplace = replacePaternString && replacePaternString[1];
+  setProps(props: Props, name: string, store: IData, valueString: string) {
+    const reg = new RegExp(this.replaceRegExp);
+    const temp = reg.exec(valueString);
 
-      if (isReplace) {
-        value = replacePaternString![1].trim();
-      }
-
-      if (value in parentComponent.props) {
-        let propValue = this.parseObjectPathTag(parentComponent.props, value);
-
-        if (isReplace) {
-          propValue = currentValue.replace(replacePaternString![0], propValue as string);
-        }
-
-        props[name] = propValue;
-        attrs[name] = propValue as string;
-      }
+    const isReplaceValue = temp !== null && temp[0];
+    let value = '';
+    if (isReplaceValue) {
+      const replaceValue = takePropInStore(temp[1], store);
+      value = valueString.replace(temp[0], replaceValue as string);
+    } else {
+      value = takePropInStore(valueString, store, store.props) as string;
     }
+
+    props[name] = value;
   }
 
   handleEvent = (name: string, currentValue: string, propHandlers: Record<string, EventHadnlerConfig>) => {

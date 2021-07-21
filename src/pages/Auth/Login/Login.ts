@@ -24,22 +24,26 @@ function Login(): IComponentModel {
     methods: {
       formFocusHandler(event: Event) {
         event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+        console.log(this);
+        /* FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE); */
       },
       formBlurHandler(event: Event) {
         event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+        console.log(this);
+        /* FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE); */
       },
       submitForm(event: Event) {
         event.preventDefault();
-        loginController.login(this.state);
+        console.log(this);
+        /*  loginController.login(this.state); */
       },
       replaceToRegister() {
-        PixelRouter.go(ROUTES.register);
+        /* PixelRouter.go(ROUTES.register); */
       },
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
+        console.warn(this.state);
       },
     },
     components: {
@@ -57,10 +61,11 @@ function Login(): IComponentModel {
         <div class="modal__body">
           <form 
             class="auth-form auth-form_login" 
-            e:submit="submitForm" 
-            e:focus="formFocusHandler" 
-            e:blur="formBlurHandler" 
-            id="${loginFormId}">
+            e:submit="methods.submitForm" 
+            e:focus="methods.formFocusHandler" 
+            e:blur="methods.formBlurHandler" 
+            id="${loginFormId}"
+            >
             <div class="auth-form__body">
               <Input 
                 label="Логин" 
@@ -68,7 +73,9 @@ function Login(): IComponentModel {
                 type="${FIELD_TYPE.login}" 
                 id="input${generateUniqId()}" 
                 b:error="state.errors.login"
-                b:value="state.formFields.login" />
+                b:value="state.formFields.login" 
+                b:onChange="methods.inputHandler"
+                />
 
               <Input 
                 label="Пароль" 
@@ -76,20 +83,25 @@ function Login(): IComponentModel {
                 type="password" 
                 id="input${generateUniqId()}" 
                 b:error="state.errors.password"
-                b:value="state.formFields.password"/>
+                b:value="state.formFields.password"
+                b:onChange="methods.inputHandler"
+                />
             </div>
             <footer class="auth-form__footer">
               <Button 
                 text="Авторизоваться" 
-                class="button button_accent" 
+                class="button_accent" 
                 type="button" 
-                e:click="submitForm" 
-                form="${loginFormId}"/>
+                b:onClick="methods.submitForm" 
+                form="${loginFormId}"
+              />
+
               <Button 
                 text="Нет аккаунта?" 
-                class="button button_transparent" 
+                class="button_transparent" 
                 type="button" 
-                e:click="replaceToRegister"/>
+                b:onClick="methods.replaceToRegister"
+              />
             </footer>
           </form>
         </div>             

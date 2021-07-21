@@ -4,6 +4,7 @@ type EventHadnlerConfig = { event: string; name: string; target?: HTMLElement; h
 type Listaner = { target: HTMLElement; type: string; listener: Function };
 
 type Methods = Record<string, Function>;
+type EventHandler = Map<string, Function>;
 type Props = Record<string, any>;
 type State = Record<string, any>;
 
@@ -17,7 +18,8 @@ interface IComponentModel extends Omit<IComponent, 'componentProps' | 'methods' 
 interface IInitiatedComponent extends IComponent {
   components?: Record<string, Function>;
   name: string;
+  methods?: Methods;
   template: string;
 }
 
-export { Methods, Props, State, IComponentModel, Listaner, EventHadnlerConfig, IInitiatedComponent };
+export { Methods, Props, State, IComponentModel, Listaner, EventHadnlerConfig, IInitiatedComponent, EventHandler };

@@ -1,15 +1,16 @@
-import { Parser } from '.';
-import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods } from '../pixelDom';
+import PixelParser from './parser';
+import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods, Props } from '../pixelDom';
 import { IParentData } from './parser.type';
+import { Pixel } from '../root';
 
 export class ComponentParser {
-  parserInstant: Parser;
+  parserInstant: PixelParser;
 
   componentNameRegExp = /<\/?[\s*]?([^\s]+?)[/\s>]/;
 
   tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 
-  constructor(parser: Parser) {
+  constructor(parser: PixelParser) {
     this.parserInstant = parser;
   }
 
@@ -18,10 +19,10 @@ export class ComponentParser {
       const { componentProps = {}, state = {}, methods = {} } = parentData || {};
 
       const [notCleanName, componentName] = html.match(this.componentNameRegExp)!;
-      const componentConfig: IInitiatedComponent = this.parserInstant.instance.callComponentModel(componentName);
+      const componentConfig: IInitiatedComponent = Pixel.callComponentModel(componentName);
 
       if (componentConfig.components) {
-        this.parserInstant.instance.registerComponents(componentConfig.components);
+        Pixel.registerComponents(componentConfig.components);
       }
 
       const componentParsedData = this.parserInstant.tagParser.parse(html.slice(notCleanName.length), {
@@ -49,9 +50,28 @@ export class ComponentParser {
     }
   }
 
-  bindMethods = (methods: Methods, self: VComponentNode) =>
-    Object.entries(methods).reduce((acc: Methods, [key, value]: [string, Function]) => {
+  reParse(name: string, data?: Props) {
+    const componentConfig: IInitiatedComponent = Pixel.callComponentModel(name);
+
+    const component: VComponentNode = pixelDOM.nodeFabric.create(componentConfig, data) as VComponentNode;
+
+    const componentParsedTag = this.parserInstant.parseHTML(componentConfig.template, {
+      componentProps: data || {},
+      state: componentConfig.state || {},
+      methods: this.bindMethods(componentConfig.methods || {}, component),
+    });
+
+    component.init(componentParsedTag);
+
+    return component;
+  }
+
+  bindMethods = (methods: Methods, self: VComponentNode) => {
+    const methodsEntries = Object.entries(methods);
+
+    return methodsEntries.reduce((acc: Methods, [key, value]: [string, Function]) => {
       acc[key] = value.bind(self);
       return acc;
     }, {});
+  };
 }

@@ -24,26 +24,23 @@ function Login(): IComponentModel {
     methods: {
       formFocusHandler(event: Event) {
         event.preventDefault();
-        console.log(this);
-        /* FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE); */
+        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
       formBlurHandler(event: Event) {
         event.preventDefault();
-        console.log(this);
-        /* FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE); */
+        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
       },
       submitForm(event: Event) {
         event.preventDefault();
-        console.log(this);
-        /*  loginController.login(this.state); */
+        loginController.login(this.state);
       },
-      replaceToRegister() {
-        /* PixelRouter.go(ROUTES.register); */
+      replaceToRegister(event: Event) {
+        event.preventDefault();
+        PixelRouter.go(ROUTES.register);
       },
       inputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state.formFields[name] = value;
-        console.warn(this.state);
       },
     },
     components: {

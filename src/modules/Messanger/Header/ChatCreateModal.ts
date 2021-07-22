@@ -19,7 +19,7 @@ export function ChatCreateModal(): IComponentModel {
       Button,
     },
     methods: {
-      createChatInputHandler(event: CustomEventTarget<HTMLInputElement>) {
+      chatInputHandler(event: CustomEventTarget<HTMLInputElement>) {
         const { name, value } = event.target;
         this.state[name] = value;
       },
@@ -28,7 +28,6 @@ export function ChatCreateModal(): IComponentModel {
         chatController.createChat(this.state);
       },
     },
-    usedProps: ['chatCteateModal'],
     template: /* html */ `
     <div p:class="chatCteateModal" >
       <div class="modal-window__container">
@@ -39,20 +38,20 @@ export function ChatCreateModal(): IComponentModel {
         <div class="modal-window__body">
           <form class="modal-window__form" id="id-create-chat">
               <Input 
-                s:label="Название чата"
-                e:input="createChatInputHandler" 
-                s:name="title" 
-                s:type="text" 
-                s:id="input${generateUniqId()}" 
-                b:errors="error"
+                label="Название чата"
+                b:onChange="chatInputHandler" 
+                name="title" 
+                type="text" 
+                id="input${generateUniqId()}" 
+                b:error="error"
                 b:value="title" />
 
               <footer class="modal-window__footer">
                 <Button 
-                  s:text="ОК" 
+                  text="ОК" 
                   class="button button_accent button_accent-short" 
-                  s:type="button" 
-                  e:click="createChatSubmitForm" 
+                  type="button" 
+                  b:onClick="methods.createChatSubmitForm" 
                   form="id-create-chat"/>
               </footer>
             </form>

@@ -25,6 +25,8 @@ class Router {
 
   private history: History;
 
+  private currentPlace: string;
+
   private withAuth: boolean = true;
 
   private isAuth: boolean = false;
@@ -134,10 +136,13 @@ class Router {
       currentRoute = 'wrong';
     }
 
-    if (this.withAuth) {
-      this.replaceWithAuth(currentRoute);
-    } else {
-      this.changeLayout(this.routes[currentRoute].component);
+    if (this.currentPlace !== currentRoute) {
+      if (this.withAuth) {
+        this.replaceWithAuth(currentRoute);
+      } else {
+        this.changeLayout(this.routes[currentRoute].component);
+      }
+      this.currentPlace = currentRoute;
     }
   };
 

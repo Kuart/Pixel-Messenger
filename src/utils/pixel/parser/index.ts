@@ -1,4 +1,2 @@
-import Parser from './parser';
-import { IParsedTag, Attributes } from './parser.type';
-
-export { Parser, IParsedTag, Attributes };
+export { Parser } from './parser';
+export { IParsedTag } from './parser.type';

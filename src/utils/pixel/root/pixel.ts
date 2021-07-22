@@ -1,5 +1,5 @@
 import { Parser } from '../parser';
-import { ParentNodeType, VirtualNode, State, IComponentModel, pixelDOM, VTextNode, VComponentNode } from '../pixelDom';
+import { ParentNodeType, VirtualNode, State, IComponentModel, pixelDOM, VTextNode } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
 import { EVENTS } from '../../const';
 import { BFS } from '../utils';
@@ -24,7 +24,7 @@ class Pixel {
   };
 
   static CONST = {
-    CDM: EVENTS.CDM,
+    CDM: EVENTS.NDM,
     CU: EVENTS.NU,
   };
 
@@ -35,8 +35,6 @@ class Pixel {
   public store: Store;
 
   private root: Element;
-
-  private parser: Parser;
 
   private VDOM: ParentNodeType;
 
@@ -51,7 +49,6 @@ class Pixel {
       return Pixel.instance;
     }
 
-    this.parser = new Parser(this);
     this.router = new Router(this);
     this.store = new Store(this);
 
@@ -116,7 +113,7 @@ class Pixel {
         this.unmount(this.VDOM);
       }
 
-      this.VDOM = this.parser.parseHTML(template);
+      this.VDOM = Parser.parseHTML(template);
 
       if (!this.VDOM) {
         throw Error(Pixel.ERROR.VDOM_NF);
@@ -130,36 +127,21 @@ class Pixel {
 
   mount = (VDOM: ParentNodeType) => {
     try {
-      pixelDOM.mountNode(this.VDOM);
+      pixelDOM.render(VDOM);
 
       if (!VDOM.domEl) {
         throw Error(Pixel.ERROR.ROOT_DOM_NF(VDOM.tagName));
       }
+
       if (this.root.childNodes.length) {
         this.root.replaceChild(VDOM.domEl, this.root.childNodes[0]);
       } else {
         this.root.appendChild(VDOM.domEl);
       }
-
-      this.didMount();
-
-      setTimeout(() => {
-        this.unmount(this.VDOM);
-      }, 2000);
     } catch (error) {
       console.error(error);
     }
   };
-
-  didMount() {
-    const callCDM = (node: VirtualNode) => {
-      if (node instanceof VComponentNode) {
-        node.eventBus.emit(Pixel.CONST.CDM);
-      }
-    };
-
-    BFS(this.VDOM, callCDM);
-  }
 
   unmount = (VDOM: VirtualNode) => {
     const isRootUnmount = true;

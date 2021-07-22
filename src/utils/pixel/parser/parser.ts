@@ -1,4 +1,3 @@
-import { Pixel } from '..';
 import { ParentNodeType, pixelDOM, VCommonNode, VirtualNode, VTextNode } from '../pixelDom';
 import { Stack } from '../utils';
 import { TagParser } from './tagParser';
@@ -19,13 +18,10 @@ export default class PixelParser {
 
   textParser: TextParser;
 
-  instance: typeof Pixel;
-
-  constructor(instance: typeof Pixel) {
+  constructor() {
     this.tagParser = new TagParser(this);
     this.componentParser = new ComponentParser(this);
     this.textParser = new TextParser(this);
-    this.instance = instance;
   }
 
   parseHTML(html: string, parentProps?: IParentData): ParentNodeType {
@@ -88,12 +84,6 @@ export default class PixelParser {
 
     if (parent) {
       parent.children.push(node);
-
-      if (!(node instanceof VTextNode)) {
-        pixelDOM.mountNode(node);
-      } else if (node instanceof VTextNode) {
-        pixelDOM.mountTextNode(node);
-      }
     } else if (!(node instanceof VTextNode)) {
       stack.push(node);
     }
@@ -103,3 +93,5 @@ export default class PixelParser {
 
   isXHTML = (tag: string) => tag[tag.length - 2] === '/';
 }
+
+export const Parser = new PixelParser();

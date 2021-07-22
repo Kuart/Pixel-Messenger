@@ -10,9 +10,13 @@ import {
 } from './Nodes';
 
 export default class NodeFabric {
-  public create(config: IInitiatedComponent | INodeProps | ITextNodeProps, componentParsed?: IParsedTag) {
+  public create(
+    config: IInitiatedComponent | INodeProps | ITextNodeProps,
+    componentParsed?: IParsedTag,
+    componentHtmlString?: string
+  ) {
     if ('name' in config) {
-      return this.createComponent(config, componentParsed!);
+      return this.createComponent(config, componentParsed!, componentHtmlString);
     }
 
     if ('tagName' in config) {
@@ -26,11 +30,17 @@ export default class NodeFabric {
 
   private createText = (props: ITextNodeProps): VTextNode => new VTextNode(props);
 
-  private createComponent = (componentConfig: IInitiatedComponent, parsed: IParsedTag): VComponentNode => {
+  private createComponent = (
+    componentConfig: IInitiatedComponent,
+    parsed: IParsedTag,
+    componentHtmlString?: string
+  ): VComponentNode => {
     const props: IComponentOptions = {
+      html: componentHtmlString || '',
       componentProps: parsed.props,
       state: componentConfig.state,
       name: componentConfig.name,
+      methods: componentConfig.methods || {},
       componentDidMount: componentConfig.componentDidMount,
     };
 

@@ -17,7 +17,6 @@ export function ChatList(): IComponentModel {
     state: {
       searchValue: '',
     },
-    pixelStore: ['filteredChats'],
     componentDidMount() {
       chatListController.getChats();
     },
@@ -32,14 +31,14 @@ export function ChatList(): IComponentModel {
     <aside class="messanger__chat-list" >
       <form class="search-form">
         <SearchInput 
-          s:name="search" 
-          s:class="search-form__contol" 
-          e:input="filterChatList" 
-          s:placeholder="Поиск" 
-          d:value="searchValue" />
+          name="search" 
+          class="search-form__contol" 
+          placeholder="Поиск" 
+          b:onChange="methods.filterChatList" 
+          b:value="state.searchValue" />
       </form>
-      <List d:filteredChats="filteredChats" />
     </aside>
     `,
   };
 }
+/* <List b:filteredChats="filteredChats" /> */

@@ -18,7 +18,9 @@ export function Chat(): IComponentModel {
     state: {
       messages,
     },
-    methods: {},
+    methods: {
+      click() {},
+    },
     components: {
       Input,
       Message,
@@ -30,15 +32,15 @@ export function Chat(): IComponentModel {
     <main class="messanger__chat">
       <div class="chat__container">
         <div class="chat__messages-area">
-          <Message loop:messages />
+          
         </div>
         <div class="chat__input-area">
           <UserPhoto 
-            s:containerClass="user-avatar__container_input" s
-            :imgClass="user-avatar__img_input" s:photo="${avatar}" />
+            containerClass="user-avatar__container_input" 
+            imgClass="user-avatar__img_input" photo="${avatar}" />
           <form class="chat__message-form" >
             <div class="message-form__textarea-wraper">
-              <Textarea s:placeholder="Сообщение" s:name="newMessage"/>
+              
               <img src="${clip}" class="message-form__options"/>
             </div>
             <div class="message-form__action-line">
@@ -49,16 +51,18 @@ export function Chat(): IComponentModel {
                 <img src="${pink}" class="emoji"/>
               </div>
 
-              <Button s:text="" class="button button_transparent button_transparent_send" />
+              <Button text="" class="button_transparent button_transparent_send" b:onClick="methods.click" />
             </div>
             
           </form>
           <UserPhoto 
-            s:containerClass="user-avatar__container_input" 
-            s:imgClass="user-avatar__img_input" s:photo="${user9}" />
+            containerClass="user-avatar__container_input" 
+            imgClass="user-avatar__img_input" photo="${user9}" />
         </div>
       </div>
     </main>
     `,
   };
 }
+/* <Message loop:messages /> */
+/* <Textarea placeholder="Сообщение" name="newMessage"/> */

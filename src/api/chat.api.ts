@@ -2,7 +2,7 @@ import { BaseAPI } from './base-api';
 import { IChat } from '../modules';
 
 export class ChatAPI extends BaseAPI {
-  getChats(): Promise<IChat[]> {
+  getChats(): Promise<any> {
     return this.http.get('');
   }
 

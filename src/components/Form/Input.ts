@@ -14,7 +14,8 @@ export function Input(): IComponentModel {
           p:placeholder="{{props.placeholder || ''}}" 
           p:id="id" 
           p:value="value"
-          e:input="props.onChange" />
+          e:input="props.onChange"
+        />
         <span class="input__underline"></span>
       </div>
       <div class="input__error">{{props.error}}</div>

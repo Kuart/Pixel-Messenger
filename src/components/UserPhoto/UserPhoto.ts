@@ -3,10 +3,9 @@ import './UserPhoto.css';
 
 export function UserPhoto(): IComponentModel {
   return {
-    usedProps: ['containerClass', 'photo', 'imgClass'],
     template: /* html */ `
-    <div p:class="user-avatar__container {{containerClass}}">
-      <img p:src="photo" p:class="user-avatar__img {{imgClass}}" />
+    <div p:class="user-avatar__container {{props.containerClass}}">
+      <img p:src="photo" p:class="user-avatar__img {{props.imgClass}}" />
     </div>>
     `,
   };

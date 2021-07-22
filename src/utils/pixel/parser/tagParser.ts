@@ -1,7 +1,7 @@
 import { Parser } from '.';
 import { PREFIXES } from './const';
 import { IData, IParsedTag } from './parser.type';
-import { VComponentNode, EventHadnlerConfig, Props, EventHandler } from '../pixelDom';
+import { Props, EventHandler } from '../pixelDom';
 import { slicePropStorage, bindProps, takePropInStore } from './utils';
 
 export class TagParser {
@@ -72,34 +72,6 @@ export class TagParser {
 
     props[name] = value;
   }
-
-  handleEvent = (name: string, currentValue: string, propHandlers: Record<string, EventHadnlerConfig>) => {
-    propHandlers[currentValue] = { event: name, name: currentValue };
-  };
-
-  conditionHandler = (name: string, currentValue: string, attrs: Attributes, parentComponent?: VComponentNode) => {
-    if (parentComponent) {
-      const isFalseType = name[0] === '!';
-      let parentProp = false;
-      let prop = isFalseType ? name.slice(1) : name;
-
-      if (prop[prop.length - 1] === '>') {
-        prop = prop.slice(0, -1);
-      }
-
-      if (prop in parentComponent.props) {
-        parentProp = parentComponent.props[prop] as boolean;
-      } else if (prop in parentComponent.state) {
-        parentProp = parentComponent.props[prop] as boolean;
-      }
-
-      if (!parentProp && !isFalseType) {
-        attrs.style = 'display: none';
-      } else if (parentProp && isFalseType) {
-        attrs.style = 'display: none';
-      }
-    }
-  };
 
   getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim().replace('>', '');
 }

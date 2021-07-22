@@ -3,16 +3,15 @@ import './Input.css';
 
 export function SearchInput(): IComponentModel {
   return {
-    usedProps: ['name', 'placeholder', 'class', 'value'],
     template: /* html */ `
     <div class="input">
       <input 
+        type="search" 
         p:class="class" 
         p:name="name" 
-        type="search" 
         p:placeholder="placeholder" 
-        e:input="inputHandler"
         p:value="value"
+        e:input="props.onChange"
         />
     </div>`,
   };

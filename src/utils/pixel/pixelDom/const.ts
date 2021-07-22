@@ -4,4 +4,10 @@ enum NODE_TYPE {
   COMPONENT_NODE = 'COMPONENT_NODE',
 }
 
-export { NODE_TYPE };
+enum PATCH_TYPE {
+  ADD = 'ADD',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+}
+
+export { NODE_TYPE, PATCH_TYPE };

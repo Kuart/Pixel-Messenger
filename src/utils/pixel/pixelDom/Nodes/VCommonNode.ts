@@ -20,7 +20,7 @@ export class VCommonNode extends VParentNode {
   }
 
   registerEvents() {
-    this.eventBus.on(EVENTS.NWM, this.nodeWillMount.bind(this));
+    this.eventBus.on(EVENTS.NDM, this.nodeDidMount.bind(this));
     this.eventBus.on(EVENTS.NU, this.nodeUnmount.bind(this));
   }
 

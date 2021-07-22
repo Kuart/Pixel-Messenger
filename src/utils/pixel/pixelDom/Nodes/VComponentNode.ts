@@ -1,18 +1,17 @@
 import { EVENTS } from '../../../const';
-import { NODE_TYPE } from '../pixelDom';
+import { NODE_TYPE, pixelDOM } from '../pixelDom';
 import { createProxyObject } from '../../utils';
-import { Props, State } from './componentNode.type';
-import { ParentNodeType, IComponentOptions, IInitOptions } from './nodes.type';
+import { Props, State, Methods } from './componentNode.type';
+import { ParentNodeType, IComponentOptions } from './nodes.type';
 import { VParentNode } from './abstract';
 import { IPixelStoreUpdateProp } from '../../store';
+import { Parser } from '../../parser';
 
 export class VComponentNode extends VParentNode {
   static EVENTS = {
-    CWM: EVENTS.NWM,
-    CDM: EVENTS.CDM,
+    CDM: EVENTS.NDM,
     CDU: 'component-did-update',
     CU: EVENTS.NU,
-    RENDER: 'render',
     PSU: EVENTS.PSU,
   };
 
@@ -26,6 +25,8 @@ export class VComponentNode extends VParentNode {
 
   pixelStore: Set<string> = new Set();
 
+  methods: Methods;
+
   state: State;
 
   componentProps: Props;
@@ -36,6 +37,7 @@ export class VComponentNode extends VParentNode {
     this.name = options.name;
 
     this.keyIndex = 0;
+    this.methods = options.methods;
     this.componentProps = createProxyObject(options.componentProps, this.defaultPropsHandler.bind(this));
     this.state = createProxyObject(options.state, this.defaultPropsHandler.bind(this));
     this.componentDidMountFunc = options.componentDidMount || null;
@@ -52,16 +54,11 @@ export class VComponentNode extends VParentNode {
   }
 
   registerEvents() {
-    /* dom node created but not insert to DOM */
-    this.eventBus.on(VComponentNode.EVENTS.CWM, this.nodeWillMount.bind(this));
     /* node added to DOM */
-    this.eventBus.on(VComponentNode.EVENTS.CDM, this.componentDidMount.bind(this));
+    this.eventBus.on(VComponentNode.EVENTS.CDM, this.nodeDidMount.bind(this, this.componentDidMount.bind(this)));
     this.eventBus.on(VComponentNode.EVENTS.CDU, this.componentDidUpdate.bind(this));
     /*  node removed from DOM */
     this.eventBus.on(VComponentNode.EVENTS.CU, this.nodeUnmount.bind(this));
-    this.eventBus.on(VComponentNode.EVENTS.RENDER, this.redraw.bind(this));
-    /* this.eventBus.on(VComponentNode.EVENTS.PSU, this.pixelStoreUpdate.bind(this));
-    this.eventBus.on(VComponentNode.EVENTS.PSU, this.pixelStoreUpdate.bind(this)); */
   }
 
   defaultPropsHandler(args: any) {
@@ -87,13 +84,14 @@ export class VComponentNode extends VParentNode {
     }
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    const newTree = Parser.componentParser.reParse(this.name, this.componentProps);
+    pixelDOM.patch(this, newTree);
+  }
 
   setNewPixelStoreProps([field, value]: IPixelStoreUpdateProp) {
     if (field in this.props) {
       this.props[field] = value;
     }
   }
-
-  redraw = () => {};
 }

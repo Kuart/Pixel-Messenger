@@ -10,11 +10,11 @@ export function Message(): IComponentModel {
         <img p:src="photo" class="user-avatar__img user-avatar__img_message" />
       </div>
       <div class="messages-area__content">
-        <span class="content__author content__author_own" if:isAuthor  >{{author}}</span>
-        <span class="content__author" else:!isAuthor >{{author}}</span>
-        <p class="content__message">{{message}}</p>
+        <span class="content__author content__author_own" if:isAuthor  >{{props.author}}</span>
+        <span class="content__author" else:!isAuthor >{{props.author}}</span>
+        <p class="content__message">{{props.message}}</p>
       </div>
-      <div class="messages-area__time">{{time}}</div>
+      <div class="messages-area__time">{{props.time}}</div>
     </article>
     `,
   };

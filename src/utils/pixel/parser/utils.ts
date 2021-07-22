@@ -40,7 +40,7 @@ const slicePropStorage = (value: string): ISliceStore | ISliceStoreWithAlt => {
     }
 
     if (!PROP_STORAGES[store]) {
-      throw Error(ERRORS.missedBindStore);
+      throw Error(ERRORS.missedBindStore(value));
     }
 
     return [PROP_STORAGES[store], path.join('.'), altStore, altPath];
@@ -49,7 +49,7 @@ const slicePropStorage = (value: string): ISliceStore | ISliceStoreWithAlt => {
   const [store, ...path] = value.split('.');
 
   if (!PROP_STORAGES[store]) {
-    throw Error(ERRORS.missedBindStore);
+    throw Error(ERRORS.missedBindStore(value));
   }
 
   return [PROP_STORAGES[store], path.join('.')];

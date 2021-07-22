@@ -65,74 +65,100 @@ function Registration(): IComponentModel {
         </header>
         <div class="modal__body">
           <form class="auth-form auth-form_login" 
-                e:submit="submitForm" 
-                e:blur="formBlurHandler" 
-                e:focus="formFocusHandler">
+                e:submit="methods.submitForm" 
+                e:blur="methods.formBlurHandler" 
+                e:focus="methods.formFocusHandler">
+
             <div class="auth-form__body auth-form__body--register">
-              <Input 
-                s:label="Почта" 
-                s:name="email" 
-                s:type="email" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.email"
-                b:errors="errors.email"/>
 
               <Input 
-                s:label="Логин" 
-                s:name="login" 
-                s:type="text" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.login"
-                b:errors="errors.login"/>
+                label="Почта" 
+                name="email" 
+                type="email" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.email"
+                b:error="state.errors.email"
+                b:onChange="methods.inputHandler"
+              />
 
               <Input 
-                s:label="Имя" 
-                s:name="first_name" 
-                s:type="text" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.first_name"
-                b:errors="errors.first_name"/>
+                label="Логин" 
+                name="login" 
+                type="text" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.login"
+                b:error="state.errors.login"
+                b:onChange="methods.inputHandler"
+              />
 
               <Input 
-                s:label="Фамилия" 
-                s:name="second_name" 
-                s:type="text" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.second_name"
-                b:errors="errors.second_name"/>
+                label="Имя" 
+                name="first_name" 
+                type="text" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.first_name"
+                b:error="state.errors.first_name"
+                b:onChange="methods.inputHandler"
+              />
 
               <Input 
-                s:label="Телефон" 
-                s:name="phone" 
-                s:type="tel" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.phone"
-                b:errors="errors.phone"/>
+                label="Фамилия" 
+                name="second_name" 
+                type="text" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.second_name"
+                b:error="state.errors.second_name"
+                b:onChange="methods.inputHandler"
+              />
 
               <Input 
-                s:label="Пароль" 
-                s:name="password" 
-                s:type="password" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.password"
-                b:errors="errors.password"/>
+                label="Телефон" 
+                name="phone" 
+                type="tel" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.phone"
+                b:error="state.errors.phone"
+                b:onChange="methods.inputHandler"
+              />
 
               <Input 
-                s:label="Повторите пароль" 
-                s:name="passwordRepeat" 
-                s:type="password" 
-                s:id="input${generateUniqId()}" 
-                b:value="formFields.passwordRepeat"
-                b:errors="errors.passwordRepeat"/>
+                label="Пароль" 
+                name="password" 
+                type="password" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.password"
+                b:error="state.errors.password"
+                b:onChange="methods.inputHandler"
+              />
+
+              <Input 
+                label="Повторите пароль" 
+                name="passwordRepeat" 
+                type="password" 
+                id="input${generateUniqId()}" 
+                b:value="state.formFields.passwordRepeat"
+                b:error="state.errors.passwordRepeat"
+                b:onChange="methods.inputHandler"
+              />
               
             </div>
+
             <footer class="auth-form__footer">
-              <Button s:text="Войти" class="button button_accent" type="submit" e:click="submitForm"/>
+
               <Button 
-                s:text="Уже есть аккаунт" 
+                text="Войти" 
+                class="button_accent" 
+                type="submit" 
+                b:onClick="methods.submitForm"
+              />
+
+              <Button 
+                text="Уже есть аккаунт" 
                 class="button button_transparent" 
                 type="button" 
-                e:click="replaceToLogin"/>
+                b:onClick="methods.replaceToLogin"
+              />
+
             </footer>
           </form>
         </div>              

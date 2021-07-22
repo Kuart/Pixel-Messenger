@@ -8,7 +8,7 @@ import { IPropStorages } from './parser.type';
 */
 
 export const ERRORS = {
-  missedBindStore: 'The binding string does not refer to valid objects - IPropStorages',
+  missedBindStore: (value: string) => `The binding string (${value}) does not refer to valid objects - IPropStorages`,
   missedBindProperty: (prop: string) => `IPropStorages storage does't have "${prop}"`,
 };
 

@@ -6,7 +6,6 @@ export function List(): IComponentModel {
     components: {
       ListItem,
     },
-    usedProps: ['filteredChats'],
     template: /* html */ ` 
       <ul class="chat-list__list" if:filteredChats.length>
         <ListItem loop:filteredChats />

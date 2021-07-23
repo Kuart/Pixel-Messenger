@@ -1,5 +1,5 @@
 import PixelParser from './parser';
-import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods, Props } from '../pixelDom';
+import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods, Props, State } from '../pixelDom';
 import { IParentData } from './parser.type';
 import { Pixel } from '../root';
 
@@ -14,7 +14,7 @@ export class ComponentParser {
     this.parserInstant = parser;
   }
 
-  parse(html: string, parentData?: IParentData): ParentNodeType {
+  parse(html: string, parentData?: IParentData): ParentNodeType | null {
     try {
       const { componentProps = {}, state = {}, methods = {} } = parentData || {};
 
@@ -30,6 +30,10 @@ export class ComponentParser {
         state,
         methods,
       });
+
+      if (!componentParsedData.isDisplay) {
+        return null;
+      }
 
       const component: VComponentNode = pixelDOM.nodeFabric.create(
         componentConfig,
@@ -50,14 +54,16 @@ export class ComponentParser {
     }
   }
 
-  reParse(name: string, data?: Props) {
+  reParse(name: string, data?: Props, state?: State, methods?: Methods) {
     const componentConfig: IInitiatedComponent = Pixel.callComponentModel(name);
+
+    componentConfig.state = state || componentConfig.state;
 
     const component: VComponentNode = pixelDOM.nodeFabric.create(componentConfig, data) as VComponentNode;
 
     const componentParsedTag = this.parserInstant.parseHTML(componentConfig.template, {
       componentProps: data || {},
-      state: componentConfig.state || {},
+      state: state || {},
       methods: this.bindMethods(componentConfig.methods || {}, component),
     });
 
@@ -68,7 +74,6 @@ export class ComponentParser {
 
   bindMethods = (methods: Methods, self: VComponentNode) => {
     const methodsEntries = Object.entries(methods);
-
     return methodsEntries.reduce((acc: Methods, [key, value]: [string, Function]) => {
       acc[key] = value.bind(self);
       return acc;

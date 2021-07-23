@@ -9,5 +9,4 @@ export interface INode {
   parent: ParentNodeType;
   key: string;
   setParentNode(parent: ParentNodeType): void;
-  setNewPixelStoreProps([field, value]: [string, any]): void;
 }

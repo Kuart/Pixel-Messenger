@@ -27,6 +27,7 @@ export function ChatList(): IComponentModel {
         chatListController.filterChats(value);
       },
     },
+    pixelStore: ['filteredChats'],
     template: /* html */ ` 
     <aside class="messanger__chat-list" >
       <form class="search-form">
@@ -37,8 +38,8 @@ export function ChatList(): IComponentModel {
           b:onChange="methods.filterChatList" 
           b:value="state.searchValue" />
       </form>
+      <List b:filteredChats="props.filteredChats" />
     </aside>
     `,
   };
 }
-/* <List b:filteredChats="filteredChats" /> */

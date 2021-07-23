@@ -18,6 +18,4 @@ export default abstract class VNode implements INode {
   key: string = uuid();
 
   abstract setParentNode(parent: ParentNodeType): void;
-
-  abstract setNewPixelStoreProps([field, value]: [string, any]): void;
 }

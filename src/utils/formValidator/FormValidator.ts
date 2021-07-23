@@ -20,11 +20,10 @@ class Validator {
     tel: /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{7,10}$/,
   };
 
-  /*  prettier-ignore */
   validate(
     state: Record<string, Record<string, string | number>>,
     config: IValidatorConfig,
-    fieldsType: Record<string, string | Record<string, string>>,
+    fieldsType: Record<string, string | Record<string, string>>
   ) {
     let isFullValid = true;
 
@@ -35,13 +34,15 @@ class Validator {
         const fieldValue = state[config.form][field].toString().trim();
 
         if (!fieldValue) {
-          isFullValid = false;
-          state[config.errors][field] = Validator.ERROR_MESSAGES.empty;
+          if (!config.ignoreEmpty) {
+            isFullValid = false;
+            state[config.errors][field] = Validator.ERROR_MESSAGES.empty;
+          }
         } else if (typeof typeConfig === 'object') {
           this.handleUncommon(
             typeConfig,
             state[config.form] as Record<string, string>,
-            state[config.errors] as Record<string, string>,
+            state[config.errors] as Record<string, string>
           );
         } else {
           const isValid = this.rules[typeConfig].test(fieldValue);

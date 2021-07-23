@@ -6,6 +6,9 @@ enum NODE_TYPE {
 
 enum PATCH_TYPE {
   ADD = 'ADD',
+  TEXT = 'TEXT',
+  PROPS = 'PROPS',
+  REPLACE = 'REPLACE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
 }

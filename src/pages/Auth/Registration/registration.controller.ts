@@ -1,8 +1,7 @@
 import { BASE_URLS } from '../../../api';
-import { FormValidator } from '../../../utils';
+import { FormValidator, PixelRouter } from '../../../utils';
 import { RegistrationAPI } from './registration.api';
 import { FIELD_TYPE, AUTH_ERRORS } from '../const';
-import { root } from '../../..';
 import { ROUTES } from '../../../routes';
 
 const api = new RegistrationAPI(BASE_URLS.auth);
@@ -18,9 +17,9 @@ export class RegisterController {
       }
 
       await api.register(data[validationConfig.form]);
-      root.router.go(ROUTES.login);
+      PixelRouter.go(ROUTES.messanger);
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
   };
 }

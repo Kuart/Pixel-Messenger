@@ -21,8 +21,8 @@ export class TextParser {
       if (temp && temp[0]) {
         const [store, path] = slicePropStorage(temp[1]);
         const props = {};
-        bindProps(props, path, data[store], path);
 
+        bindProps(props, path, data[store], path);
         return pixelDOM.nodeFabric.create({ props, text }) as VTextNode;
       }
 

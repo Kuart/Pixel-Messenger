@@ -1,4 +1,4 @@
-import { COMPONENT_EVENTS } from '../../const';
+import { EVENTS } from '../../const';
 import { ParentNodeType } from '../pixelDom';
 import { Pixel } from '../root';
 import { ICurrentUserStore } from './store.type';
@@ -84,7 +84,7 @@ export class Store {
   protected emit = (field: string) => {
     if (this.listeners[field]) {
       this.listeners[field].forEach((listener) => {
-        listener.eventBus.emit(COMPONENT_EVENTS.PSU, [field, this.store[field]]);
+        listener.eventBus.emit(EVENTS.PSU, [field, this.store[field]]);
       });
     }
   };

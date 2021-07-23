@@ -1,4 +1,4 @@
-import { FormValidator, generateUniqId, IComponentModel, PixelRouter } from '../../../utils';
+import { FormValidator, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button, PagesContainer } from '../../../components';
 import { CustomEventTarget } from '../../../types';
 import { FIELD_TYPE } from '../const';
@@ -7,6 +7,8 @@ import { LoginController } from './login.controller';
 import '../Auth.css';
 
 const loginController = new LoginController();
+
+const validConfig = { form: 'formFields', errors: 'errors', ignoreEmpty: true };
 
 function Login(): IComponentModel {
   const loginFormId = 'id-login_form';
@@ -22,13 +24,11 @@ function Login(): IComponentModel {
       },
     },
     methods: {
-      formFocusHandler(event: Event) {
-        event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+      formFocusHandler() {
+        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
       },
-      formBlurHandler(event: Event) {
-        event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+      formBlurHandler() {
+        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
       },
       submitForm(event: Event) {
         event.preventDefault();
@@ -68,7 +68,7 @@ function Login(): IComponentModel {
                 label="Логин" 
                 name="login" 
                 type="${FIELD_TYPE.login}" 
-                id="input${generateUniqId()}" 
+                id="login_input_login" 
                 b:error="state.errors.login"
                 b:value="state.formFields.login" 
                 b:onChange="methods.inputHandler"
@@ -78,7 +78,7 @@ function Login(): IComponentModel {
                 label="Пароль" 
                 name="${FIELD_TYPE.password}" 
                 type="password" 
-                id="input${generateUniqId()}" 
+                id="login_input_password" 
                 b:error="state.errors.password"
                 b:value="state.formFields.password"
                 b:onChange="methods.inputHandler"

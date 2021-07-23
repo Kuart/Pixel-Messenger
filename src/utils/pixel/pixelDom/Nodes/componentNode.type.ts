@@ -4,16 +4,16 @@ type EventHadnlerConfig = { event: string; name: string; target?: HTMLElement; h
 type Listaner = { target: HTMLElement; type: string; listener: Function };
 
 type Methods = Record<string, Function>;
-type EventHandler = Map<string, Function>;
 type Props = Record<string, any>;
 type State = Record<string, any>;
+type EventHandler = Map<string, Function>;
 
-interface IComponentModel extends Omit<IComponent, 'componentProps' | 'methods' | 'state'> {
+interface IComponentModel extends Omit<IComponent, 'componentProps' | 'methods' | 'state' | 'pixelStore'> {
   components?: Record<string, Function>;
-  usedProps?: string[];
   template: string;
   methods?: Methods;
   state?: State;
+  pixelStore?: string[];
 }
 interface IInitiatedComponent extends IComponent {
   components?: Record<string, Function>;

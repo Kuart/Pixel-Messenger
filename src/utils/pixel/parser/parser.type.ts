@@ -4,6 +4,7 @@ interface IParsedTag {
   tagName: string;
   props: Props;
   events: EventHandler;
+  isDisplay: boolean;
   children?: VirtualNode[];
 }
 

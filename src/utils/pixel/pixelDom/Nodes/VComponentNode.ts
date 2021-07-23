@@ -15,6 +15,8 @@ export class VComponentNode extends VParentNode {
     PSU: EVENTS.PSU,
   };
 
+  timer: number;
+
   type = NODE_TYPE.COMPONENT_NODE;
 
   tagName: string;
@@ -53,6 +55,10 @@ export class VComponentNode extends VParentNode {
     this.children = options.children || [];
   }
 
+  updateProps(props: Props) {
+    this.props = createProxyObject(props, this.defaultPropsHandler.bind(this));
+  }
+
   registerEvents() {
     /* node added to DOM */
     this.eventBus.on(VComponentNode.EVENTS.CDM, this.nodeDidMount.bind(this, this.componentDidMount.bind(this)));
@@ -85,8 +91,15 @@ export class VComponentNode extends VParentNode {
   }
 
   componentDidUpdate() {
-    const newTree = Parser.componentParser.reParse(this.name, this.componentProps);
-    pixelDOM.patch(this, newTree);
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+
+    this.timer = setTimeout(() => {
+      const newTree = Parser.componentParser.reParse(this.name, this.componentProps, this.state);
+
+      pixelDOM.patch(this, newTree);
+    }, 150);
   }
 
   setNewPixelStoreProps([field, value]: IPixelStoreUpdateProp) {

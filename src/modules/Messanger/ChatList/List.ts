@@ -7,13 +7,15 @@ export function List(): IComponentModel {
       ListItem,
     },
     template: /* html */ ` 
-      <ul class="chat-list__list" if:filteredChats.length>
-        <ListItem loop:filteredChats />
+      <ul class="chat-list__list" if:truthy="props.filteredChats">
+        
       </ul>
       
-      <p class="chat-list__list_blank" if:!filteredChats.length>
+      <p class="chat-list__list_blank" if:falsy="props.filteredChats">
         <i>Нет активных чатов</i>
       </p>
     `,
   };
 }
+
+/* <ListItem loop:filteredChats /> */

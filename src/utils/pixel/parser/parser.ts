@@ -31,7 +31,6 @@ export default class PixelParser {
 
     const { componentProps = {}, state = {}, methods = {} } = parentProps || {};
     const data: IData = { props: componentProps, state, methods };
-
     do {
       el = tagReg.exec(html);
       if (el) {
@@ -44,7 +43,9 @@ export default class PixelParser {
 
         if (isComponent) {
           const component = this.componentParser.parse(tag, parentProps);
-          this.addAsChild(stack, component);
+          if (component) {
+            this.addAsChild(stack, component);
+          }
         } else if (isXHTML) {
           const parsedTag = this.tagParser.parse(tag, data);
           const node: VCommonNode = pixelDOM.nodeFabric.create(parsedTag) as VCommonNode;

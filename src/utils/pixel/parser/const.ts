@@ -16,8 +16,7 @@ export const PREFIXES = {
   BIND: 'b:',
   EVENT: 'e:',
   PROPS: 'p:',
-  IF_CONDITION: 'if:',
-  ELSE_CONDITION: 'else:',
+  CONDITION: 'if:',
   LOOP: 'loop:',
 };
 

@@ -1,25 +1,18 @@
 import { IComponentModel } from '../../../utils';
-import { AuthController } from '../../../controllers';
+import { SETTING_OPTIONS } from '../const';
 import './Header.css';
-
-const authController = new AuthController();
 
 export function Menu(): IComponentModel {
   return {
-    methods: {
-      logout() {
-        authController.logout();
-      },
-      openProfile() {
-        console.log('createChat');
-      },
-    },
-    usedProps: ['settingsClass'],
     template: /* html */ `
-    <div p:class="settingsClass" >
-      <div class="settings__option" e:click="openProfile">Профиль</div>
-      <div class="settings__option" e:click="openChatModal">Создать чат</div>
-      <div class="settings__option" e:click="logout">Выйти</div>
+    <div class="header__settings" >
+      <div class="settings__option" data-name="${SETTING_OPTIONS.PROFILE}" e:click="props.optionClick">Профиль</div>
+      
+      <div class="settings__option" 
+          data-name="${SETTING_OPTIONS.CREATE_CHAT}" 
+          e:click="props.optionClick">Создать чат</div>
+
+      <div class="settings__option" data-name="${SETTING_OPTIONS.LOGOUT}" e:click="props.optionClick">Выйти</div>
     </div>
     `,
   };

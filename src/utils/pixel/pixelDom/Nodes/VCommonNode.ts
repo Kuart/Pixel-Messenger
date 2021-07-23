@@ -4,6 +4,7 @@ import { VParentNode } from './abstract';
 import { IPixelStoreUpdateProp } from '../../store';
 import { createProxyObject } from '../../utils';
 import { EVENTS } from '../../../const';
+import { Props } from './componentNode.type';
 
 export class VCommonNode extends VParentNode {
   type = NODE_TYPE.COMMON_NODE;
@@ -17,6 +18,10 @@ export class VCommonNode extends VParentNode {
     this.eventHandlers = events;
     this.props = createProxyObject(props, this.update);
     this.registerEvents();
+  }
+
+  updateProps(props: Props) {
+    this.props = createProxyObject(props, this.update.bind(this));
   }
 
   registerEvents() {
@@ -34,9 +39,5 @@ export class VCommonNode extends VParentNode {
 
   update = (up: any) => {
     console.warn('node update', up);
-  };
-
-  redraw = () => {
-    console.log(this.parent);
   };
 }

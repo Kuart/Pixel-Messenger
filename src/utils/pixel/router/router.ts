@@ -57,7 +57,7 @@ class Router {
       this.isAuth = true;
     }
 
-    this.checkRoute();
+    this.checkRoute(window, true);
   }
 
   public async setRoutes(routesConfig: IRoutesConfig) {
@@ -127,7 +127,7 @@ class Router {
     this.history.forward();
   }
 
-  private checkRoute = (target: Window = window) => {
+  private checkRoute = (target: Window = window, authChange?: boolean) => {
     let currentRoute = target.location.pathname.slice(1);
 
     if (!currentRoute) {
@@ -135,14 +135,12 @@ class Router {
     } else if (!this.routes[currentRoute]) {
       currentRoute = 'wrong';
     }
-
-    if (this.currentPlace !== currentRoute) {
+    if (this.currentPlace !== currentRoute || authChange) {
       if (this.withAuth) {
         this.replaceWithAuth(currentRoute);
       } else {
-        this.changeLayout(this.routes[currentRoute].component);
+        this.changeLayout(this.routes[currentRoute].component, currentRoute);
       }
-      this.currentPlace = currentRoute;
     }
   };
 
@@ -154,11 +152,12 @@ class Router {
     } else if (this.isAuth && isFromBasePermitted) {
       this.go(this.authRedirect);
     } else {
-      this.changeLayout(this.routes[currentRoute].component);
+      this.changeLayout(this.routes[currentRoute].component, currentRoute);
     }
   }
 
-  public changeLayout = (componentName: string) => {
+  public changeLayout = (componentName: string, currentRoute: string) => {
+    this.currentPlace = currentRoute;
     this.pixelInstantce.render(`<${componentName}  />`);
   };
 }

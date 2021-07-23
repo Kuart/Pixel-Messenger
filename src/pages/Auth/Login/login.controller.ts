@@ -20,7 +20,15 @@ export class LoginController {
       await loginApi.login(data[validatorConfig.form]);
       await cookieAuthAPI.checkAuth();
     } catch (error) {
-      console.error(error);
+      if (error && error.reason) {
+        if (error.reason === 'Login or password is incorrect') {
+          for (const key in data[validatorConfig.errors]) {
+            if (key in data[validatorConfig.errors]) {
+              data[validatorConfig.errors][key] = 'Неверные данные';
+            }
+          }
+        }
+      }
     }
   };
 }

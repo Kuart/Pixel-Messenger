@@ -1,13 +1,13 @@
 import { NODE_TYPE } from '../const';
 import { ITextNodeProps, ParentNodeType } from './nodes.type';
 import { VNode } from './abstract';
-import { IPixelStoreUpdateProp } from '../../store';
-import { createProxyObject } from '../../utils';
 
 export class VTextNode extends VNode {
   type = NODE_TYPE.TEXT_NODE;
 
   text: string;
+
+  propsKey: string;
 
   constructor(config: ITextNodeProps) {
     super();
@@ -16,23 +16,21 @@ export class VTextNode extends VNode {
     if (props) {
       Object.keys(props).forEach((key: string) => {
         this.text = props[key];
+        this.propsKey = key;
       });
 
-      this.props = createProxyObject(props, this.nodeUpdate);
+      this.props = props;
     } else {
       this.text = text;
     }
   }
 
-  nodeUpdate(a: any) {
-    console.log(a);
+  updateText(text: string) {
+    this.text = text;
+    this.props[this.propsKey] = text;
   }
 
   setParentNode(parent: ParentNodeType) {
     this.parent = parent;
-  }
-
-  setNewPixelStoreProps([_, value]: IPixelStoreUpdateProp) {
-    this.domEl.textContent = value;
   }
 }

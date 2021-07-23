@@ -10,11 +10,14 @@ const parseObjectPathTag = (store: Props | State, path: string, alt?: string): u
     for (const key of keys) {
       const value = result[key];
 
-      if (value === undefined && alt === undefined) {
-        throw Error();
-      } else if (alt !== undefined) {
-        return alt;
+      if (value === undefined) {
+        if (alt) {
+          return alt;
+        }
+        /* console.warn(ERRORS.missedBindProperty(path)); */
+        return '';
       }
+
       result = value as Props;
     }
     return result;

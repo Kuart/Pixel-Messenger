@@ -7,6 +7,7 @@ import { RegisterController } from './registration.controller';
 import '../Auth.css';
 
 const registerController = new RegisterController();
+const validConfig = { form: 'formFields', errors: 'errors', ignoreEmpty: true };
 
 function Registration(): IComponentModel {
   return {
@@ -32,13 +33,11 @@ function Registration(): IComponentModel {
       },
     },
     methods: {
-      formFocusHandler(event: Event) {
-        event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+      formFocusHandler() {
+        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
       },
-      formBlurHandler(event: Event) {
-        event.preventDefault();
-        FormValidator.validate(this.state, { form: 'formFields', errors: 'errors' }, FIELD_TYPE);
+      formBlurHandler() {
+        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
       },
       submitForm(event: Event) {
         event.preventDefault();

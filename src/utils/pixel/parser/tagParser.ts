@@ -1,17 +1,17 @@
-import { Parser } from '.';
 import { PREFIXES } from './const';
 import { IData, IParsedTag } from './parser.type';
 import { Props, EventHandler } from '../pixelDom';
-import { slicePropStorage, bindProps, takePropInStore } from './utils';
+import { slicePropStorage, bindProps, takePropInStore, parseObjectPathTag } from './utils';
+import PixelParser from './parser';
 
 export class TagParser {
-  parserInstant: Parser;
+  parserInstant: PixelParser;
 
   private attrRegExp: RegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
 
   private replaceRegExp = /{{([^{}]*)}}/g;
 
-  constructor(parser: Parser) {
+  constructor(parser: PixelParser) {
     this.parserInstant = parser;
   }
 
@@ -25,6 +25,7 @@ export class TagParser {
 
     const props: Props = {};
     const events: EventHandler = new Map();
+    let isDisplay = true;
 
     do {
       attr = attrReg.exec(tagString);
@@ -50,11 +51,14 @@ export class TagParser {
         } else if (type === PREFIXES.EVENT) {
           const event = takePropInStore(currentValue, data);
           events.set(cleanName, event as Function);
+        } else if (type === PREFIXES.CONDITION) {
+          const [store, path] = slicePropStorage(currentValue);
+          isDisplay = this.conditionHandler(cleanName, data[store], path);
         }
       }
     } while (attr);
 
-    return { props, tagName: this.getTagName(tagString), events };
+    return { props, tagName: this.getTagName(tagString), events, isDisplay };
   }
 
   setProps(props: Props, name: string, store: IData, valueString: string) {
@@ -72,6 +76,25 @@ export class TagParser {
 
     props[name] = value;
   }
+
+  conditionHandler = <T>(type: string, store: T, path: string) => {
+    const value: any = parseObjectPathTag(store, path);
+    let isTruthy = true;
+
+    if (!value) {
+      isTruthy = false;
+    } else if (value && Array.isArray(value)) {
+      if (!value.length) {
+        isTruthy = false;
+      }
+    }
+
+    if ((isTruthy && type === 'truthy') || (!isTruthy && type !== 'truthy')) {
+      return true;
+    }
+
+    return false;
+  };
 
   getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim().replace('>', '');
 }

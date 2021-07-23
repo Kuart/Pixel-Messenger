@@ -35,9 +35,9 @@ function queryStringify(data: string | Record<string, object>) {
 export class HTTPTransport {
   baseUrl: string;
 
-  baseHeaders: Record<string, string | boolean>;
+  baseHeaders: Record<string, string>;
 
-  constructor(base: string, baseHeaders: Record<string, string | boolean>) {
+  constructor(base: string, baseHeaders: Record<string, string>) {
     this.baseUrl = base;
     this.baseHeaders = baseHeaders;
   }

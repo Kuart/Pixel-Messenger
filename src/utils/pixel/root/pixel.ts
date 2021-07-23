@@ -1,8 +1,7 @@
 import { Parser } from '../parser';
-import { ParentNodeType, VirtualNode, State, IComponentModel, pixelDOM, VTextNode } from '../pixelDom';
+import { ParentNodeType, State, IComponentModel, pixelDOM } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
 import { EVENTS } from '../../const';
-import { BFS } from '../utils';
 import { Store } from '../store';
 
 export interface IPixelInstance {
@@ -25,7 +24,6 @@ class Pixel {
 
   static CONST = {
     CDM: EVENTS.NDM,
-    CU: EVENTS.NU,
   };
 
   protected static instance: Pixel;
@@ -110,7 +108,7 @@ class Pixel {
   render = (template: string) => {
     try {
       if (this.VDOM) {
-        this.unmount(this.VDOM);
+        pixelDOM.unmount(this.VDOM);
       }
 
       this.VDOM = Parser.parseHTML(template);
@@ -141,17 +139,6 @@ class Pixel {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  unmount = (VDOM: VirtualNode) => {
-    const isRootUnmount = true;
-    const callUnmount = (node: VirtualNode) => {
-      if (!(node instanceof VTextNode)) {
-        node.eventBus.emit(Pixel.CONST.CU, isRootUnmount);
-      }
-    };
-
-    BFS(VDOM, callUnmount);
   };
 }
 

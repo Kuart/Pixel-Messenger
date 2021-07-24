@@ -71,3 +71,9 @@
 .settings__option:hover {
   color: var(--accentFocus);
 }
+
+.create-chat__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

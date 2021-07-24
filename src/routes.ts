@@ -30,10 +30,6 @@ const routerConfig = {
       component: 'Messanger',
       title: 'Чат',
     },
-    [ROUTES.profile]: {
-      component: 'ProfileTempPage',
-      title: 'Профиль',
-    },
     wrong: {
       component: 'UserMissPage',
       title: 'Страница не найдена',

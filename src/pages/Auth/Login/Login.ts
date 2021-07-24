@@ -51,11 +51,11 @@ function Login(): IComponentModel {
     },
     template: /* html */ `
     <div class="container">
-      <section class="modal">
-        <header class="modal__header">
+      <section class="auth">
+        <header class="auth__header">
           <h2>Вход</h2>
         </header>
-        <div class="modal__body">
+        <div class="auth__body">
           <form 
             class="auth-form auth-form_login" 
             e:submit="methods.submitForm" 

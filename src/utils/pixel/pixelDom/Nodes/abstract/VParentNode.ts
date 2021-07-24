@@ -38,11 +38,15 @@ export default abstract class VParentNode implements INode {
     }
   }
 
-  nodeUnmount() {
+  nodeUnmount(callback?: Function) {
     if (this.eventHandlers.size) {
       this.eventHandlers.forEach((value: Function, key: string) => {
         this.domEl.removeEventListener(key, value as any, true);
       });
+    }
+
+    if (callback) {
+      callback();
     }
   }
 

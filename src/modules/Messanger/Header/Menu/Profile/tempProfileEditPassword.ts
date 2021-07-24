@@ -1,6 +1,6 @@
-import { FormValidator, generateUniqId, IComponentModel } from '../../utils';
-import { UserPhoto, Button, Input } from '../../components';
-import { CustomEventTarget } from '../../types';
+import { FormValidator, generateUniqId, IComponentModel } from '../../../../../utils';
+import { UserPhoto, Button, Input } from '../../../../../components';
+import { CustomEventTarget } from '../../../../../types';
 import { FIELD_TYPE_FULL } from './const';
 import avatar from '../../../static/assets/images/Icon/ava.png';
 

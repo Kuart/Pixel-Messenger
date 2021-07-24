@@ -18,6 +18,7 @@ interface IComponent {
   state: State;
   componentProps: Props;
   componentDidMount?: Function;
+  componentWillUnmount?: Function;
   pixelStore?: Record<string, any>;
 }
 

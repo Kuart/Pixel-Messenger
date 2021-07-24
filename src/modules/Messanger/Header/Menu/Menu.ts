@@ -1,6 +1,5 @@
-import { IComponentModel } from '../../../utils';
-import { SETTING_OPTIONS } from '../const';
-import './Header.css';
+import { IComponentModel } from '../../../../utils';
+import { SETTING_OPTIONS } from '../../const';
 
 export function Menu(): IComponentModel {
   return {

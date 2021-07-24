@@ -25,6 +25,8 @@ export class VComponentNode extends VParentNode {
 
   private componentDidMountFunc: Function | null;
 
+  private componentWillUnmountFunc: Function | null;
+
   pixelStore: Set<string> = new Set();
 
   methods: Methods;
@@ -43,6 +45,7 @@ export class VComponentNode extends VParentNode {
     this.componentProps = createProxyObject(options.componentProps, this.defaultPropsHandler.bind(this));
     this.state = createProxyObject(options.state, this.defaultPropsHandler.bind(this));
     this.componentDidMountFunc = options.componentDidMount || null;
+    this.componentWillUnmountFunc = options.componentWillUnmount || null;
 
     this.registerEvents();
     this.conectToPixelStore(options);
@@ -64,7 +67,7 @@ export class VComponentNode extends VParentNode {
     this.eventBus.on(VComponentNode.EVENTS.CDM, this.nodeDidMount.bind(this, this.componentDidMount.bind(this)));
     this.eventBus.on(VComponentNode.EVENTS.CDU, this.componentDidUpdate.bind(this));
     /*  node removed from DOM */
-    this.eventBus.on(VComponentNode.EVENTS.CU, this.nodeUnmount.bind(this));
+    this.eventBus.on(VComponentNode.EVENTS.CU, this.nodeUnmount.bind(this, this.componentWillUnmount.bind(this)));
   }
 
   defaultPropsHandler(args: any) {
@@ -86,7 +89,7 @@ export class VComponentNode extends VParentNode {
 
   componentDidMount() {
     if (this.componentDidMountFunc) {
-      this.componentDidMountFunc();
+      this.componentDidMountFunc.call(this, this);
     }
   }
 
@@ -96,10 +99,16 @@ export class VComponentNode extends VParentNode {
     }
 
     this.timer = setTimeout(() => {
-      const newTree = Parser.componentParser.reParse(this.name, this.componentProps, this.state);
+      const newTree = Parser.componentParser.reParse(this.name, this);
 
       pixelDOM.patch(this, newTree);
     }, 150);
+  }
+
+  componentWillUnmount() {
+    if (this.componentWillUnmountFunc) {
+      this.componentWillUnmountFunc.call(this, this);
+    }
   }
 
   setNewPixelStoreProps([field, value]: IPixelStoreUpdateProp) {

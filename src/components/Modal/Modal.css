@@ -12,22 +12,37 @@
   background: rgba(0, 0, 0, 0.25);
 }
 
-.modal {
+.modal-window__main {
   background: var(--black);
   color: var(--white);
   border-radius: 6px;
   box-shadow: var(--shadow);
   display: grid;
   grid-template-rows: 40px auto;
+  min-width: 400px;
+  gap: 20px;
+  max-height: calc(100% - 40px);
 }
 
-.modal__body {
-  padding: 16px 24px;
-}
-
-.modal__header {
+.modal-window__header {
+  font-size: 16px;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
-  padding: 5px 15px;
-  font-size: 16px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.modal-window__title,
+.modal-window__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-window__close {
+  cursor: pointer;
+}
+
+.modal-window__body {
+  padding: 12px 16px;
 }

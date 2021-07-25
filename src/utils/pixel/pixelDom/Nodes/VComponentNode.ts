@@ -6,6 +6,7 @@ import { ParentNodeType, IComponentOptions } from './nodes.type';
 import { VParentNode } from './abstract';
 import { IPixelStoreUpdateProp } from '../../store';
 import { Parser } from '../../parser';
+import { PixelStore } from '../../root';
 
 export class VComponentNode extends VParentNode {
   static EVENTS = {
@@ -29,6 +30,8 @@ export class VComponentNode extends VParentNode {
 
   pixelStore: Set<string> = new Set();
 
+  pixelStoreFields: string[] = [];
+
   methods: Methods;
 
   state: State;
@@ -46,9 +49,8 @@ export class VComponentNode extends VParentNode {
     this.state = createProxyObject(options.state, this.defaultPropsHandler.bind(this));
     this.componentDidMountFunc = options.componentDidMount || null;
     this.componentWillUnmountFunc = options.componentWillUnmount || null;
-
+    this.pixelStoreFields = options.pixelStore;
     this.registerEvents();
-    this.conectToPixelStore(options);
   }
 
   init(options: ParentNodeType) {
@@ -68,17 +70,21 @@ export class VComponentNode extends VParentNode {
     this.eventBus.on(VComponentNode.EVENTS.CDU, this.componentDidUpdate.bind(this));
     /*  node removed from DOM */
     this.eventBus.on(VComponentNode.EVENTS.CU, this.nodeUnmount.bind(this, this.componentWillUnmount.bind(this)));
+    /*  pixel store update */
+    this.eventBus.on(VComponentNode.EVENTS.PSU, this.setNewPixelStoreProps.bind(this));
   }
 
   defaultPropsHandler(args: any) {
     this.eventBus.emit(VComponentNode.EVENTS.CDU, ...args);
   }
 
-  conectToPixelStore(options: IComponentOptions) {
-    if (options.pixelStore) {
-      options.pixelStore.forEach((field: string) => {
-        this.pixelStore.add(field);
-        /*  this.parserInstant.instance.store.subscribe(field, this); */
+  conectToPixelStore(fields: string[]) {
+    if (fields) {
+      fields.forEach((field: string) => {
+        if (!this.pixelStore.has(field)) {
+          this.pixelStore.add(field);
+          PixelStore.subscribe(field, this);
+        }
       });
     }
   }
@@ -88,6 +94,8 @@ export class VComponentNode extends VParentNode {
   }
 
   componentDidMount() {
+    this.conectToPixelStore(this.pixelStoreFields);
+
     if (this.componentDidMountFunc) {
       this.componentDidMountFunc.call(this, this);
     }
@@ -109,11 +117,17 @@ export class VComponentNode extends VParentNode {
     if (this.componentWillUnmountFunc) {
       this.componentWillUnmountFunc.call(this, this);
     }
+
+    if (this.pixelStore.size) {
+      this.pixelStore.forEach((field) => {
+        PixelStore.unsubscribe(field, this);
+      });
+    }
   }
 
   setNewPixelStoreProps([field, value]: IPixelStoreUpdateProp) {
-    if (field in this.props) {
-      this.props[field] = value;
+    if (field in this.state) {
+      this.state[field] = value;
     }
   }
 }

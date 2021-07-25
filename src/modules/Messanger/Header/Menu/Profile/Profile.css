@@ -13,8 +13,8 @@
 }
 
 .profile-row__title {
-  width: 125px;
-  min-width: 125px;
+  width: 190px;
+  min-width: 190px;
   font-size: 22px;
   color: var(--accent);
   text-shadow: 0 0 2px #000;
@@ -25,23 +25,21 @@
   font-family: var(--secondFont);
   font-size: 18px;
   color: #fff;
-  align-self: flex-end;
+  align-self: center;
 }
 
 .profile-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow: hidden;
-  height: 100%;
+  overflow: auto;
+  height: auto;
 }
 
 .profile-form__body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow: auto;
-  height: calc(100% - 40px);
 }
 
 .profile-form__body--full {

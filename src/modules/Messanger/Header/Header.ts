@@ -48,7 +48,7 @@ export function Header(): IComponentModel {
         }
       },
     },
-    pixelStore: ['chat'],
+    pixelStore: ['selectedChat'],
     template: /* html */ `
       <header class="messanger__header">
         <section class="messanger__header-title">

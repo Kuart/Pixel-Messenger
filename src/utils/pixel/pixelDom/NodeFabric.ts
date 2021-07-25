@@ -29,6 +29,7 @@ export default class NodeFabric {
   private createComponent = (componentConfig: IInitiatedComponent, parsed: IParsedTag): VComponentNode => {
     const props: IComponentOptions = {
       componentProps: parsed.props,
+      pixelStore: componentConfig.pixelStore,
       state: componentConfig.state,
       name: componentConfig.name,
       methods: componentConfig.methods || {},

@@ -26,14 +26,17 @@ export default class PixelParser {
 
   parseHTML(html: string, parentProps?: IParentData): ParentNodeType {
     const stack = new Stack<ParentNodeType>();
+    const ignoreStack = new Stack<ParentNodeType>();
     const tagReg = new RegExp(this.tagRegExp);
     let el = null;
 
     const { componentProps = {}, state = {}, methods = {} } = parentProps || {};
     const data: IData = { props: componentProps, state, methods };
+
     do {
       el = tagReg.exec(html);
       if (el) {
+        const isIgnoreStackEmpty = ignoreStack.isEmpty();
         const tag = el[0];
         const { index } = el;
 
@@ -42,19 +45,30 @@ export default class PixelParser {
         const isCloseTag = tag[1] === '/';
 
         if (isComponent) {
-          const component = this.componentParser.parse(tag, parentProps);
-          if (component) {
-            this.addAsChild(stack, component);
+          if (isIgnoreStackEmpty) {
+            const component = this.componentParser.parse(tag, parentProps);
+            if (component) {
+              this.addAsChild(stack, component);
+            }
           }
         } else if (isXHTML) {
-          const parsedTag = this.tagParser.parse(tag, data);
-          const node: VCommonNode = pixelDOM.nodeFabric.create(parsedTag) as VCommonNode;
+          if (isIgnoreStackEmpty) {
+            const parsedTag = this.tagParser.parse(tag, data);
 
-          this.addAsChild(stack, node);
+            if (parsedTag.isDisplay) {
+              const node: VCommonNode = pixelDOM.nodeFabric.create(parsedTag) as VCommonNode;
+
+              this.addAsChild(stack, node);
+            }
+          }
         } else if (isCloseTag) {
-          const node = stack.pop();
+          if (isIgnoreStackEmpty) {
+            const node = stack.pop();
 
-          this.addAsChild(stack, node);
+            this.addAsChild(stack, node);
+          } else {
+            ignoreStack.pop();
+          }
         } else {
           let textNode = null;
           const start = index + tag.trim().length;
@@ -68,10 +82,14 @@ export default class PixelParser {
             textNode = this.textParser.parse(text, data);
           }
 
-          stack.push(node);
+          if (isIgnoreStackEmpty && parsedTag.isDisplay) {
+            stack.push(node);
 
-          if (textNode) {
-            this.addAsChild(stack, textNode);
+            if (textNode) {
+              this.addAsChild(stack, textNode);
+            }
+          } else {
+            ignoreStack.push(node);
           }
         }
       }

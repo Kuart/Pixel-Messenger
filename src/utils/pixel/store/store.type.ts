@@ -1,5 +1,5 @@
 interface ICurrentUserStore {
-  isAuth: boolean;
+  isAuth?: boolean;
   [key: string]: any;
 }
 

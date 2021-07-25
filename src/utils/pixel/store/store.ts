@@ -4,6 +4,10 @@ import { Pixel } from '../root';
 import { ICurrentUserStore } from './store.type';
 
 export class Store {
+  static ERRORS = {
+    missStoreField: (field: string) => `Store does't have field - ${field}`,
+  };
+
   pixelInstantce: typeof Pixel;
 
   protected authListenters: Record<string, any>[] = [];
@@ -16,25 +20,34 @@ export class Store {
 
   constructor(pixelInstantce: typeof Pixel) {
     this.pixelInstantce = pixelInstantce;
-    this.store = this.createStore();
     this.authListenters.push(this.pixelInstantce.router);
 
     this.currentUser = this.createUserStore();
   }
 
-  createStore() {
+  init(baseStore: Record<string, any> = {}) {
+    this.store = this.createStore({ ...baseStore, currentUser: this.currentUser });
+  }
+
+  createStore(baseStore: Record<string, any>) {
     const self = this;
     const validator = {
       get: (target: Record<string, any>, key: string): unknown => target[key],
       set: (target: Record<string, any>, prop: string, value: unknown) => {
-        target[prop] = value;
-        self.emit(prop);
-        return true;
+        if (prop in target) {
+          target[prop] = value;
+          self.emit(prop);
+          return true;
+        }
+
+        console.error(Store.ERRORS.missStoreField(prop));
+
+        return false;
       },
       deleteProperty: () => false,
     };
 
-    return new Proxy({}, validator);
+    return new Proxy(baseStore, validator);
   }
 
   createUserStore() {
@@ -43,6 +56,7 @@ export class Store {
       get: (target: ICurrentUserStore, key: string): unknown => target[key],
       set: (target: ICurrentUserStore, prop: string, value: unknown) => {
         target[prop] = value;
+
         if (prop === 'isAuth') {
           self.emitAuthListenters(value as boolean);
         }

@@ -8,6 +8,7 @@ export class CookieAuthController {
     try {
       const userData = await cookieAuthAPI.getUserData();
       PixelStore.setUserData({ ...userData, isAuth: true });
+      PixelStore.dispatch('currentUser', { ...userData });
     } catch (error) {
       console.error(error);
     }

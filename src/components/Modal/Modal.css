@@ -19,7 +19,7 @@
   box-shadow: var(--shadow);
   display: grid;
   grid-template-rows: 40px auto;
-  min-width: 400px;
+  min-width: 450px;
   gap: 20px;
   max-height: calc(100% - 40px);
 }

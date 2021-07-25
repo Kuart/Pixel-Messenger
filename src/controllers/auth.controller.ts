@@ -8,6 +8,7 @@ export class AuthController {
     try {
       const userData = await authAPI.getUserData();
       PixelStore.setUserData({ ...userData, isAuth: true });
+      PixelStore.dispatch('currentUser', { ...userData });
     } catch (error) {
       console.error(error);
     }
@@ -17,6 +18,7 @@ export class AuthController {
     try {
       await authAPI.logout();
       PixelStore.setUserData({ isAuth: false });
+      PixelStore.dispatch('currentUser', {});
     } catch (error) {
       console.error(error);
     }

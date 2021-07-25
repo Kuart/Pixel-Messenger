@@ -20,18 +20,14 @@ class Validator {
     tel: /^((8|\+7)[- ]?)?(\(?\d{3}\)?[- ]?)?[\d\- ]{7,10}$/,
   };
 
-  validate(
-    state: Record<string, Record<string, string | number>>,
-    config: IValidatorConfig,
-    fieldsType: Record<string, string | Record<string, string>>
-  ) {
+  validate(state: any, config: IValidatorConfig, fieldsType: Record<string, string | Record<string, string>>) {
     let isFullValid = true;
 
-    Object.keys(state[config.form])
+    Object.keys(fieldsType)
       .filter((type) => type)
       .forEach((field) => {
         const typeConfig = fieldsType[field];
-        const fieldValue = state[config.form][field].toString().trim();
+        const fieldValue = state[config.form][field] ? state[config.form][field].toString().trim() : '';
 
         if (!fieldValue) {
           if (!config.ignoreEmpty) {

@@ -3,6 +3,7 @@ import { UserPhoto, Button, Modal } from '../../../../../components';
 import { ProfileInfo } from './ProfileInfo';
 import { ProfileEdit } from './ProfileEdit';
 import edit from '../../../../../../static/assets/images/Icon/EditBtn.svg';
+import storEdit from '../../../../../../static/assets/images/Icon/stopEdit.svg';
 import './Profile.css';
 
 export function Profile(): IComponentModel {
@@ -10,11 +11,12 @@ export function Profile(): IComponentModel {
     state: {
       isEditable: false,
       currentUser: {
-        email: 'Kuart44@gmail.com',
-        login: 'Kuart',
-        first_name: 'Денис',
-        second_name: 'Денис',
-        phone: '+7 (921) 444 44 44',
+        email: '',
+        login: '',
+        first_name: '',
+        second_name: '',
+        display_name: '',
+        phone: '',
       },
     },
     components: {
@@ -23,9 +25,9 @@ export function Profile(): IComponentModel {
       ProfileInfo,
       ProfileEdit,
     },
+    pixelStore: ['currentUser'],
     methods: {
       editHander() {
-        console.log('object');
         this.state.isEditable = !this.state.isEditable;
       },
       handleEsc(event: KeyboardEvent) {
@@ -46,11 +48,15 @@ export function Profile(): IComponentModel {
       Modal(
         /* html */ `
           <ProfileInfo if:falsy="state.isEditable"  b:user="state.currentUser" />
-          <ProfileEdit if:truthy="state.isEditable" b:user="state.currentUser" />
+          <ProfileEdit if:truthy="state.isEditable" b:user="state.currentUser" b:onClose="methods.editHander" />
     `,
         '',
         '',
-        `<img class="modal-window__close" src="${edit}" e:click="methods.editHander" />`
+        `
+        <img if:falsy="state.isEditable" class="modal-window__close" src="${edit}" e:click="methods.editHander" />
+        <img if:truthy="state.isEditable" class="modal-window__close" src="${storEdit}" e:click="methods.editHander" />
+        
+        `
       ).template
     }
     `,

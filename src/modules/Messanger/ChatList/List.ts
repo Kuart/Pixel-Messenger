@@ -7,6 +7,8 @@ export function List(): IComponentModel {
       ListItem,
     },
     template: /* html */ ` 
+    <div>
+    
       <ul class="chat-list__list" if:truthy="props.filteredChats">
         
       </ul>
@@ -14,6 +16,8 @@ export function List(): IComponentModel {
       <p class="chat-list__list_blank" if:falsy="props.filteredChats">
         <i>Нет активных чатов</i>
       </p>
+      
+    </div>
     `,
   };
 }

@@ -16,6 +16,7 @@ export function ChatList(): IComponentModel {
     },
     state: {
       searchValue: '',
+      filteredChats: [],
     },
     componentDidMount() {
       chatListController.getChats();
@@ -38,7 +39,7 @@ export function ChatList(): IComponentModel {
           b:onChange="methods.filterChatList" 
           b:value="state.searchValue" />
       </form>
-      <List b:filteredChats="props.filteredChats" />
+      <List b:filteredChats="state.filteredChats" />
     </aside>
     `,
   };

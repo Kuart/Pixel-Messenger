@@ -1,5 +1,11 @@
-import { IComponentModel } from '../../../../../utils';
+import { FormValidator, IComponentModel } from '../../../../../utils';
 import { Input, Button } from '../../../../../components';
+import { CustomEventTarget } from '../../../../../types';
+import { FIELD_TYPE, FIELD_TYPE_FULL } from './const';
+import { ProfileEditController } from './profile-edit.controller';
+
+const validConfig = { form: 'formFields', errors: 'errors' };
+const profileEditController = new ProfileEditController();
 
 export function ProfileEdit(): IComponentModel {
   const profileForm = 'id-profile_form';
@@ -11,8 +17,10 @@ export function ProfileEdit(): IComponentModel {
         login: '',
         first_name: '',
         second_name: '',
+        display_name: '',
         phone: '',
-        password: '',
+        oldPassword: '',
+        newPassword: '',
         passwordRepeat: '',
       },
 
@@ -21,17 +29,32 @@ export function ProfileEdit(): IComponentModel {
         login: '',
         first_name: '',
         second_name: '',
+        display_name: '',
         phone: '',
-        password: '',
+        oldPassword: '',
+        newPassword: '',
         passwordRepeat: '',
       },
     },
     methods: {
-      submitForm() {},
-      formFocusHandler() {},
-      formBlurHandler() {},
-      inputHandler() {},
-      changePassword() {
+      formFocusHandler() {
+        const type = this.state.isPasswordEdit ? FIELD_TYPE_FULL : FIELD_TYPE;
+        FormValidator.validate(this.state, validConfig, type);
+      },
+      formBlurHandler() {
+        const type = this.state.isPasswordEdit ? FIELD_TYPE_FULL : FIELD_TYPE;
+        FormValidator.validate(this.state, validConfig, type);
+      },
+      submitForm(event: Event) {
+        event.preventDefault();
+        profileEditController.update(this);
+      },
+      inputHandler(event: CustomEventTarget<HTMLInputElement>) {
+        const { name, value } = event.target;
+        this.state.formFields[name] = value;
+      },
+      changePassword(event: Event) {
+        event.preventDefault();
         this.state.isPasswordEdit = !this.state.isPasswordEdit;
       },
     },
@@ -39,8 +62,16 @@ export function ProfileEdit(): IComponentModel {
       Input,
       Button,
     },
+    componentDidMount() {
+      const { user } = this.componentProps;
+
+      for (const key in user) {
+        if (key in this.state.formFields) {
+          this.state.formFields[key] = user[key];
+        }
+      }
+    },
     template: /* html */ `
-    <div class="profile__body">
       <form 
         class="profile-form" 
         e:submit="methods.submitForm" 
@@ -54,7 +85,7 @@ export function ProfileEdit(): IComponentModel {
             name="email" 
             type="email" 
             id="profile_mail" 
-            b:value="props.user.email"
+            b:value="state.formFields.email"
             loginClass="login--shadow"
             b:error="state.errors.email"
             b:onChange="methods.inputHandler"
@@ -65,18 +96,29 @@ export function ProfileEdit(): IComponentModel {
             name="login" 
             type="text" 
             id="profile_login" 
-            b:value="props.user.login"
+            b:value="state.formFields.login"
             loginClass="login--shadow"
             b:error="state.errors.login"
             b:onChange="methods.inputHandler"
           />
 
           <Input 
+            label="Отображаемое имя" 
+            name="display_name" 
+            type="text" 
+            id="profile_display_name" 
+            b:value="state.formFields.display_name"
+            loginClass="login--shadow"
+            b:error="state.errors.display_name"
+            b:onChange="methods.inputHandler"
+          />
+
+          <Input 
             label="Имя" 
-            name="firstName" 
+            name="first_name" 
             type="text" 
             id="profile_firstName" 
-            b:value="props.user.first_name"
+            b:value="state.formFields.first_name"
             loginClass="login--shadow"
             b:error="state.errors.first_name"
             b:onChange="methods.inputHandler"
@@ -84,10 +126,10 @@ export function ProfileEdit(): IComponentModel {
 
           <Input 
             label="Фамилия" 
-            name="secondName" 
+            name="second_name" 
             type="text" 
             id="profile_secondName" 
-            b:value="props.user.second_name"
+            b:value="state.formFields.second_name"
             loginClass="login--shadow"
             b:error="state.errors.second_name"
             b:onChange="methods.inputHandler"
@@ -95,34 +137,35 @@ export function ProfileEdit(): IComponentModel {
 
           <Input 
             label="Телефон" 
-            name="phoneNumber" 
+            name="phone" 
             type="tel" 
             id="profile_phoneNumber" 
-            b:value="props.user.phone"
+            b:value="state.formFields.phone"
             loginClass="login--shadow"
             b:error="state.errors.phone"
             b:onChange="methods.inputHandler"
           />
-          <span e:click="methods.changePassword">Изменить пароль</span>
 
-          <div>
+          <span class="button_text button_separator" e:click="methods.changePassword">Изменить пароль</span>
+
+          <div if:truthy="state.isPasswordEdit" class="profile-form__body">
             <Input 
               label="Пароль" 
-              name="password" 
+              name="oldPassword" 
               type="password" 
               id="profile_current_password" 
-              b:value="state.formFields.password"
-              b:error="state.errors.password"
+              b:value="state.formFields.oldPassword"
+              b:error="state.errors.oldPassword"
               b:onChange="methods.inputHandler"
             />
 
             <Input 
-              label="Пароль" 
-              name="password" 
+              label="Новый Пароль" 
+              name="newPassword" 
               type="password" 
               id="profile_next_password" 
-              b:value="state.formFields.password"
-              b:error="state.errors.password"
+              b:value="state.formFields.newPassword"
+              b:error="state.errors.newPassword"
               b:onChange="methods.inputHandler"
             />
 
@@ -141,20 +184,12 @@ export function ProfileEdit(): IComponentModel {
           <Button 
             text="Сохранить" 
             class="button_accent" 
-            type="button" 
+            type="submit" 
             form="${profileForm}"
             b:onClick="methods.submitForm" 
           />
-
-          <Button 
-            text="Отмена" 
-            class="button_transparent" 
-            type="button" 
-            b:onClick="methods.submitForm"
-          />
         </footer>
       </form>
-    </div>  
     `,
   };
 }

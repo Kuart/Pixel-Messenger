@@ -40,9 +40,7 @@
 }
 
 .button_text {
-  color: var(--accent);
-  font-size: 14px;
-  font-family: PerfectDOSVGA437;
+  font-size: 16px;
   height: 14px;
   display: inline;
   text-align: start;
@@ -50,7 +48,19 @@
   background: transparent;
   transition: color 0.2s linear;
   padding: 2px 0px;
-  text-shadow: 0 0 1px solid #000;
+  text-shadow: 0 0 2px solid #000;
+  border: none;
+  cursor: pointer;
+  color: var(--accent);
+}
+
+.button_text-accent {
+  color: var(--accentFocus);
+}
+
+.button_separator {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .button_text:hover {

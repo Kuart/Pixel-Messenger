@@ -22,9 +22,10 @@ interface IComponent {
   pixelStore?: Record<string, any>;
 }
 
-interface IComponentOptions extends Omit<IComponent, 'methods'> {
+interface IComponentOptions extends Omit<IComponent, 'methods' | 'pixelStore'> {
   name: string;
   methods: Methods;
+  pixelStore: string[];
 }
 interface IInitOptions {
   tagName: string;

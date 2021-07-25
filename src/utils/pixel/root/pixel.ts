@@ -1,5 +1,5 @@
 import { Parser } from '../parser';
-import { ParentNodeType, State, IComponentModel, pixelDOM } from '../pixelDom';
+import { ParentNodeType, IComponentModel, pixelDOM } from '../pixelDom';
 import { IRoutesConfig, Router } from '../router';
 import { EVENTS } from '../../const';
 import { Store } from '../store';
@@ -8,7 +8,7 @@ export interface IPixelInstance {
   el: string;
   template?: string;
   routerConfig?: IRoutesConfig;
-  state?: State;
+  store?: Record<string, any>;
   components?: Record<string, Function>;
 }
 
@@ -59,6 +59,7 @@ class Pixel {
     }
 
     this.setRootEl(config.el);
+    this.store.init(config.store);
     this.registerComponents(config.components);
     this.init(config.routerConfig, config.template);
     this.isInitiated = true;

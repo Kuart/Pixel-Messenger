@@ -1,22 +1,23 @@
-export const FIELD_TYPE_INFO = {
+export const FIELD_TYPE = {
   login: 'text',
-  password: 'password',
   email: 'email',
-  firstName: 'text',
-  secondName: 'text',
-  phoneNumber: 'tel',
+  first_name: 'text',
+  second_name: 'text',
+  display_name: 'text',
+  phone: 'tel',
 };
 
 export const FIELD_TYPE_FULL = {
   login: 'text',
-  password: 'password',
-  currentPassword: 'password',
   email: 'email',
-  firstName: 'text',
-  secondName: 'text',
-  phoneNumber: 'tel',
+  first_name: 'text',
+  second_name: 'text',
+  display_name: 'text',
+  phone: 'tel',
+  oldPassword: 'password',
+  newPassword: 'password',
   passwordRepeat: {
-    compare: 'password',
+    compare: 'newPassword',
     type: 'password',
     field: 'passwordRepeat',
   },

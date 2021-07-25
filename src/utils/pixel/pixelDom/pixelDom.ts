@@ -216,7 +216,7 @@ class PixelDOM {
     node.keyIndex = oldNode.keyIndex;
 
     parent.children[oldNode.keyIndex] = node;
-    parent.domEl.replaceChild(oldNode.domEl, node.domEl);
+    parent.domEl.replaceChild(node.domEl, oldNode.domEl);
 
     this.unmount(oldNode);
   }

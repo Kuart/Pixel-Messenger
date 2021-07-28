@@ -5,7 +5,7 @@ export class BaseAPI {
 
   constructor(base: string) {
     this.http = new HTTPTransport(base, {
-      'Content-type': 'application/json',
+      'Content-Type': 'application/json',
       'Access-Control-Allow-Credentials': true,
     });
   }

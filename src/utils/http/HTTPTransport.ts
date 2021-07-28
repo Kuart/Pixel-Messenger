@@ -85,13 +85,13 @@ export class HTTPTransport {
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
-            const parsed = JSON.parse(xhr.response);
+            const parsed = xhr.response ? JSON.parse(xhr.response) : '';
             resolve(parsed);
           } catch (error) {
             resolve('');
           }
         } else {
-          reject(JSON.parse(xhr.response));
+          reject(typeof xhr.response === 'object' && xhr.response ? JSON.parse(xhr.response) : '');
         }
       };
 
@@ -101,8 +101,10 @@ export class HTTPTransport {
 
       if (options.method === METHODS.GET || !options.data) {
         xhr.send();
-      } else {
+      } else if (options.headers['Content-Type'] === 'application/json') {
         xhr.send(JSON.stringify(options.data ? options.data : {}));
+      } else {
+        xhr.send(options.data ? options.data : {});
       }
     });
   }

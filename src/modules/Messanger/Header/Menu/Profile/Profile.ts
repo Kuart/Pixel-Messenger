@@ -9,8 +9,9 @@ import './Profile.css';
 export function Profile(): IComponentModel {
   return {
     state: {
-      isEditable: false,
+      isEditable: true,
       currentUser: {
+        avatar: '',
         email: '',
         login: '',
         first_name: '',

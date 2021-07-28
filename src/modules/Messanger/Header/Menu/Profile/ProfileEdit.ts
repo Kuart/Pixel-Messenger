@@ -1,5 +1,5 @@
 import { FormValidator, IComponentModel } from '../../../../../utils';
-import { Input, Button } from '../../../../../components';
+import { Input, Button, UserPhoto } from '../../../../../components';
 import { CustomEventTarget } from '../../../../../types';
 import { FIELD_TYPE, FIELD_TYPE_FULL } from './const';
 import { ProfileEditController } from './profile-edit.controller';
@@ -13,6 +13,8 @@ export function ProfileEdit(): IComponentModel {
     state: {
       isPasswordEdit: false,
       formFields: {
+        avatarFile: '',
+        avatar: '',
         email: '',
         login: '',
         first_name: '',
@@ -57,10 +59,15 @@ export function ProfileEdit(): IComponentModel {
         event.preventDefault();
         this.state.isPasswordEdit = !this.state.isPasswordEdit;
       },
+      async handlePhotoChange(event: Event) {
+        event.preventDefault();
+        const isUpdated = await profileEditController.updateAvatar(event);
+      },
     },
     components: {
       Input,
       Button,
+      UserPhoto,
     },
     componentDidMount() {
       const { user } = this.componentProps;
@@ -80,106 +87,130 @@ export function ProfileEdit(): IComponentModel {
         id="${profileForm}" >
 
         <div class="profile-form__body">
-          <Input 
-            label="Почта" 
-            name="email" 
-            type="email" 
-            id="profile_mail" 
-            b:value="state.formFields.email"
-            loginClass="login--shadow"
-            b:error="state.errors.email"
-            b:onChange="methods.inputHandler"
-          />
+          <div class="profile-form__row">
+            <UserPhoto 
+              b:photo="state.avatar" 
+              containerClass="profile__avatar-container profile__avatar-container_edit" 
+              inputId="profile_change_photo"
+              b:onChange="methods.handlePhotoChange"
+            />
 
-          <Input 
-            label="Логин" 
-            name="login" 
-            type="text" 
-            id="profile_login" 
-            b:value="state.formFields.login"
-            loginClass="login--shadow"
-            b:error="state.errors.login"
-            b:onChange="methods.inputHandler"
-          />
+            <div class="profile-form__column">
+              <div class="profile-form__row">
+                <Input 
+                  label="Имя" 
+                  name="first_name" 
+                  type="text" 
+                  id="profile_firstName" 
+                  b:value="state.formFields.first_name"
+                  loginClass="login--shadow"
+                  b:error="state.errors.first_name"
+                  b:onChange="methods.inputHandler"
+                />
 
-          <Input 
-            label="Отображаемое имя" 
-            name="display_name" 
-            type="text" 
-            id="profile_display_name" 
-            b:value="state.formFields.display_name"
-            loginClass="login--shadow"
-            b:error="state.errors.display_name"
-            b:onChange="methods.inputHandler"
-          />
+                <Input 
+                  label="Фамилия" 
+                  name="second_name" 
+                  type="text" 
+                  id="profile_secondName" 
+                  b:value="state.formFields.second_name"
+                  loginClass="login--shadow"
+                  b:error="state.errors.second_name"
+                  b:onChange="methods.inputHandler"
+                />
+              </div>
 
-          <Input 
-            label="Имя" 
-            name="first_name" 
-            type="text" 
-            id="profile_firstName" 
-            b:value="state.formFields.first_name"
-            loginClass="login--shadow"
-            b:error="state.errors.first_name"
-            b:onChange="methods.inputHandler"
-          />
+              <Input 
+                label="Отображаемое имя" 
+                name="display_name" 
+                type="text" 
+                id="profile_display_name" 
+                b:value="state.formFields.display_name"
+                loginClass="login--shadow"
+                b:error="state.errors.display_name"
+                b:onChange="methods.inputHandler"
+              />
+            </div>
+            
+          </div>
 
-          <Input 
-            label="Фамилия" 
-            name="second_name" 
-            type="text" 
-            id="profile_secondName" 
-            b:value="state.formFields.second_name"
-            loginClass="login--shadow"
-            b:error="state.errors.second_name"
-            b:onChange="methods.inputHandler"
-          />
+          <div class="profile-form__row">
+            <Input 
+              label="Почта" 
+              name="email" 
+              type="email" 
+              id="profile_mail" 
+              b:value="state.formFields.email"
+              loginClass="login--shadow"
+              b:error="state.errors.email"
+              b:onChange="methods.inputHandler"
+            />
 
-          <Input 
-            label="Телефон" 
-            name="phone" 
-            type="tel" 
-            id="profile_phoneNumber" 
-            b:value="state.formFields.phone"
-            loginClass="login--shadow"
-            b:error="state.errors.phone"
-            b:onChange="methods.inputHandler"
-          />
+            <Input 
+              label="Логин" 
+              name="login" 
+              type="text" 
+              id="profile_login" 
+              b:value="state.formFields.login"
+              loginClass="login--shadow"
+              b:error="state.errors.login"
+              b:onChange="methods.inputHandler"
+            />
+          </div>
+
+          <div class="profile-form__row profile-form__row_half-width">
+            <Input 
+              label="Телефон" 
+              name="phone" 
+              type="tel" 
+              id="profile_phoneNumber" 
+              b:value="state.formFields.phone"
+              loginClass="login--shadow"
+              b:error="state.errors.phone"
+              b:onChange="methods.inputHandler"
+            />
+          </div>
+        
 
           <span class="button_text button_separator" e:click="methods.changePassword">Изменить пароль</span>
 
           <div if:truthy="state.isPasswordEdit" class="profile-form__body">
-            <Input 
-              label="Пароль" 
-              name="oldPassword" 
-              type="password" 
-              id="profile_current_password" 
-              b:value="state.formFields.oldPassword"
-              b:error="state.errors.oldPassword"
-              b:onChange="methods.inputHandler"
-            />
+            <div class="profile-form__row profile-form__row_half-width">
+              <Input 
+                label="Пароль" 
+                name="oldPassword" 
+                type="password" 
+                id="profile_current_password" 
+                b:value="state.formFields.oldPassword"
+                b:error="state.errors.oldPassword"
+                b:onChange="methods.inputHandler"
+              />
+            </div>
+            
+            <div class="profile-form__row">
+              <Input 
+                label="Новый Пароль" 
+                name="newPassword" 
+                type="password" 
+                id="profile_next_password" 
+                b:value="state.formFields.newPassword"
+                b:error="state.errors.newPassword"
+                b:onChange="methods.inputHandler"
+              />
 
-            <Input 
-              label="Новый Пароль" 
-              name="newPassword" 
-              type="password" 
-              id="profile_next_password" 
-              b:value="state.formFields.newPassword"
-              b:error="state.errors.newPassword"
-              b:onChange="methods.inputHandler"
-            />
-
-            <Input 
-              label="Повторите пароль" 
-              name="passwordRepeat" 
-              type="password" 
-              id="profile_repeat_password" 
-              b:value="state.formFields.passwordRepeat"
-              b:error="state.errors.passwordRepeat"
-              b:onChange="methods.inputHandler"
-            />
+              <Input 
+                label="Повторите пароль" 
+                name="passwordRepeat" 
+                type="password" 
+                id="profile_repeat_password" 
+                b:value="state.formFields.passwordRepeat"
+                b:error="state.errors.passwordRepeat"
+                b:onChange="methods.inputHandler"
+              />
+            </div>
           </div>
         </div>
+
         <footer class="auth-form__footer">
           <Button 
             text="Сохранить" 

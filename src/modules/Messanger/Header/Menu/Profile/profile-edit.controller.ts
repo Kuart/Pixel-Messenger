@@ -4,12 +4,6 @@ import { FIELD_TYPE_FULL, FIELD_TYPE } from './const';
 import { userAPI } from '../../../../../api';
 import { VComponentNode } from '../../../../../utils/pixel/pixelDom';
 
-interface ProfileEditState {
-  isPasswordEdit: boolean;
-  formFields: IUser;
-  errors: IUser;
-}
-
 const validConfig = { form: 'formFields', errors: 'errors' };
 
 enum ERRORS {
@@ -36,9 +30,16 @@ export class ProfileEditController {
         const { oldPassword, newPassword } = state.formFields as any;
         await userAPI.changePassword({ oldPassword, newPassword });
       }
+
       comp.componentProps.onClose();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  updateAvatar = async (event: any) => {
+    const newForm = new FormData();
+    newForm.append('avatar', event.target.files[0], 'avatar.png');
+    await userAPI.changeAvatar(newForm);
   };
 }

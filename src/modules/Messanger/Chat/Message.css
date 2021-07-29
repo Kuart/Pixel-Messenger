@@ -27,3 +27,14 @@
   color: var(--white);
   text-shadow: 0 0 2px #000;
 }
+
+.messanger__chat-blank {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  color: var(--accent);
+  text-shadow: 0 0 2px #000;
+}

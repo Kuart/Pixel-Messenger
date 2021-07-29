@@ -1,7 +1,7 @@
 import { IComponentModel } from '../../../utils';
 import setting from '../../../../static/assets/images/Icon/maskGroup.svg';
-import options from '../../../../static/assets/images/Icon/options.svg';
 import { Menu, Profile, CreateModal } from './Menu';
+import { ChatConfig } from './ChatConfig';
 import { AuthController } from '../../../controllers';
 import { CustomEventTarget } from '../../../types';
 import { SETTING_OPTIONS } from '../const';
@@ -15,11 +15,14 @@ export function Header(): IComponentModel {
       Menu,
       CreateModal,
       Profile,
+      ChatConfig,
     },
     state: {
       isMenu: false,
       isChatCreate: false,
-      isProfileOpen: true,
+      isProfileOpen: false,
+      isChatActionsOpen: false,
+      selectedChat: {},
     },
     methods: {
       settingClickHandler() {
@@ -47,6 +50,9 @@ export function Header(): IComponentModel {
           default:
         }
       },
+      handleChatConfig() {
+        this.state.isChatActionsOpen = !this.state.isChatActionsOpen;
+      },
     },
     pixelStore: ['selectedChat'],
     template: /* html */ `
@@ -59,8 +65,13 @@ export function Header(): IComponentModel {
         
         <div class="messanger__chat-info">
           <div class="chat-info__container">
-            <h2 class="chat-info__title">{{props.chat.title}}</h2>
-            <img class="header-title__options" src="${options}"/>
+            <h2 class="chat-info__title">{{state.selectedChat.title}}</h2>
+            <ChatConfig 
+              if:truthy="state.selectedChat.id" 
+              headerText="Настройка чата"
+              b:isChatActionsOpen="state.isChatActionsOpen"
+              b:modalClose="methods.handleChatConfig"
+            />
           </div>
         </div>
       </header>

@@ -27,6 +27,9 @@ export function ChatList(): IComponentModel {
         this.state.searchValue = value;
         chatListController.filterChats(value);
       },
+      setActiveChat(chatId: number) {
+        chatListController.selectChat(chatId);
+      },
     },
     pixelStore: ['filteredChats'],
     template: /* html */ ` 
@@ -39,7 +42,7 @@ export function ChatList(): IComponentModel {
           b:onChange="methods.filterChatList" 
           b:value="state.searchValue" />
       </form>
-      <List b:filteredChats="state.filteredChats" />
+      <List b:filteredChats="state.filteredChats" b:setActiveChat="methods.setActiveChat"/>
     </aside>
     `,
   };

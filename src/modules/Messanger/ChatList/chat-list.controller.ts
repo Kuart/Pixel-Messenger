@@ -40,10 +40,10 @@ export class ChatListController {
     );
   };
 
-  selectChat = () => {
+  selectChat = (chatId: number) => {
     PixelStore.dispatch(
-      'filteredChats',
-      PixelStore.store.chats.filter((chat: IChat) => chat.title.indexOf(filter) !== -1)
+      'selectedChat',
+      PixelStore.store.chats.find((chat: IChat) => chat.id === chatId)
     );
   };
 }

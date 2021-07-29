@@ -1,6 +1,6 @@
 import PixelParser from './parser';
-import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods } from '../pixelDom';
-import { IParentData } from './parser.type';
+import { pixelDOM, ParentNodeType, IInitiatedComponent, VComponentNode, Methods, Props } from '../pixelDom';
+import { IParentData, IParsedTag } from './parser.type';
 import { Pixel } from '../root';
 
 export class ComponentParser {
@@ -14,7 +14,7 @@ export class ComponentParser {
     this.parserInstant = parser;
   }
 
-  parse(html: string, parentData?: IParentData): ParentNodeType | null {
+  parse(html: string, parentData?: IParentData): ParentNodeType[] | ParentNodeType | null {
     try {
       const { componentProps = {}, state = {}, methods = {} } = parentData || {};
 
@@ -33,6 +33,10 @@ export class ComponentParser {
 
       if (!componentParsedData.isDisplay) {
         return null;
+      }
+
+      if (componentParsedData.listProps) {
+        return this.handleList(componentConfig, componentParsedData);
       }
 
       const component: VComponentNode = pixelDOM.nodeFabric.create(
@@ -80,5 +84,30 @@ export class ComponentParser {
       acc[key] = value.bind(self);
       return acc;
     }, {});
+  };
+
+  handleList = (config: IInitiatedComponent, data: IParsedTag) => {
+    const components = data.listProps.map(
+      (item: Props) =>
+        pixelDOM.nodeFabric.create(config, {
+          ...data,
+          props: { ...item, ...data.props },
+          events: data.events,
+        }) as VComponentNode
+    );
+
+    const componentsParsedTag = components.map((component: VComponentNode, index: number) =>
+      this.parserInstant.parseHTML(config.template, {
+        componentProps: { ...data.props, ...data.listProps[index] } || {},
+        state: config.state || {},
+        methods: this.bindMethods(config.methods || {}, component),
+      })
+    );
+
+    componentsParsedTag.forEach((tagConfig: ParentNodeType, index: number) => {
+      components[index].init(tagConfig);
+    });
+
+    return components;
   };
 }

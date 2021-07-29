@@ -1,4 +1,4 @@
-import { PREFIXES } from './const';
+import { LIST_TYPE, PREFIXES } from './const';
 import { IData, IParsedTag } from './parser.type';
 import { Props, EventHandler } from '../pixelDom';
 import { slicePropStorage, bindProps, takePropInStore, parseObjectPathTag } from './utils';
@@ -19,13 +19,13 @@ export class TagParser {
     const attrReg = new RegExp(this.attrRegExp);
     let attr: RegExpExecArray | null = null;
     let cleanName = '';
-
     let currentValue = '';
     let isMod = -1;
 
     const props: Props = {};
     const events: EventHandler = new Map();
     let isDisplay = true;
+    let listProps = null;
 
     do {
       attr = attrReg.exec(tagString);
@@ -54,11 +54,14 @@ export class TagParser {
         } else if (type === PREFIXES.CONDITION) {
           const [store, path] = slicePropStorage(currentValue);
           isDisplay = this.conditionHandler(cleanName, data[store], path);
+        } else if (type === PREFIXES.LIST) {
+          const [store, path] = slicePropStorage(currentValue);
+          listProps = this.listHandler(cleanName, data[store], path);
         }
       }
     } while (attr);
 
-    return { props, tagName: this.getTagName(tagString), events, isDisplay };
+    return { props, tagName: this.getTagName(tagString), events, isDisplay, listProps };
   }
 
   setProps(props: Props, name: string, store: IData, valueString: string) {
@@ -94,6 +97,12 @@ export class TagParser {
     }
 
     return false;
+  };
+
+  listHandler = <T>(name: string, store: T, valueString: string) => {
+    if (name === LIST_TYPE.OBJECT_ARRAY) {
+      return parseObjectPathTag(store, valueString) as Props;
+    }
   };
 
   getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim().replace('>', '');

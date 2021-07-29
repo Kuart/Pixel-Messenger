@@ -6,11 +6,12 @@ export function List(): IComponentModel {
     components: {
       ListItem,
     },
+
     template: /* html */ ` 
     <div>
     
       <ul class="chat-list__list" if:truthy="props.filteredChats">
-        
+        <ListItem map:array="props.filteredChats" b:setActiveChat="props.setActiveChat"/> 
       </ul>
       
       <p class="chat-list__list_blank" if:falsy="props.filteredChats">

@@ -17,7 +17,11 @@ export const PREFIXES = {
   EVENT: 'e:',
   PROPS: 'p:',
   CONDITION: 'if:',
-  LOOP: 'loop:',
+  LIST: 'map:',
+};
+
+export const LIST_TYPE = {
+  OBJECT_ARRAY: 'array',
 };
 
 export const PROP_STORAGES: Record<string, keyof IPropStorages> = {

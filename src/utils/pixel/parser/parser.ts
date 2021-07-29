@@ -47,7 +47,10 @@ export default class PixelParser {
         if (isComponent) {
           if (isIgnoreStackEmpty) {
             const component = this.componentParser.parse(tag, parentProps);
-            if (component) {
+
+            if (component && Array.isArray(component)) {
+              component.forEach((item) => this.addAsChild(stack, item));
+            } else if (component) {
               this.addAsChild(stack, component);
             }
           }

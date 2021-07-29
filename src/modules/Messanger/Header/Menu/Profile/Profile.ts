@@ -9,7 +9,7 @@ import './Profile.css';
 export function Profile(): IComponentModel {
   return {
     state: {
-      isEditable: true,
+      isEditable: false,
       currentUser: {
         avatar: '',
         email: '',

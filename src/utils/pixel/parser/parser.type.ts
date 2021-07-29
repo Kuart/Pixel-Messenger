@@ -4,7 +4,9 @@ interface IParsedTag {
   tagName: string;
   props: Props;
   events: EventHandler;
+  listProps: any;
   isDisplay: boolean;
+  isList?: boolean;
   children?: VirtualNode[];
 }
 

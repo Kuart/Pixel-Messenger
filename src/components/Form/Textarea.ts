@@ -6,7 +6,6 @@ export function Textarea(): IComponentModel {
     state: {
       error: '',
     },
-    usedProps: ['name', 'type', 'id', 'placeholder', 'label'],
     template: /* html */ `
     <div class="input">
       <div class="input__control-wrapper">
@@ -15,10 +14,10 @@ export function Textarea(): IComponentModel {
           p:name="name" 
           p:type="type" 
           p:placeholder="placeholder" 
-          e:input="inputHandler"/>
+          e:input="props.onChange"/>
         <span class="input__underline"></span>
       </div>
-      <div class="input__error">{{error}}</div>
+      <div class="input__error">{{state.error}}</div>
     </div>`,
   };
 }

@@ -1,6 +1,6 @@
 import { Modal, Input, Button } from '../../../../components';
 import { IComponentModel } from '../../../../utils';
-import { CustomEventTarget } from '../../../../types';
+import { CustomEventTarget } from '../../../../interfaces';
 import { ChatController } from '../../../../controllers';
 
 const chatController = new ChatController();

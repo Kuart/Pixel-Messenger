@@ -1,6 +1,5 @@
 import { BaseAPI } from './base-api';
-import { IUser } from '../types';
-import { BASE_URLS } from './const';
+import { IUser } from '../interfaces';
 
 class UserAPI extends BaseAPI {
   changeProfile(data: IUser): Promise<IUser> {
@@ -21,4 +20,4 @@ class UserAPI extends BaseAPI {
   }
 }
 
-export const userAPI = new UserAPI(BASE_URLS.user);
+export const userAPI = new UserAPI('/user');

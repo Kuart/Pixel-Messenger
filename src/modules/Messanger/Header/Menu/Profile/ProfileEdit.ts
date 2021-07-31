@@ -1,6 +1,6 @@
 import { FormValidator, IComponentModel } from '../../../../../utils';
 import { Input, Button, UserPhoto } from '../../../../../components';
-import { CustomEventTarget } from '../../../../../types';
+import { CustomEventTarget } from '../../../../../interfaces';
 import { FIELD_TYPE, FIELD_TYPE_FULL } from './const';
 import { ProfileEditController } from './profile-edit.controller';
 

@@ -1,4 +1,4 @@
-import { IUser } from '../../../../../types';
+import { IUser } from '../../../../../interfaces';
 import { FormValidator, PixelStore } from '../../../../../utils';
 import { FIELD_TYPE_FULL, FIELD_TYPE } from './const';
 import { userAPI } from '../../../../../api';

@@ -28,6 +28,8 @@ export class VComponentNode extends VParentNode {
 
   private componentWillUnmountFunc: Function | null;
 
+  private componentDidUpdateFunc: Function | null;
+
   pixelStore: Set<string> = new Set();
 
   pixelStoreFields: string[] = [];
@@ -49,6 +51,7 @@ export class VComponentNode extends VParentNode {
     this.state = createProxyObject(options.state, this.defaultPropsHandler.bind(this));
     this.componentDidMountFunc = options.componentDidMount || null;
     this.componentWillUnmountFunc = options.componentWillUnmount || null;
+    this.componentDidUpdateFunc = options.componentDidUpdate || null;
     this.pixelStoreFields = options.pixelStore;
     this.registerEvents();
   }
@@ -101,7 +104,7 @@ export class VComponentNode extends VParentNode {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(oldProps: any, newProps: any) {
     if (this.timer) {
       clearTimeout(this.timer);
     }
@@ -110,6 +113,10 @@ export class VComponentNode extends VParentNode {
       const newTree = Parser.componentParser.reParse(this.name, this);
 
       pixelDOM.patch(this, newTree);
+
+      if (this.componentDidUpdateFunc) {
+        this.componentDidUpdateFunc(oldProps, newProps);
+      }
     }, 150);
   }
 

@@ -6,7 +6,6 @@ export function List(): IComponentModel {
     components: {
       ListItem,
     },
-
     template: /* html */ ` 
     <div>
     

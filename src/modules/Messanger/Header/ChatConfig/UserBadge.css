@@ -1,0 +1,19 @@
+.user-badge__container {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  width: fit-content;
+  border: 3px solid var(--dark);
+  border-radius: 10px;
+}
+
+.user-badge__title {
+  max-width: 70px;
+  width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: ltr;
+}

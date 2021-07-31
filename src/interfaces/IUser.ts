@@ -9,3 +9,8 @@ export interface IUser {
   phone: string;
   second_name: string;
 }
+
+export interface IChatUserAction {
+  users: number[];
+  chatId: number;
+}

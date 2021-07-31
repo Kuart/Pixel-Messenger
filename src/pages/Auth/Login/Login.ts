@@ -1,6 +1,6 @@
 import { FormValidator, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button, PagesContainer } from '../../../components';
-import { CustomEventTarget } from '../../../types';
+import { CustomEventTarget } from '../../../interfaces';
 import { FIELD_TYPE } from '../const';
 import { ROUTES } from '../../../routes';
 import { LoginController } from './login.controller';

@@ -1,14 +1,11 @@
-import { BASE_URLS } from '../../../api';
-import { ChatListAPI } from './chat-list.api';
+import { chatAPI } from '../../../api';
 import { PixelStore } from '../../../utils';
 import { IChat } from '../messanger.type';
-
-const chatListAPI = new ChatListAPI(BASE_URLS.chats);
 
 export class ChatListController {
   getChats = async () => {
     try {
-      const chats = await chatListAPI.getChats();
+      const chats = await chatAPI.get();
       PixelStore.dispatch('chats', chats);
       PixelStore.dispatch('filteredChats', chats);
     } catch (error) {
@@ -18,7 +15,7 @@ export class ChatListController {
 
   createChat = async (title: string) => {
     try {
-      const { id } = await chatListAPI.createChat({ title });
+      const { id } = await chatAPI.create({ title });
       console.warn(id);
     } catch (error) {
       console.error(error);
@@ -27,7 +24,7 @@ export class ChatListController {
 
   deleteChat = async (chatId: number) => {
     try {
-      await chatListAPI.deleteChat({ chatId });
+      await chatAPI.delete({ chatId });
     } catch (error) {
       console.error(error);
     }

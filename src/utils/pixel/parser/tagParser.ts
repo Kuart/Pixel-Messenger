@@ -53,7 +53,7 @@ export class TagParser {
           events.set(cleanName, event as Function);
         } else if (type === PREFIXES.CONDITION) {
           const [store, path] = slicePropStorage(currentValue);
-          isDisplay = this.conditionHandler(cleanName, data[store], path);
+          isDisplay = this.conditionHandler(cleanName, data[store], path, attr[0].trim());
         } else if (type === PREFIXES.LIST) {
           const [store, path] = slicePropStorage(currentValue);
           listProps = this.listHandler(cleanName, data[store], path);
@@ -80,11 +80,24 @@ export class TagParser {
     props[name] = value;
   }
 
-  conditionHandler = <T>(type: string, store: T, path: string) => {
+  conditionHandler = <T>(type: string, store: T, path: string, fullValue: string) => {
+    let checkValue = '';
+
+    if (fullValue.indexOf('===') !== -1) {
+      const [_, newCheckValue] = fullValue
+        .split('"')[1]
+        .split('===')
+        .map((string: string) => string.trim());
+
+      checkValue = newCheckValue;
+    }
+
     const value: any = parseObjectPathTag(store, path);
     let isTruthy = true;
 
-    if (!value) {
+    if (checkValue) {
+      isTruthy = value === checkValue;
+    } else if (!value) {
       isTruthy = false;
     } else if (value && Array.isArray(value)) {
       if (!value.length) {

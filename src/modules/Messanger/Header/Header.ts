@@ -3,7 +3,7 @@ import setting from '../../../../static/assets/images/Icon/maskGroup.svg';
 import { Menu, Profile, CreateModal } from './Menu';
 import { ChatConfig } from './ChatConfig';
 import { AuthController } from '../../../controllers';
-import { CustomEventTarget } from '../../../types';
+import { CustomEventTarget } from '../../../interfaces';
 import { SETTING_OPTIONS } from '../const';
 import './Header.css';
 
@@ -71,6 +71,7 @@ export function Header(): IComponentModel {
               headerText="Настройка чата"
               b:isChatActionsOpen="state.isChatActionsOpen"
               b:modalClose="methods.handleChatConfig"
+              b:chat="state.selectedChat"
             />
           </div>
         </div>

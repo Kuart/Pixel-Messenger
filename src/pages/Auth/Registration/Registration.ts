@@ -1,7 +1,7 @@
 import { FormValidator, generateUniqId, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button } from '../../../components';
 import { FIELD_TYPE } from '../const';
-import { CustomEventTarget } from '../../../types';
+import { CustomEventTarget } from '../../../interfaces';
 import { ROUTES } from '../../../routes';
 import { RegisterController } from './registration.controller';
 import '../Auth.css';

@@ -1,0 +1,7 @@
+.edit-input__container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 70% auto;
+  gap: 10px;
+  justify-content: space-between;
+}

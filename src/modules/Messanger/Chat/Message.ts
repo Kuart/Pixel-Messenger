@@ -3,7 +3,6 @@ import './Message.css';
 
 export function Message(): IComponentModel {
   return {
-    usedProps: ['photo', 'time', 'message', 'author', 'isAuthor'],
     template: /* html */ `
     <article class="messages-area__message">
       <div class="user-avatar__container user-avatar__container_message">

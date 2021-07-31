@@ -1,6 +1,6 @@
 import { IComponentModel } from '../../../utils';
 import { SearchInput } from '../../../components';
-import { CustomEventTarget } from '../../../types';
+import { CustomEventTarget } from '../../../interfaces';
 import { List } from './List';
 import { ChatListController } from './chat-list.controller';
 import './ChatList.css';

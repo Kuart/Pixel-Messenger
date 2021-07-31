@@ -35,6 +35,7 @@ export default class NodeFabric {
       methods: componentConfig.methods || {},
       componentDidMount: componentConfig.componentDidMount,
       componentWillUnmount: componentConfig.componentWillUnmount,
+      componentDidUpdate: componentConfig.componentDidUpdate,
     };
 
     return new VComponentNode(props);

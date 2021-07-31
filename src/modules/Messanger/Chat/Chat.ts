@@ -9,11 +9,14 @@ import fire from '../../../../static/assets/images/Icon/emoji3.png';
 import shock from '../../../../static/assets/images/Icon/shock.png';
 
 import './Chat.css';
+import { ChatController } from '../../../controllers';
+
+const chatController = new ChatController();
 
 export function Chat(): IComponentModel {
   return {
     state: {
-      selectedChat: null,
+      selectedChat: {},
       stickers: false,
       currentUser: null,
       messages: [],
@@ -29,11 +32,16 @@ export function Chat(): IComponentModel {
       Button,
       Textarea,
     },
+    componentDidUpdate(old: any, newProps: any) {
+      if ('selectedChat' in newProps && newProps.selectedChat) {
+        chatController.initChat(newProps.selectedChat);
+      }
+    },
     pixelStore: ['selectedChat', 'currentUser'],
     template: /* html */ `
     <main class="messanger__chat">
-      <div if:falsy="state.selectedChat" class="messanger__chat-blank">Чат не выбран</div>
-      <div class="chat__container" if:truthy="state.selectedChat">
+      <div if:falsy="state.selectedChat.id" class="messanger__chat-blank">Чат не выбран</div>
+      <div class="chat__container" if:truthy="state.selectedChat.id">
         <div class="chat__messages-area">
           <Message if:truthy="state.messages" map:array="state.messages" />
           <div if:falsy="state.messages" class="messanger__chat-blank">Нет сообщений</div>

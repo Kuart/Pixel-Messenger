@@ -16,6 +16,7 @@ Pixel.config({
   store: {
     currentUser: currentUserDefault,
     selectedChat: null,
+    chatUsers: [],
     chats: [],
     filteredChats: [],
   },

@@ -1,10 +1,8 @@
-import { BASE_URLS } from '../../../api';
 import { FormValidator, PixelRouter } from '../../../utils';
-import { RegistrationAPI } from './registration.api';
 import { FIELD_TYPE, AUTH_ERRORS } from '../const';
 import { ROUTES } from '../../../routes';
+import { authAPI } from '../../../api';
 
-const api = new RegistrationAPI(BASE_URLS.auth);
 const validationConfig = { form: 'formFields', errors: 'errors' };
 
 export class RegisterController {
@@ -16,7 +14,7 @@ export class RegisterController {
         throw Error(AUTH_ERRORS.RFNV);
       }
 
-      await api.register(data[validationConfig.form]);
+      await authAPI.register(data[validationConfig.form]);
       PixelRouter.go(ROUTES.messanger);
     } catch (error) {
       console.warn(error);

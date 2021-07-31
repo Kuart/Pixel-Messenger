@@ -12,16 +12,9 @@ const FIELD_TYPE = {
   },
 };
 
-enum AUTH_SERVICE {
-  signup = 'signup',
-  signin = 'signin',
-  user = 'user',
-  logout = 'logout',
-}
-
 enum AUTH_ERRORS {
   RFNV = 'Registration form is not valid',
   LFNV = 'Login form is not valid',
 }
 
-export { FIELD_TYPE, AUTH_SERVICE, AUTH_ERRORS };
+export { FIELD_TYPE, AUTH_ERRORS };

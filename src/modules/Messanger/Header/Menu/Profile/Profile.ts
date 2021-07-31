@@ -10,15 +10,6 @@ export function Profile(): IComponentModel {
   return {
     state: {
       isEditable: false,
-      currentUser: {
-        avatar: '',
-        email: '',
-        login: '',
-        first_name: '',
-        second_name: '',
-        display_name: '',
-        phone: '',
-      },
     },
     components: {
       UserPhoto,
@@ -26,7 +17,6 @@ export function Profile(): IComponentModel {
       ProfileInfo,
       ProfileEdit,
     },
-    pixelStore: ['currentUser'],
     methods: {
       editHander() {
         this.state.isEditable = !this.state.isEditable;
@@ -48,8 +38,8 @@ export function Profile(): IComponentModel {
     ${
       Modal(
         /* html */ `
-          <ProfileInfo if:falsy="state.isEditable"  b:user="state.currentUser" />
-          <ProfileEdit if:truthy="state.isEditable" b:user="state.currentUser" b:onClose="methods.editHander" />
+          <ProfileInfo if:falsy="state.isEditable"  b:user="props.user" />
+          <ProfileEdit if:truthy="state.isEditable" b:user="props.user" b:onClose="methods.editHander" />
     `,
         '',
         '',

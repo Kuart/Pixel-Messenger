@@ -23,6 +23,7 @@ export function Header(): IComponentModel {
       isProfileOpen: false,
       isChatActionsOpen: false,
       selectedChat: {},
+      currentUser: {},
     },
     methods: {
       settingClickHandler() {
@@ -54,7 +55,7 @@ export function Header(): IComponentModel {
         this.state.isChatActionsOpen = !this.state.isChatActionsOpen;
       },
     },
-    pixelStore: ['selectedChat'],
+    pixelStore: ['selectedChat', 'currentUser'],
     template: /* html */ `
       <header class="messanger__header">
         <section class="messanger__header-title">
@@ -85,6 +86,7 @@ export function Header(): IComponentModel {
 
       <Profile 
         if:truthy="state.isProfileOpen" 
+        b:user="state.currentUser" 
         b:modalClose="methods.closeProfileModal" 
         headerText="Профиль"
       />

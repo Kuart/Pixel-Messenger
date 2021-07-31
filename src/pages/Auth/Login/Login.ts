@@ -1,7 +1,7 @@
 import { FormValidator, IComponentModel, PixelRouter } from '../../../utils';
 import { Input, Modal, Button, PagesContainer } from '../../../components';
 import { CustomEventTarget } from '../../../interfaces';
-import { FIELD_TYPE } from '../const';
+import { LOGIN_FIELD_TYPE } from '../const';
 import { ROUTES } from '../../../routes';
 import { LoginController } from './login.controller';
 import '../Auth.css';
@@ -25,10 +25,10 @@ function Login(): IComponentModel {
     },
     methods: {
       formFocusHandler() {
-        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
+        FormValidator.validate(this.state, validConfig, LOGIN_FIELD_TYPE);
       },
       formBlurHandler() {
-        FormValidator.validate(this.state, validConfig, FIELD_TYPE);
+        FormValidator.validate(this.state, validConfig, LOGIN_FIELD_TYPE);
       },
       submitForm(event: Event) {
         event.preventDefault();
@@ -67,7 +67,7 @@ function Login(): IComponentModel {
               <Input 
                 label="Логин" 
                 name="login" 
-                type="${FIELD_TYPE.login}" 
+                type="${LOGIN_FIELD_TYPE.login}" 
                 id="login_input_login" 
                 b:error="state.errors.login"
                 b:value="state.formFields.login" 
@@ -76,7 +76,7 @@ function Login(): IComponentModel {
 
               <Input 
                 label="Пароль" 
-                name="${FIELD_TYPE.password}" 
+                name="${LOGIN_FIELD_TYPE.password}" 
                 type="password" 
                 id="login_input_password" 
                 b:error="state.errors.password"

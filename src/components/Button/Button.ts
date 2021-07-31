@@ -6,8 +6,7 @@ export function Button(): IComponentModel {
     template: /* html */ `
       <button 
         p:class="button {{props.class}}" 
-        e:click="props.onClick" 
-        p:disabled="{{props.isDisabled}}">{{props.text}}</button>
+        e:click="props.onClick">{{props.text}}</button>
     `,
   };
 }

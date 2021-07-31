@@ -1,19 +1,19 @@
 import { chatAPI } from '../../../../api';
+import { ChatController } from '../../../../controllers';
 import { IUser } from '../../../../interfaces';
 import { PixelStore } from '../../../../utils';
 import { VComponentNode } from '../../../../utils/pixel/pixelDom';
 
+const chatController = new ChatController();
 class ChatConfigController {
   removeChat = async (component: VComponentNode) => {
     const { id } = component.componentProps.chat;
     await chatAPI.delete({ chatId: id });
 
-    const chats = await chatAPI.get();
+    await chatController.getChats();
 
     component.componentProps.modalClose();
 
-    PixelStore.dispatch('chats', chats);
-    PixelStore.dispatch('filteredChats', chats);
     PixelStore.dispatch('selectedChat', {});
   };
 

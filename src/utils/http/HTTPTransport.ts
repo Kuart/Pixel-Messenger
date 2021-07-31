@@ -91,7 +91,11 @@ export class HTTPTransport {
             resolve('');
           }
         } else {
-          reject(typeof xhr.response === 'object' && xhr.response ? JSON.parse(xhr.response) : '');
+          try {
+            reject(JSON.parse(xhr.response));
+          } catch {
+            reject(xhr.response);
+          }
         }
       };
 

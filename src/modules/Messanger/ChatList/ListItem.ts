@@ -16,7 +16,7 @@ export function ListItem(): IComponentModel {
     template: /* html */ `
       <li class="chat-list__item list-item" e:click="methods.setChat">
         <div class="list-item__photo user-avatar">
-          <UserPhoto p:photo="props.avatar" p:imgClass="props.user-avatar__img"/>
+          <UserPhoto p:photo="props.avatar"/>
         </div>
         <div class="list-item__text">
           <h3 class="list-item__title">{{props.title}}</h3>

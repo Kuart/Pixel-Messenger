@@ -10,6 +10,7 @@ import shock from '../../../../static/assets/images/Icon/shock.png';
 
 import './Chat.css';
 import { ChatController } from '../../../controllers';
+import { CustomEventTarget } from '../../../interfaces';
 
 const chatController = new ChatController();
 
@@ -19,11 +20,18 @@ export function Chat(): IComponentModel {
       selectedChat: {},
       stickers: false,
       currentUser: null,
+      message: '',
       messages: [],
     },
     methods: {
-      click() {},
-      inputHandler() {},
+      click(event: Event) {
+        event.preventDefault();
+        chatController.socket.sendMessage(this.state.message);
+        this.state.message = '';
+      },
+      inputHandler(event: CustomEventTarget<HTMLInputElement>) {
+        this.state.message = event.target.value;
+      },
     },
     components: {
       Input,
@@ -40,8 +48,8 @@ export function Chat(): IComponentModel {
     pixelStore: ['selectedChat', 'currentUser'],
     template: /* html */ `
     <main class="messanger__chat">
-      <div if:falsy="state.selectedChat.id" class="messanger__chat-blank">Чат не выбран</div>
-      <div class="chat__container" if:truthy="state.selectedChat.id">
+      <span if:falsy="state.selectedChat.id" class="messanger__chat-blank">Чат не выбран</span>
+      <div if:truthy="state.selectedChat.id" class="chat__container" >
         <div class="chat__messages-area">
           <Message if:truthy="state.messages" map:array="state.messages" />
           <div if:falsy="state.messages" class="messanger__chat-blank">Нет сообщений</div>
@@ -55,7 +63,11 @@ export function Chat(): IComponentModel {
           <form class="chat__message-form" >
 
             <div class="message-form__textarea-wraper">
-              <Textarea placeholder="Сообщение" name="newMessage" b:onChange="methods.inputHandler"/>
+              <Textarea 
+                placeholder="Сообщение" 
+                name="newMessage" 
+                b:value="state.message"  
+                b:onChange="methods.inputHandler"/>
               <img src="${clip}" class="message-form__options"/>
             </div>
 

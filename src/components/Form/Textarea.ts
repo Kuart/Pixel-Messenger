@@ -14,6 +14,7 @@ export function Textarea(): IComponentModel {
           p:name="name" 
           p:type="type" 
           p:placeholder="placeholder" 
+          p:value="value"
           e:input="props.onChange"/>
         <span class="input__underline"></span>
       </div>

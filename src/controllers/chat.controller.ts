@@ -15,6 +15,21 @@ export class ChatController {
     this.socket = new WebSocketAPI();
   };
 
+  getChats = async () => {
+    try {
+      const chats = await chatAPI.get();
+      PixelStore.dispatch('chats', []);
+      PixelStore.dispatch('filteredChats', []);
+
+      setTimeout(() => {
+        PixelStore.dispatch('chats', chats);
+        PixelStore.dispatch('filteredChats', chats);
+      }, 300);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   createChat = async (data: Record<string, any>) => {
     try {
       if (!data.title.trim()) {
@@ -24,10 +39,7 @@ export class ChatController {
       data.error = '';
       data.title = '';
 
-      const chats = await chatAPI.get();
-
-      PixelStore.dispatch('chats', chats);
-      PixelStore.dispatch('filteredChats', chats);
+      this.getChats();
     } catch (error) {
       data.error = 'Поле должно быть заполнено';
     }

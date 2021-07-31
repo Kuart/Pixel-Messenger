@@ -1,3 +1,8 @@
+const LOGIN_FIELD_TYPE = {
+  login: 'text',
+  password: 'password',
+};
+
 const FIELD_TYPE = {
   login: 'text',
   password: 'password',
@@ -17,4 +22,4 @@ enum AUTH_ERRORS {
   LFNV = 'Login form is not valid',
 }
 
-export { FIELD_TYPE, AUTH_ERRORS };
+export { FIELD_TYPE, LOGIN_FIELD_TYPE, AUTH_ERRORS };

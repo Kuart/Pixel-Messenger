@@ -15,9 +15,16 @@ export class RegisterController {
       }
 
       await authAPI.register(data[validationConfig.form]);
+      await authAPI.getUserData();
       PixelRouter.go(ROUTES.messanger);
     } catch (error) {
-      console.warn(error);
+      if (error && error.reason) {
+        if (error.reason === 'Login already exists') {
+          data[validationConfig.errors].login = 'Используйте другой логин';
+        }
+      } else {
+        console.warn(error);
+      }
     }
   };
 }

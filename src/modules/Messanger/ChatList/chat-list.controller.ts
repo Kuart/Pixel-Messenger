@@ -3,16 +3,6 @@ import { PixelStore } from '../../../utils';
 import { IChat } from '../messanger.type';
 
 export class ChatListController {
-  getChats = async () => {
-    try {
-      const chats = await chatAPI.get();
-      PixelStore.dispatch('chats', chats);
-      PixelStore.dispatch('filteredChats', chats);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   createChat = async (title: string) => {
     try {
       const { id } = await chatAPI.create({ title });

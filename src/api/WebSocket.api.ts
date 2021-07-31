@@ -34,9 +34,11 @@ export class WebSocketAPI {
   };
 
   sendMessage(message: string) {
-    this.socket.send({
-      content: message,
-      type: 'message',
-    } as any);
+    this.socket.send(
+      JSON.stringify({
+        content: message,
+        type: 'message',
+      })
+    );
   }
 }

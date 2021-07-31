@@ -4,7 +4,9 @@ import { CustomEventTarget } from '../../../interfaces';
 import { List } from './List';
 import { ChatListController } from './chat-list.controller';
 import './ChatList.css';
+import { ChatController } from '../../../controllers';
 
+const chatController = new ChatController();
 const chatListController = new ChatListController();
 
 /* eslint no-console: "off" */
@@ -19,7 +21,7 @@ export function ChatList(): IComponentModel {
       filteredChats: [],
     },
     componentDidMount() {
-      chatListController.getChats();
+      chatController.getChats();
     },
     methods: {
       filterChatList(event: CustomEventTarget<HTMLInputElement>) {

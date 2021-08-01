@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es6",
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
@@ -9,8 +10,9 @@
     "preserveConstEnums": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "lib": ["ES2017", "DOM", "ES2016"]
+    "lib": ["ES2017", "DOM", "ES2016"],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["../node_modules"],
+  "include": ["./src/**/*.ts"]
 }

@@ -44,8 +44,9 @@ class Router {
 
     if (pixelInstantce) {
       this.pixelInstantce = pixelInstantce;
-      this.history = window.history;
     }
+
+    this.history = window.history;
 
     Router.instantce = this;
   }

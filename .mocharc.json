@@ -1,6 +1,4 @@
 {
-  "extension": ["ts"],
-  "spec": "**/*.spec.ts",
-  "require": "test/babel-register.js",
-  "exclude": ["node_modules"]
+  "require": "./register.js",
+  "reporter": "list"
 }

@@ -13,7 +13,7 @@
     "no-restricted-syntax": "off",
     "max-len": [2, 120],
     "object-curly-newline": "off",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.js", "**/*.spec.js"] }],
+    "import/no-extraneous-dependencies": ["error", { "peerDependencies": true }],
     "comma-dangle": "off",
     "indent": "off",
     "implicit-arrow-linebreak": "off",

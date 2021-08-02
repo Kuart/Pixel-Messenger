@@ -1,5 +1,5 @@
 import { Pixel } from '..';
-import { IDefaultRoute, IRoutes, IRoutesConfig } from './router.state';
+import { IDefaultRoute, IRoutes, IRoutesConfig } from './router.type';
 
 class Router {
   static ERRORS: Record<string, string> = {
@@ -23,7 +23,7 @@ class Router {
 
   public routes: IRoutes;
 
-  private history: History;
+  public history: History;
 
   private currentPlace: string;
 
@@ -42,13 +42,17 @@ class Router {
       return Router.instantce;
     }
 
-    if (pixelInstantce) {
-      this.pixelInstantce = pixelInstantce;
-    }
+    this.setPixelInstantce(pixelInstantce);
 
     this.history = window.history;
 
     Router.instantce = this;
+  }
+
+  public setPixelInstantce(pixelInstantce?: typeof Pixel) {
+    if (pixelInstantce) {
+      this.pixelInstantce = pixelInstantce;
+    }
   }
 
   public handleAuthChange(isAuth: boolean) {
@@ -116,16 +120,8 @@ class Router {
   };
 
   public go(pathname: string) {
-    this.history.pushState({}, '', pathname);
+    this.history.pushState({ page: pathname }, '', pathname);
     this.checkRoute(window);
-  }
-
-  public back() {
-    this.history.back();
-  }
-
-  public forward() {
-    this.history.forward();
   }
 
   private checkRoute = (target: Window = window, authChange?: boolean) => {
@@ -136,6 +132,7 @@ class Router {
     } else if (!this.routes[currentRoute]) {
       currentRoute = 'wrong';
     }
+
     if (this.currentPlace !== currentRoute || authChange) {
       if (this.withAuth) {
         this.replaceWithAuth(currentRoute);

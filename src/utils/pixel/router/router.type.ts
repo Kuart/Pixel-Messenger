@@ -26,7 +26,7 @@ interface IRoutes {
 }
 
 interface IRoutesConfig {
-  auth: IBaseAuth;
+  auth?: IBaseAuth;
   routes: IRoutes;
   defaultRoute: IDefaultRoute;
 }

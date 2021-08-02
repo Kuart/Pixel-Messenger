@@ -12,7 +12,7 @@ export interface IPixelInstance {
   components?: Record<string, Function>;
 }
 
-class Pixel {
+export class Pixel {
   static ERROR = {
     ROOT_NF: (selector: string) => `Root element ${selector} is not found`,
     ROOT_DOM_NF: (tagName: string) => `Root dom element ${tagName} has not created valid dom node`,
@@ -32,7 +32,7 @@ class Pixel {
 
   public store: Store;
 
-  private root: Element;
+  public root: Element;
 
   private VDOM: ParentNodeType;
 
@@ -43,14 +43,8 @@ class Pixel {
   public initiatedComponents: Record<string, IComponentModel> = {};
 
   constructor() {
-    if (Pixel.instance) {
-      return Pixel.instance;
-    }
-
     this.router = new Router(this);
     this.store = new Store(this);
-
-    Pixel.instance = this;
   }
 
   config(config: IPixelInstance) {
@@ -89,7 +83,7 @@ class Pixel {
     try {
       const root = document.querySelector(selector);
       if (!root) {
-        throw Error(Pixel.ERROR.ROOT_NF(selector));
+        throw new Error(Pixel.ERROR.ROOT_NF(selector));
       } else {
         this.root = root;
       }

@@ -1,6 +1,3 @@
-import rebel from '../../../../static/assets/images/Icon/shock.png';
-import itsFine from '../../../../static/assets/images/Icon/emoji3.png';
-import alien from '../../../../static/assets/images/Icon/alien.png';
 import { IPropStorages } from './parser.type';
 
 /*    b: - value from parent state/props
@@ -30,8 +27,8 @@ export const PROP_STORAGES: Record<string, keyof IPropStorages> = {
   methods: 'methods',
 };
 
-export const EMOJI: Record<string, string> = {
+/* export const EMOJI: Record<string, string> = {
   rebel: `<img src="${rebel}" width="30" height="30"/>`,
   alian: `<img src="${alien}" width="30" height="30"/>`,
   its_fine: `<img src="${itsFine}" class="sticker"/>`,
-};
+}; */

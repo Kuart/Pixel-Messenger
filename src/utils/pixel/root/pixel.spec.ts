@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import Pixel from './pixel';
 import { Router } from '../router';
 import { Store } from '../store';
-import { Parser } from '../parser';
 import { pixelDOM } from '../pixelDom';
 
 const selector = '#root';

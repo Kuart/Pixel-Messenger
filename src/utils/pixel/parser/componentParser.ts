@@ -4,14 +4,14 @@ import { IParentData, IParsedTag } from './parser.type';
 import { Pixel } from '../root';
 
 export class ComponentParser {
-  parserInstant: PixelParser;
+  parserInstance: PixelParser;
 
   componentNameRegExp = /<\/?[\s*]?([^\s]+?)[/\s>]/;
 
   tagRegExp = /<[a-zA-Z0-9\-!/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 
   constructor(parser: PixelParser) {
-    this.parserInstant = parser;
+    this.parserInstance = parser;
   }
 
   parse(html: string, parentData?: IParentData): ParentNodeType[] | ParentNodeType | null {
@@ -25,7 +25,7 @@ export class ComponentParser {
         Pixel.registerComponents(componentConfig.components);
       }
 
-      const componentParsedData = this.parserInstant.tagParser.parse(html.slice(notCleanName.length), {
+      const componentParsedData = this.parserInstance.tagParser.parse(html.slice(notCleanName.length), {
         props: componentProps,
         state,
         methods,
@@ -44,7 +44,7 @@ export class ComponentParser {
         componentParsedData
       ) as VComponentNode;
 
-      const componentParsedTag = this.parserInstant.parseHTML(componentConfig.template, {
+      const componentParsedTag = this.parserInstance.parseHTML(componentConfig.template, {
         componentProps: componentParsedData.props || {},
         state: componentConfig.state || {},
         methods: this.bindMethods(componentConfig.methods || {}, component),
@@ -67,7 +67,7 @@ export class ComponentParser {
       props: oldComponent.componentProps,
     } as any) as VComponentNode;
 
-    const componentParsedTag = this.parserInstant.parseHTML(componentConfig.template, {
+    const componentParsedTag = this.parserInstance.parseHTML(componentConfig.template, {
       componentProps: component.componentProps || {},
       state: componentConfig.state || {},
       methods: this.bindMethods(componentConfig.methods || {}, oldComponent),
@@ -97,7 +97,7 @@ export class ComponentParser {
     );
 
     const componentsParsedTag = components.map((component: VComponentNode, index: number) =>
-      this.parserInstant.parseHTML(config.template, {
+      this.parserInstance.parseHTML(config.template, {
         componentProps: { ...data.props, ...data.listProps[index] } || {},
         state: config.state || {},
         methods: this.bindMethods(config.methods || {}, component),

@@ -14,6 +14,7 @@
     "express": "^4.17.1",
     "jsdom-global": "^3.0.2",
     "mocha": "^9.0.3",
+    "open": "^8.2.1",
     "parcel-bundler": "^1.12.5",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
@@ -75,7 +76,7 @@
     "vary": "^1.1.2"
   },
   "scripts": {
-    "start": "parcel static/index.html --open --no-cache --port 3000",
+    "start": "parcel static/index.html --no-cache --port 3000",
     "build": "parcel build static/index.html --no-content-hash --no-source-maps",
     "test": "./node_modules/.bin/_mocha 'src/**/*.spec.ts'",
     "serve": "node server/index.js"

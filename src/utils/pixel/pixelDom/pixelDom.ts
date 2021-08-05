@@ -6,18 +6,18 @@ import { IPatch, PropsDiff } from './pixelDom.type';
 import { BFS } from '../utils';
 
 class PixelDOM {
-  static instantce: PixelDOM;
+  static instance: PixelDOM;
 
   nodeFabric: NodeFabric;
 
   constructor() {
-    if (PixelDOM.instantce) {
-      return PixelDOM.instantce;
+    if (PixelDOM.instance) {
+      return PixelDOM.instance;
     }
 
     this.nodeFabric = new NodeFabric();
 
-    PixelDOM.instantce = this;
+    PixelDOM.instance = this;
   }
 
   render(node: VirtualNode) {
@@ -243,4 +243,4 @@ class PixelDOM {
 
 const pixelDOM = new PixelDOM();
 
-export { pixelDOM, NODE_TYPE };
+export { pixelDOM, NODE_TYPE, PixelDOM };

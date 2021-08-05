@@ -8,7 +8,7 @@ export class Store {
     missStoreField: (field: string) => `Store does't have field - ${field}`,
   };
 
-  pixelInstantce: typeof Pixel;
+  pixelInstance: typeof Pixel;
 
   protected authListenters: Record<string, any>[] = [];
 
@@ -18,9 +18,9 @@ export class Store {
 
   listeners: Record<string, ParentNodeType[]> = {};
 
-  constructor(pixelInstantce: typeof Pixel) {
-    this.pixelInstantce = pixelInstantce;
-    this.authListenters.push(this.pixelInstantce.router);
+  constructor(pixelInstance: typeof Pixel) {
+    this.pixelInstance = pixelInstance;
+    this.authListenters.push(this.pixelInstance.router);
 
     this.currentUser = this.createUserStore();
   }

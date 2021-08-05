@@ -4,6 +4,9 @@ import badge from '../../../../static/assets/images/Icon/badge.png';
 
 export function ListItem(): IComponentModel {
   return {
+    state: {
+      message: '',
+    },
     components: {
       UserPhoto,
     },
@@ -13,6 +16,11 @@ export function ListItem(): IComponentModel {
         setActiveChat(id);
       },
     },
+    componentDidMount() {
+      if (this.componentProps.last_message) {
+        this.state.message = this.componentProps.last_message.content;
+      }
+    },
     template: /* html */ `
       <li class="chat-list__item list-item" e:click="methods.setChat">
         <div class="list-item__photo user-avatar">
@@ -20,7 +28,7 @@ export function ListItem(): IComponentModel {
         </div>
         <div class="list-item__text">
           <h3 class="list-item__title">{{props.title}}</h3>
-          <p class="list-item__message" if:truthy="props.last_message" >{{props.last_message}}</p>
+          <p class="list-item__message" if:truthy="props.last_message" >{{state.message}}</p>
           <p class="list-item__message" if:falsy="props.last_message">Нет сообщений</p>
         </div>
         <div class="list-item__info">

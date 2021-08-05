@@ -4,3 +4,4 @@ dist
 .github
 .parcel-cache
 .vscode
+.nyc_output

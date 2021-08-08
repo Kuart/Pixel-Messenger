@@ -15,9 +15,6 @@
   justify-content: center;
 }
 
-.auth__body {
-}
-
 .auth-form {
   width: 330px;
   display: flex;

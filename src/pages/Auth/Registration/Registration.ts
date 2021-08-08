@@ -145,7 +145,7 @@ function Registration(): IComponentModel {
             <footer class="auth-form__footer">
 
               <Button 
-                text="Зарегистрироваться" 
+                text="Зарегистрироваться"
                 class="button_accent" 
                 type="submit" 
                 b:onClick="methods.submitForm"

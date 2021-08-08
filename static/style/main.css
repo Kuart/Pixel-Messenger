@@ -8,17 +8,17 @@
   --black: #222;
   --warning: #ff2f2f;
   --shadow: 2px 2px 4px rgba(0, 0, 0, 0.25), -2px -2px 4px rgba(0, 0, 0, 0.25);
-  --mainFont: Pixel Cyr, Andale Mono, monospace;
-  --secondFont: PerfectDOSVGA437, Andale Mono, monospace;
+  --mainFont: pixel cyr, andale mono, monospace;
+  --secondFont: perfectdosvga437, andale mono, monospace;
 }
 
 @font-face {
-  font-family: Pixel Cyr;
+  font-family: pixel cyr;
   src: url(../assets/fonts/Pixel.ttf);
 }
 
 @font-face {
-  font-family: PerfectDOSVGA437;
+  font-family: perfectdosvga437;
   src: url(../assets/fonts/PixelLow.ttf);
 }
 

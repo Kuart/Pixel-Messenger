@@ -47,7 +47,7 @@
   width: inherit;
   background: transparent;
   transition: color 0.2s linear;
-  padding: 2px 0px;
+  padding: 2px 0;
   text-shadow: 0 0 2px solid #000;
   border: none;
   cursor: pointer;

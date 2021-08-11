@@ -1,1 +1,1 @@
-export const BASE = 'https:/ya-praktikum.tech/api/v2';
+export const BASE = 'https://ya-praktikum.tech/api/v2';

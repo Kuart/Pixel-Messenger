@@ -23,6 +23,10 @@ export function Config(): IComponentModel {
       removeUser(id: number) {
         chatConfigController.removeUser(id, this);
       },
+      handlePhotoChange(event: Event) {
+        event.preventDefault();
+        chatConfigController.updateAvatar(event, this.componentProps.chat.id);
+      },
     },
     componentDidMount() {
       chatConfigController.getUsers(this);
@@ -35,7 +39,11 @@ export function Config(): IComponentModel {
       <div class="chat-config">
         <div class="chat-config__info-title">
           <div class="chat-config__title">{{props.chat.title}}</div>
-          <UserPhoto b:photo="props.chat.avatar" containerClass="chat__avatar-container" />
+          <UserPhoto 
+            b:photo="props.chat.avatar" 
+            inputId="chat_change_photo"
+            containerClass="chat__avatar-container profile__avatar-container_edit" 
+            b:onChange="methods.handlePhotoChange" />
         </div>
         <div class="participants__container">
           <Participants b:chatUsers="state.chatUsers" b:removeUser="methods.removeUser"/>

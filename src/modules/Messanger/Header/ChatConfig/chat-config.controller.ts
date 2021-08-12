@@ -36,6 +36,14 @@ class ChatConfigController {
     component.state.title = '';
     this.getUsers(component);
   };
+
+  updateAvatar = async (event: any, chatId: string) => {
+    const newForm = new FormData();
+    newForm.append('avatar', event.target.files[0]);
+    newForm.append('chatId', chatId);
+    const chat = await chatAPI.uploadAvatar(newForm);
+    PixelStore.dispatch('selectedChat', chat);
+  };
 }
 
 export const chatConfigController = new ChatConfigController();

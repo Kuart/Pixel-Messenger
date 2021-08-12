@@ -33,7 +33,7 @@ export function ChatConfig(): IComponentModel {
       <img 
         class="header-title__options" 
         src="${options}" 
-        e:click="props.modalClose" 
+        e:click="props.openChatConfig" 
       />
       <div if:truthy="props.isChatActionsOpen">
         ${
@@ -43,8 +43,8 @@ export function ChatConfig(): IComponentModel {
               b:chat="props.chat"
             />
         `,
-            undefined,
-            undefined,
+            '',
+            '',
             /* html */ `
         <img 
           class="header-title__options" 

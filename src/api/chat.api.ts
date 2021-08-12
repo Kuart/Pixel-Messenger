@@ -1,5 +1,6 @@
 import { IUser } from '../interfaces';
 import { IChatUserAction } from '../interfaces/IUser';
+import { IChat } from '../modules/Messanger/messanger.type';
 import { BaseAPI } from './base-api';
 
 class ChatAPI extends BaseAPI {
@@ -19,8 +20,8 @@ class ChatAPI extends BaseAPI {
     return this.http.delete('', { data });
   }
 
-  uploadAvatar(data: Record<string, any>) {
-    return this.http.put('/users', { data });
+  uploadAvatar(data: FormData): Promise<IChat> {
+    return this.http.put('/avatar', { isNoHeader: true, data });
   }
 
   getUsers(id: number): Promise<IUser[]> {

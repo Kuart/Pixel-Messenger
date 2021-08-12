@@ -10,11 +10,9 @@ class UserAPI extends BaseAPI {
     return this.http.put('/password', { data });
   }
 
-  changeAvatar(formData: FormData): Promise<void> {
+  changeAvatar(formData: FormData): Promise<IUser> {
     return this.http.put('/profile/avatar', {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      isNoHeader: true,
       data: formData,
     });
   }

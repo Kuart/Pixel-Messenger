@@ -10,6 +10,7 @@ export function Profile(): IComponentModel {
   return {
     state: {
       isEditable: false,
+      currentUser: {},
     },
     components: {
       UserPhoto,
@@ -34,12 +35,13 @@ export function Profile(): IComponentModel {
     componentWillUnmount() {
       window.removeEventListener('keydown', this.methods.handleEsc);
     },
+    pixelStore: ['currentUser'],
     template: /* html */ `
     ${
       Modal(
         /* html */ `
-          <ProfileInfo if:falsy="state.isEditable"  b:user="props.user" />
-          <ProfileEdit if:truthy="state.isEditable" b:user="props.user" b:onClose="methods.editHander" />
+          <ProfileInfo if:falsy="state.isEditable"  b:user="state.currentUser" />
+          <ProfileEdit if:truthy="state.isEditable" b:user="state.currentUser" b:onClose="methods.editHander" />
     `,
         '',
         '',

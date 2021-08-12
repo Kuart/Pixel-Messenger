@@ -23,7 +23,6 @@ export function Header(): IComponentModel {
       isProfileOpen: false,
       isChatActionsOpen: false,
       selectedChat: {},
-      currentUser: {},
     },
     methods: {
       settingClickHandler() {
@@ -55,13 +54,19 @@ export function Header(): IComponentModel {
         this.state.isChatActionsOpen = !this.state.isChatActionsOpen;
       },
     },
-    pixelStore: ['selectedChat', 'currentUser'],
+    pixelStore: ['selectedChat'],
     template: /* html */ `
       <header class="messanger__header">
         <section class="messanger__header-title">
           <h2 class="header-title__logo">Pixel Chat</h2>
           <img class="header-title__settings" src="${setting}" e:click="methods.settingClickHandler"/>
-          <Menu if:truthy="state.isMenu" b:optionClick="methods.optionClick"/>        
+          <Menu if:truthy="state.isMenu" b:optionClick="methods.optionClick"/>     
+          
+          <Profile 
+            if:truthy="state.isProfileOpen" 
+            b:modalClose="methods.closeProfileModal" 
+            headerText="Профиль"
+          />
         </section>
         
         <div class="messanger__chat-info">
@@ -84,12 +89,7 @@ export function Header(): IComponentModel {
         headerText="Создание нового чата"
       />
 
-      <Profile 
-        if:truthy="state.isProfileOpen" 
-        b:user="state.currentUser" 
-        b:modalClose="methods.closeProfileModal" 
-        headerText="Профиль"
-      />
+      
     `,
   };
 }

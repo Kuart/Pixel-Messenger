@@ -72,7 +72,7 @@ export class HTTPTransport {
 
       options.headers = { ...this.baseHeaders, ...options.headers };
 
-      if (options && options.headers) {
+      if (options && !options.isNoHeader && options.headers) {
         Object.keys(options.headers).forEach((key) => {
           xhr.setRequestHeader(key, options.headers![key]);
         });
@@ -105,7 +105,7 @@ export class HTTPTransport {
 
       if (options.method === METHODS.GET || !options.data) {
         xhr.send();
-      } else if (options.headers['Content-Type'] === 'application/json') {
+      } else if (!options.isNoHeader) {
         xhr.send(JSON.stringify(options.data ? options.data : {}));
       } else {
         xhr.send(options.data ? options.data : {});

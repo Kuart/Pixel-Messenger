@@ -28,9 +28,11 @@ export class ChatListController {
   };
 
   selectChat = (chatId: number) => {
-    PixelStore.dispatch(
-      'selectedChat',
-      PixelStore.store.chats.find((chat: IChat) => chat.id === chatId)
-    );
+    if (!PixelStore.store.selectedChat || PixelStore.store.selectedChat.id !== chatId) {
+      PixelStore.dispatch(
+        'selectedChat',
+        PixelStore.store.chats.find((chat: IChat) => chat.id === chatId)
+      );
+    }
   };
 }

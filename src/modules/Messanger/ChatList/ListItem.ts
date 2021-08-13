@@ -7,6 +7,7 @@ export function ListItem(): IComponentModel {
     state: {
       message: '',
       time: '',
+      isAuthor: false,
     },
     components: {
       UserPhoto,

@@ -86,7 +86,7 @@
 
 .chat__messages-area {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   padding: 12px;
   gap: 20px;
   overflow: auto;

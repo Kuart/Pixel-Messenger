@@ -17,12 +17,6 @@ class ChatConfigController {
     PixelStore.dispatch('selectedChat', {});
   };
 
-  getUsers = async (component: VComponentNode) => {
-    const { id } = component.componentProps.chat;
-    const users = await chatAPI.getUsers(id);
-    component.state.chatUsers = users;
-  };
-
   removeUser = (userId: number, component: VComponentNode) => {
     const { id } = component.componentProps.chat;
     const { chatUsers } = component.state;
@@ -34,7 +28,6 @@ class ChatConfigController {
     const { id } = component.componentProps.chat;
     await chatAPI.addUser({ users: [Number(title)], chatId: id });
     component.state.title = '';
-    this.getUsers(component);
   };
 
   updateAvatar = async (event: any, chatId: string) => {

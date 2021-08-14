@@ -20,17 +20,12 @@ export class ChatListController {
     }
   };
 
-  filterChats = (filter: string) => {
-    PixelStore.dispatch(
-      'filteredChats',
-      PixelStore.store.chats.filter((chat: IChat) => chat.title.indexOf(filter) !== -1)
-    );
-  };
-
   selectChat = (chatId: number) => {
-    PixelStore.dispatch(
-      'selectedChat',
-      PixelStore.store.chats.find((chat: IChat) => chat.id === chatId)
-    );
+    if (!PixelStore.store.selectedChat || PixelStore.store.selectedChat.id !== chatId) {
+      PixelStore.dispatch(
+        'selectedChat',
+        PixelStore.store.chats.find((chat: IChat) => chat.id === chatId)
+      );
+    }
   };
 }

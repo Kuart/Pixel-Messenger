@@ -10,10 +10,13 @@
 }
 
 .chat-config__title {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
+  display: block;
   font-size: 40px;
+  white-space: nowrap;
+  max-width: 400px;
+  width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat__avatar-container {

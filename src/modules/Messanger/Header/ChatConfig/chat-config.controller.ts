@@ -17,12 +17,6 @@ class ChatConfigController {
     PixelStore.dispatch('selectedChat', {});
   };
 
-  getUsers = async (component: VComponentNode) => {
-    const { id } = component.componentProps.chat;
-    const users = await chatAPI.getUsers(id);
-    component.state.chatUsers = users;
-  };
-
   removeUser = (userId: number, component: VComponentNode) => {
     const { id } = component.componentProps.chat;
     const { chatUsers } = component.state;
@@ -33,8 +27,17 @@ class ChatConfigController {
   addUser = async (title: string, component: VComponentNode) => {
     const { id } = component.componentProps.chat;
     await chatAPI.addUser({ users: [Number(title)], chatId: id });
+    const users = await chatAPI.getUsers(id);
+    component.state.chatUsers = users;
     component.state.title = '';
-    this.getUsers(component);
+  };
+
+  updateAvatar = async (event: any, chatId: string) => {
+    const newForm = new FormData();
+    newForm.append('avatar', event.target.files[0]);
+    newForm.append('chatId', chatId);
+    const chat = await chatAPI.uploadAvatar(newForm);
+    PixelStore.dispatch('selectedChat', chat);
   };
 }
 

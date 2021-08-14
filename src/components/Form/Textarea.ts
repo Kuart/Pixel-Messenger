@@ -6,6 +6,14 @@ export function Textarea(): IComponentModel {
     state: {
       error: '',
     },
+    methods: {
+      keyHandler(event: KeyboardEvent) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          this.componentProps.onKeyDown();
+        }
+      },
+    },
     template: /* html */ `
     <div class="input">
       <div class="input__control-wrapper">
@@ -15,6 +23,7 @@ export function Textarea(): IComponentModel {
           p:type="type" 
           p:placeholder="placeholder" 
           p:value="value"
+          e:keydown="methods.keyHandler"
           e:input="props.onChange"/>
         <span class="input__underline"></span>
       </div>

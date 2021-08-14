@@ -23,7 +23,6 @@ export function Header(): IComponentModel {
       isProfileOpen: false,
       isChatActionsOpen: false,
       selectedChat: {},
-      currentUser: {},
     },
     methods: {
       settingClickHandler() {
@@ -51,17 +50,20 @@ export function Header(): IComponentModel {
           default:
         }
       },
-      handleChatConfig() {
+      openChatConfig() {
         this.state.isChatActionsOpen = !this.state.isChatActionsOpen;
       },
+      closeConfigModal() {
+        this.state.isChatActionsOpen = false;
+      },
     },
-    pixelStore: ['selectedChat', 'currentUser'],
+    pixelStore: ['selectedChat'],
     template: /* html */ `
       <header class="messanger__header">
         <section class="messanger__header-title">
           <h2 class="header-title__logo">Pixel Chat</h2>
           <img class="header-title__settings" src="${setting}" e:click="methods.settingClickHandler"/>
-          <Menu if:truthy="state.isMenu" b:optionClick="methods.optionClick"/>        
+          <Menu if:truthy="state.isMenu" b:optionClick="methods.optionClick"/>     
         </section>
         
         <div class="messanger__chat-info">
@@ -71,12 +73,19 @@ export function Header(): IComponentModel {
               if:truthy="state.selectedChat.id" 
               headerText="Настройка чата"
               b:isChatActionsOpen="state.isChatActionsOpen"
-              b:modalClose="methods.handleChatConfig"
+              b:modalClose="methods.closeConfigModal"
+              b:openChatConfig="methods.openChatConfig"
               b:chat="state.selectedChat"
             />
           </div>
         </div>
       </header>
+
+      <Profile 
+        if:truthy="state.isProfileOpen" 
+        b:modalClose="methods.closeProfileModal" 
+        headerText="Профиль"
+      />
 
       <CreateModal 
         if:truthy="state.isChatCreate" 
@@ -84,12 +93,7 @@ export function Header(): IComponentModel {
         headerText="Создание нового чата"
       />
 
-      <Profile 
-        if:truthy="state.isProfileOpen" 
-        b:user="state.currentUser" 
-        b:modalClose="methods.closeProfileModal" 
-        headerText="Профиль"
-      />
+      
     `,
   };
 }

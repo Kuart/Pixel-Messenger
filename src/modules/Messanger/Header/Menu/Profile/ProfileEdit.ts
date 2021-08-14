@@ -13,7 +13,6 @@ export function ProfileEdit(): IComponentModel {
     state: {
       isPasswordEdit: false,
       formFields: {
-        avatarFile: '',
         avatar: '',
         email: '',
         login: '',
@@ -59,9 +58,9 @@ export function ProfileEdit(): IComponentModel {
         event.preventDefault();
         this.state.isPasswordEdit = !this.state.isPasswordEdit;
       },
-      async handlePhotoChange(event: Event) {
+      handlePhotoChange(event: Event) {
         event.preventDefault();
-        const isUpdated = await profileEditController.updateAvatar(event);
+        profileEditController.updateAvatar(event, this);
       },
     },
     components: {
@@ -89,7 +88,7 @@ export function ProfileEdit(): IComponentModel {
         <div class="profile-form__body">
           <div class="profile-form__row">
             <UserPhoto 
-              b:photo="state.avatar" 
+              b:photo="state.formFields.avatar" 
               containerClass="profile__avatar-container profile__avatar-container_edit" 
               inputId="profile_change_photo"
               b:onChange="methods.handlePhotoChange"

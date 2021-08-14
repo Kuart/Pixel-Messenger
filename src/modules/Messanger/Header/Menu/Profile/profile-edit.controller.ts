@@ -37,9 +37,11 @@ export class ProfileEditController {
     }
   };
 
-  updateAvatar = async (event: any) => {
+  updateAvatar = async (event: any, component: VComponentNode) => {
     const newForm = new FormData();
-    newForm.append('avatar', event.target.files[0], 'avatar.png');
-    await userAPI.changeAvatar(newForm);
+    newForm.append('avatar', event.target.files[0]);
+    const user = await userAPI.changeAvatar(newForm);
+    PixelStore.dispatch('currentUser', user);
+    component.state.formFields.avatar = user.avatar;
   };
 }

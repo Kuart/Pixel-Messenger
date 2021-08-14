@@ -10,6 +10,7 @@
     "preserveConstEnums": true,
     "strictNullChecks": true,
     "sourceMap": true,
+    "downlevelIteration": true,
     "lib": ["ES2017", "DOM", "ES2016"],
     "typeRoots": ["./node_modules/@types"]
   },

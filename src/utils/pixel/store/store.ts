@@ -1,5 +1,6 @@
 import { EVENTS } from '../../const';
-import { ParentNodeType } from '../pixelDom';
+import { parseObjectPathTag } from '../parser/utils';
+import { ParentNodeType, VComponentNode } from '../pixelDom';
 import { Pixel } from '../root';
 import { ICurrentUserStore } from './store.type';
 
@@ -83,6 +84,12 @@ export class Store {
     }
 
     this.listeners[event] = this.listeners[event].filter((item) => item !== listener);
+  };
+
+  forceUpdate = (field: string, component: VComponentNode) => {
+    if (this.store[field]) {
+      component.eventBus.emit(EVENTS.PSU, [field, this.store[field]]);
+    }
   };
 
   dispatch(field: string, value: any) {

@@ -87,6 +87,7 @@ export class VComponentNode extends VParentNode {
         if (!this.pixelStore.has(field)) {
           this.pixelStore.add(field);
           PixelStore.subscribe(field, this);
+          PixelStore.forceUpdate(field, this);
         }
       });
     }

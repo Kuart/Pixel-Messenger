@@ -10,7 +10,7 @@ const parseObjectPathTag = (store: Props | State, path: string, alt?: string): u
     for (const key of keys) {
       const value = result[key];
 
-      if (value === undefined) {
+      if (value === undefined || value === null) {
         if (alt) {
           return alt;
         }

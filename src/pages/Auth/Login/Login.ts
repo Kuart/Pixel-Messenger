@@ -8,7 +8,7 @@ import '../Auth.css';
 
 const loginController = new LoginController();
 
-const validConfig = { form: 'formFields', errors: 'errors', ignoreEmpty: true };
+const validConfig = { form: 'formFields', errors: 'errors' };
 
 function Login(): IComponentModel {
   const loginFormId = 'id-login_form';
@@ -61,8 +61,7 @@ function Login(): IComponentModel {
             e:submit="methods.submitForm" 
             e:focus="methods.formFocusHandler" 
             e:blur="methods.formBlurHandler" 
-            id="${loginFormId}"
-            >
+          >
             <div class="auth-form__body">
               <Input 
                 label="Логин" 
@@ -88,9 +87,8 @@ function Login(): IComponentModel {
               <Button 
                 text="Авторизоваться" 
                 class="button_accent" 
-                type="button" 
+                type="submit" 
                 b:onClick="methods.submitForm" 
-                form="${loginFormId}"
               />
 
               <Button 

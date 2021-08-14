@@ -5,6 +5,7 @@ import { List } from './List';
 import { ChatListController } from './chat-list.controller';
 import './ChatList.css';
 import { ChatController } from '../../../controllers';
+import { IChat } from '../messanger.type';
 
 const chatController = new ChatController();
 const chatListController = new ChatListController();
@@ -18,6 +19,7 @@ export function ChatList(): IComponentModel {
     },
     state: {
       searchValue: '',
+      chats: [],
       filteredChats: [],
     },
     componentDidMount() {
@@ -27,13 +29,24 @@ export function ChatList(): IComponentModel {
       filterChatList(event: CustomEventTarget<HTMLInputElement>) {
         const { value } = event.target;
         this.state.searchValue = value;
-        chatListController.filterChats(value);
       },
       setActiveChat(chatId: number) {
         chatListController.selectChat(chatId);
       },
     },
-    pixelStore: ['filteredChats'],
+    componentDidUpdate(_, props: Record<string, any>) {
+      if ('searchValue' in props) {
+        const { chats } = this.state;
+        this.state.filteredChats = chats.filter((chat: IChat) => chat.title.indexOf(props.searchValue) !== -1);
+      } else if (props.chats) {
+        if (this.state.searchValue) {
+          this.state.filteredChats = props.chats.filter((chat: IChat) => chat.title.indexOf(props.searchValue) !== -1);
+        } else {
+          this.state.filteredChats = props.chats;
+        }
+      }
+    },
+    pixelStore: ['chats'],
     template: /* html */ ` 
     <aside class="messanger__chat-list" >
       <form class="search-form">

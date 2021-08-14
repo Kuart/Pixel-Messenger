@@ -29,8 +29,12 @@ class MessagesController {
     this.sockets.set(chat.id, socket);
   }
 
-  onMessage(chatId: number, messages: IMessage[] | IMessage) {
-    this.chats[this.chatInArray.get(chatId)!].messages.push(...this.convertMessages(messages));
+  onMessage(chatId: number, wsMessage: IMessage[] | IMessage) {
+    const { messages, lastMessage } = this.convertMessages(wsMessage);
+    this.chats[this.chatInArray.get(chatId)!].messages.push(...messages);
+    this.chats[this.chatInArray.get(chatId)!].lastMessage = lastMessage;
+
+    PixelStore.dispatch('chats', this.chats);
     if (PixelStore.store.selectedChat && PixelStore.store.selectedChat.id === chatId) {
       PixelStore.dispatch('selectedChat', this.chats[this.chatInArray.get(chatId)!]);
     }
@@ -70,9 +74,9 @@ class MessagesController {
 
     this.chatInArray.clear();
     this.clearSockets(usedChats);
+    this.chats = [];
 
     let i = 0;
-    this.chats = [];
     for (const item of this.sockets) {
       this.chatInArray.set(item[1].chat.id, i);
       item[1].chat.users = this.convertUsers(users[i]);
@@ -92,19 +96,25 @@ class MessagesController {
   }
 
   convertUsers(users: IUser[]) {
-    return users.map((user) => {
-      this.users.set(user.id, user);
-      return user;
-    });
+    if (users) {
+      return users.map((user) => {
+        this.users.set(user.id, user);
+        return user;
+      });
+    }
+
+    return [];
   }
 
   convertMessages = (messages: IMessage | IMessage[]) => {
     const { id } = PixelStore.currentUser;
     const toConvert = Array.isArray(messages) ? messages.reverse() : [messages];
+
     const converted = toConvert.map((message) => {
       const time = dateHandler.parseToChatFormat(message.time);
       const user = this.users.get(message.user_id);
       const isAuthor = user?.id === id;
+
       return {
         ...message,
         isAuthor,
@@ -113,8 +123,18 @@ class MessagesController {
         name: user?.display_name ? user.display_name : user?.login,
       };
     });
+    let lastMessage = null;
 
-    return converted;
+    if (converted.length && converted.length > 1) {
+      lastMessage = converted[converted.length - 1];
+    } else if (converted.length) {
+      lastMessage = converted[0];
+    }
+
+    return {
+      messages: converted,
+      lastMessage,
+    };
   };
 }
 

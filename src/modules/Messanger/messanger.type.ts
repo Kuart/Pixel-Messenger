@@ -7,6 +7,7 @@ export interface IChat {
   created_by: number;
   unread_count: number;
   last_message: null;
+  lastMessage: null | IMessage;
   messages: IMessage[];
   index: number;
   users: IUser[];

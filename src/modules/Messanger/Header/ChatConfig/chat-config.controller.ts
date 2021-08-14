@@ -27,6 +27,8 @@ class ChatConfigController {
   addUser = async (title: string, component: VComponentNode) => {
     const { id } = component.componentProps.chat;
     await chatAPI.addUser({ users: [Number(title)], chatId: id });
+    const users = await chatAPI.getUsers(id);
+    component.state.chatUsers = users;
     component.state.title = '';
   };
 

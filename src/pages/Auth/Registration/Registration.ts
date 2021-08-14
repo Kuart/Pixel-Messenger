@@ -7,7 +7,7 @@ import { RegisterController } from './registration.controller';
 import '../Auth.css';
 
 const registerController = new RegisterController();
-const validConfig = { form: 'formFields', errors: 'errors', ignoreEmpty: true };
+const validConfig = { form: 'formFields', errors: 'errors' };
 
 function Registration(): IComponentModel {
   return {
@@ -63,10 +63,12 @@ function Registration(): IComponentModel {
           <h2>Регистрация</h2>
         </header>
         <div class="auth__body">
-          <form class="auth-form auth-form_login" 
-                e:submit="methods.submitForm" 
-                e:blur="methods.formBlurHandler" 
-                e:focus="methods.formFocusHandler">
+          <form 
+            class="auth-form auth-form_login" 
+            e:submit="methods.submitForm" 
+            e:blur="methods.formBlurHandler" 
+            e:focus="methods.formFocusHandler"
+          >
 
             <div class="auth-form__body auth-form__body--register">
 

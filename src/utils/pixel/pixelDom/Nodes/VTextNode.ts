@@ -25,9 +25,12 @@ export class VTextNode extends VNode {
     }
   }
 
-  updateText(text: string) {
+  updateText(text: string = '') {
     this.text = text;
-    this.props[this.propsKey] = text;
+
+    if (this.propsKey) {
+      this.props[this.propsKey] = text;
+    }
   }
 
   setParentNode(parent: ParentNodeType) {

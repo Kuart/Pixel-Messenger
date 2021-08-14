@@ -28,6 +28,9 @@ export function Config(): IComponentModel {
         chatConfigController.updateAvatar(event, this.componentProps.chat.id);
       },
     },
+    componentDidMount() {
+      this.state.chatUsers = this.componentProps.chat.users;
+    },
     components: {
       EditInput,
       Participants,
@@ -43,7 +46,7 @@ export function Config(): IComponentModel {
             b:onChange="methods.handlePhotoChange" />
         </div>
         <div class="participants__container">
-          <Participants b:chatUsers="props.chat.users" b:removeUser="methods.removeUser"/>
+          <Participants b:chatUsers="state.chatUsers" b:removeUser="methods.removeUser"/>
 
           <EditInput 
             buttonText="Добавить участника" 

@@ -14,12 +14,12 @@
 
 @font-face {
   font-family: pixel cyr;
-  src: url(../assets/fonts/Pixel.ttf);
+  src: url(../../static/assets/fonts/Pixel.ttf);
 }
 
 @font-face {
   font-family: perfectdosvga437;
-  src: url(../assets/fonts/PixelLow.ttf);
+  src: url(../../static/assets/fonts/PixelLow.ttf);
 }
 
 * {

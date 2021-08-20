@@ -1,6 +1,8 @@
 import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './pages';
 import { routerConfig } from './routes';
 import { Pixel } from './utils';
+import './style/main.css';
+import './style/normalize.css';
 import './index.css';
 
 const currentUserDefault = {

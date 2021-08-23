@@ -1,6 +1,6 @@
 import { chatAPI, ChatWebSocket } from '../api';
 import { IMessage, IUser } from '../interfaces';
-import { IChat } from '../modules/Messanger/messanger.type';
+import { IChat } from '../modules/Messenger/messenger.type';
 import { dateHandler, PixelStore } from '../utils';
 
 class MessagesController {

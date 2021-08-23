@@ -1,6 +1,6 @@
 import { chatAPI } from '../../../api';
 import { PixelStore } from '../../../utils';
-import { IChat } from '../messanger.type';
+import { IChat } from '../messenger.type';
 
 export class ChatListController {
   createChat = async (title: string) => {

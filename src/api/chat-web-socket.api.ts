@@ -6,7 +6,7 @@ import {
   MessageEventCallback,
   CloseEventCallback,
 } from '../interfaces';
-import { IChat } from '../modules/Messanger/messanger.type';
+import { IChat } from '../modules/Messenger/messenger.type';
 
 export class ChatWebSocket {
   static TYPES = {

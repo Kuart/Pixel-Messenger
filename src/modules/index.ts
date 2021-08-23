@@ -1,1 +1,1 @@
-export { Chat, Header, ChatList } from './Messanger';
+export { Chat, Header, ChatList } from './Messenger';

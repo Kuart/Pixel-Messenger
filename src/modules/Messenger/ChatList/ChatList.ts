@@ -4,10 +4,8 @@ import { CustomEventTarget } from '../../../interfaces';
 import { List } from './List';
 import { ChatListController } from './chat-list.controller';
 import './ChatList.css';
-import { ChatController } from '../../../controllers';
-import { IChat } from '../messanger.type';
+import { IChat } from '../messenger.type';
 
-const chatController = new ChatController();
 const chatListController = new ChatListController();
 
 /* eslint no-console: "off" */
@@ -22,9 +20,6 @@ export function ChatList(): IComponentModel {
       chats: [],
       filteredChats: [],
     },
-    componentDidMount() {
-      chatController.getChats();
-    },
     methods: {
       filterChatList(event: CustomEventTarget<HTMLInputElement>) {
         const { value } = event.target;
@@ -34,7 +29,7 @@ export function ChatList(): IComponentModel {
         chatListController.selectChat(chatId);
       },
     },
-    componentDidUpdate(_, props: Record<string, any>) {
+    componentDidUpdate(_: unknown, props: Record<string, any>) {
       if ('searchValue' in props) {
         const { chats } = this.state;
         this.state.filteredChats = chats.filter((chat: IChat) => chat.title.indexOf(props.searchValue) !== -1);

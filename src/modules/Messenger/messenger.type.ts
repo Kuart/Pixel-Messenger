@@ -1,5 +1,6 @@
 import { IMessage, IUser } from '../../interfaces';
 
+/* eslint camelcase: "off" */
 export interface IChat {
   id: number;
   title: string;

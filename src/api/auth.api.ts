@@ -1,4 +1,4 @@
-import { IUser } from '../pages';
+import { IUser } from '../interfaces';
 import { IRegistrationForm } from '../pages/Auth/auth.type';
 import { BaseAPI } from './base-api';
 

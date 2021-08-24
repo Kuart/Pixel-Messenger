@@ -10,13 +10,13 @@
     }
   },
   "lint-staged": {
-    "*.{ts, js}": [
+    "*.ts": [
       "npm run prettier",
       "npm run test",
       "npm run lint:fix",
       "git add"
     ],
-    "*.{css}": [
+    "*.css": [
       "npm run prettier",
       "npm run stylelint",
       "git add"
@@ -30,7 +30,8 @@
     "lint": "npx eslint 'src/**/*.ts'",
     "lint:fix": "npx eslint 'src/**/*.ts' --fix",
     "stylelint": "npx stylelint 'src/**/*.css'",
-    "prettier": "npx prettier 'src/**/*.{ts, css}' --w"
+    "prettier": "npx prettier 'src/**/*.{ts, css}' --w",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",

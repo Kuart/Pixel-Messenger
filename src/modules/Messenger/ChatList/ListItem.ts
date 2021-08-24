@@ -1,6 +1,6 @@
-import { dateHandler, IComponentModel } from '../../../utils';
+import { IComponentModel } from '../../../utils';
 import { UserPhoto } from '../../../components';
-import badge from '../../../../static/assets/images/Icon/badge.png';
+import badge from '../../../assets/images/Icon/badge.png';
 
 export function ListItem(): IComponentModel {
   return {

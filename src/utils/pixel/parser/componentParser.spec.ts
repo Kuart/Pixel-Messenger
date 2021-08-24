@@ -6,7 +6,6 @@ import PixelRoot from '../root/pixel';
 import { ComponentParser } from './componentParser';
 import { PREFIXES } from './const';
 
-const blankData: () => IData = () => ({ props: {}, state: {}, methods: {} });
 const htmlString = (key: string = '', value: string = '', mod = '') =>
   `<ComponentParserTest ${mod}${key}="${value}" />`;
 

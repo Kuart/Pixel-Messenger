@@ -44,7 +44,9 @@
     "start": "cross-env NODE_ENV=development webpack serve --config=./webpack/webpack.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config=./webpack/webpack.config.js --mode production",
     "test": "./node_modules/.bin/_mocha 'src/**/*.spec.ts'",
-    "serve": "node server/index.js"
+    "serve": "node server/index.js",
+    "lint": "npx eslint 'src/**/*.ts'",
+    "stylelint": "npx stylelint 'src/**/*.css'"
   },
   "repository": {
     "type": "git",
@@ -55,6 +57,5 @@
   "bugs": {
     "url": "https://github.com/yandex-praktikum/middle.messenger.praktikum.yandex/issues"
   },
-  "homepage": "https://github.com/yandex-praktikum/middle.messenger.praktikum.yandex#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/yandex-praktikum/middle.messenger.praktikum.yandex#readme"
 }

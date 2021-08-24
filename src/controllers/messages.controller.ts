@@ -128,6 +128,7 @@ class MessagesController {
     if (converted.length && converted.length > 1) {
       lastMessage = converted[converted.length - 1];
     } else if (converted.length) {
+      /* eslint prefer-destructuring: ["error", {VariableDeclarator: {object: true}}] */
       lastMessage = converted[0];
     }
 

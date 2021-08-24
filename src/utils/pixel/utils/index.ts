@@ -1,7 +1,8 @@
 import EventBus from './EventBus';
 
 export { EventBus };
-export { IStackNode, Stack, Queue, IQueueNode } from './structures';
-export { BFS, bfsFirstParents } from './bfs';
+export type { IStackNode, IQueueNode } from './structures';
+export { Stack, Queue } from './structures';
+export { BFS } from './bfs';
 export { DFS } from './dfs';
 export { createProxyObject } from './proxy';

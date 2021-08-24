@@ -1,11 +1,4 @@
-import {
-  IEventsCallbacks,
-  IMessage,
-  IMessageEvent,
-  IPayload,
-  MessageEventCallback,
-  CloseEventCallback,
-} from '../interfaces';
+import { IEventsCallbacks, IMessageEvent, IPayload, MessageEventCallback } from '../interfaces';
 import { IChat } from '../modules/Messenger/messenger.type';
 
 export class ChatWebSocket {
@@ -23,11 +16,7 @@ export class ChatWebSocket {
 
     this.socket.addEventListener('open', this.openHandler.bind(this, callbacks?.openCB));
 
-    this.socket.addEventListener('close', this.closeHandler.bind(this, callbacks?.closeCB));
-
     this.socket.addEventListener('message', this.messageHandler.bind(this, callbacks?.messageCB));
-
-    this.socket.addEventListener('error', this.errorHandler.bind(this, callbacks?.errorCB));
 
     this.chat = { ...chat, messages: [] };
   }
@@ -37,19 +26,9 @@ export class ChatWebSocket {
   };
 
   messageHandler = (callback: MessageEventCallback, event: IMessageEvent) => {
-    const data: Record<string, string> | IMessage[] | IMessage = event.data ? JSON.parse(event.data) : '';
+    const data: any = event.data ? JSON.parse(event.data) : '';
     if ((data && Array.isArray(data)) || data.type !== 'pong') {
       callback(this.chat.id, data);
-    }
-  };
-
-  errorHandler = (event: any) => {};
-
-  closeHandler = (callback: CloseEventCallback, event: any) => {
-    if (event.wasClean) {
-      console.log('Соединение закрыто чисто');
-    } else {
-      console.log('Обрыв соединения');
     }
   };
 

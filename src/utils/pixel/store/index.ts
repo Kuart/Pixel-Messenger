@@ -1,2 +1,2 @@
 export { Store } from './store';
-export { IPixelStoreUpdateProp } from './store.type';
+export type { IPixelStoreUpdateProp } from './store.type';

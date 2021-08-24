@@ -96,13 +96,13 @@ export class ComponentParser {
         }) as VComponentNode
     );
 
+    /* prettier-ignore */
     const componentsParsedTag = components.map((component: VComponentNode, index: number) =>
       this.parserInstance.parseHTML(config.template, {
         componentProps: { ...data.props, ...data.listProps[index] } || {},
         state: config.state || {},
         methods: this.bindMethods(config.methods || {}, component),
-      })
-    );
+      }));
 
     componentsParsedTag.forEach((tagConfig: ParentNodeType, index: number) => {
       components[index].init(tagConfig);

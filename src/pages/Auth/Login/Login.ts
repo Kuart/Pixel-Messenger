@@ -11,7 +11,6 @@ const loginController = new LoginController();
 const validConfig = { form: 'formFields', errors: 'errors' };
 
 function Login(): IComponentModel {
-  const loginFormId = 'id-login_form';
   return {
     state: {
       formFields: {

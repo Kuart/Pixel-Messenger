@@ -1,2 +1,2 @@
 export { Parser } from './parser';
-export { IParsedTag } from './parser.type';
+export type { IParsedTag } from './parser.type';

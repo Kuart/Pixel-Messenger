@@ -1,5 +1,5 @@
-import { IComponentModel } from '../../utils';
-import { Header, ChatList, Chat } from '../../modules';
+import { IComponentModel } from '@/utils';
+import { Header, ChatList, Chat } from '@/modules';
 import './Messanger.css';
 
 function Messanger(): IComponentModel {

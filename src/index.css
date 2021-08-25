@@ -1,5 +1,5 @@
 .container {
-  background: url('./assets/images/BG/RootBG.png') no-repeat;
+  background: url('assets/images/BG/RootBG.png') no-repeat;
   background-color: var(--lightFocus);
   display: flex;
   justify-content: center;

@@ -1,5 +1,6 @@
-const { ROOT_FILE, BUILD_DIRECTORY, FILENAME, IS_PROD } = require('./const');
+const { ROOT_FILE, BUILD_DIRECTORY, FILENAME, IS_PROD, SOURCE_DIRECTORY } = require('./const');
 const { PROD_LOADERS, DEV_LOADERS } = require('./loaders');
+const { OPTIMIZATION } = require('./optimization');
 const { PLUGINS } = require('./plugins');
 
 module.exports = () => ({
@@ -20,8 +21,18 @@ module.exports = () => ({
   plugins: PLUGINS,
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      '@': SOURCE_DIRECTORY,
+    },
   },
   module: {
     rules: IS_PROD ? PROD_LOADERS : DEV_LOADERS,
   },
+  optimization: IS_PROD
+    ? OPTIMIZATION
+    : {
+        splitChunks: {
+          chunks: 'all',
+        },
+      },
 });

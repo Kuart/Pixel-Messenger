@@ -1,11 +1,13 @@
-import { IComponentModel } from '../../../utils';
-import { SearchInput } from '../../../components';
-import { CustomEventTarget } from '../../../interfaces';
+import { IComponentModel } from '@/utils';
+import { SearchInput } from '@/components';
+import { CustomEventTarget } from '@/interfaces';
 import { List } from './List';
 import { ChatListController } from './chat-list.controller';
-import './ChatList.css';
 import { IChat } from '../messenger.type';
+import { ChatController } from '@/controllers';
+import './ChatList.css';
 
+const сhatController = new ChatController();
 const chatListController = new ChatListController();
 
 /* eslint no-console: "off" */
@@ -28,6 +30,9 @@ export function ChatList(): IComponentModel {
       setActiveChat(chatId: number) {
         chatListController.selectChat(chatId);
       },
+    },
+    componentDidMount() {
+      сhatController.getChats();
     },
     componentDidUpdate(_: unknown, props: Record<string, any>) {
       if ('searchValue' in props) {

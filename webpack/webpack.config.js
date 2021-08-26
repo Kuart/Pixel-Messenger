@@ -20,7 +20,7 @@ module.exports = () => ({
   devtool: false,
   plugins: PLUGINS,
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.css'],
     alias: {
       '@': SOURCE_DIRECTORY,
     },

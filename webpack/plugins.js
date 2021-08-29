@@ -9,7 +9,7 @@ exports.PLUGINS = [
   new CleanWebpackPlugin(),
   new HtmlWebpackPlugin({
     template: './static/index.html',
-    title: 'PixelChat',
+    title: 'PixelMessenger',
     favicon: './static/assets/images/favicon.ico',
     minify: {
       collapseWhitespace: IS_PROD,

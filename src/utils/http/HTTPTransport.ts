@@ -67,6 +67,7 @@ export class HTTPTransport {
   request(url: string = '', options: IXMLHttpRequestOptions, timeout = 5000) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
+
       xhr.open(options.method, this.baseUrl + url);
       xhr.withCredentials = true;
 

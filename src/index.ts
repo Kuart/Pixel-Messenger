@@ -1,4 +1,4 @@
-import { Login, Registration, Messanger, UserMissPage, ServerMissPage } from './pages';
+import { Login, Registration, Messenger, UserMissPage, ServerMissPage } from './pages';
 import { routerConfig } from './routes';
 import { Pixel } from './utils';
 import './style/main.css';
@@ -26,7 +26,7 @@ Pixel.config({
   components: {
     Login,
     Registration,
-    Messanger,
+    Messenger,
     UserMissPage,
     ServerMissPage,
   },

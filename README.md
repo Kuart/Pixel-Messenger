@@ -1,13 +1,18 @@
 # Pixel Chat
 
-## And coding style tests
+Мессенджер реализованный c использованием самописной библиотеки по отрисовки интерфейсов.
 
-    Запуск в режиме serve
+## Структура библиотеки
+
+## Команды
+
+    Запуск в режиме разработки
 
     ```
     npm run start
 
     ```
+
     Сборка
 
     ```
@@ -29,15 +34,16 @@
 
     ```
 
-### Описание
+### Страницы
 
-    * /#login || '/' - по умолчанию
+    * /#login
     * /#register
     * /#messanger
-    * /#error
-    * /#wrong
+    * /#error | 500
+    * /#wrong | 404
 
 ### **Ссылки**
-- «[Netlify](https://pixel-messenger.netlify.app)»,
+
+- «[Heroku](https://pixel-messenger.herokuapp.com/)»,
 - «[Макеты Figma](https://www.figma.com/file/J0pgivTE3a1LNOoGOEZOAV/PixelChat?node-id=1%3A20)»,
-- «[PR Sprint 3](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/1)»,
+- «[PR Sprint 4](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/1)»,

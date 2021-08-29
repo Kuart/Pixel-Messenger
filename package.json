@@ -6,11 +6,12 @@
   "engine": "14.17.1",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test && lint-staged"
+      "pre-commit": "lint-staged && npm run test"
     }
   },
   "lint-staged": {
     "**/*.ts": [
+      "npm run test",
       "npm run prettier",
       "npm run lint:fix"
     ],

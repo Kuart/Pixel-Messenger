@@ -1,6 +1,6 @@
 import { IUser } from '../interfaces';
 import { IChatUserAction } from '../interfaces/IUser';
-import { IChat } from '../modules/Messanger/messanger.type';
+import { IChat } from '../modules/Messenger/messenger.type';
 import { BaseAPI } from './base-api';
 
 class ChatAPI extends BaseAPI {

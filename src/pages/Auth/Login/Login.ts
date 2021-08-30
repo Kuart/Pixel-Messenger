@@ -1,6 +1,6 @@
-import { FormValidator, IComponentModel, PixelRouter } from '../../../utils';
-import { Input, Modal, Button, PagesContainer } from '../../../components';
-import { CustomEventTarget } from '../../../interfaces';
+import { FormValidator, IComponentModel, PixelRouter } from '@/utils';
+import { Input, Modal, Button } from '@/components';
+import { CustomEventTarget } from '@/interfaces';
 import { LOGIN_FIELD_TYPE } from '../const';
 import { ROUTES } from '../../../routes';
 import { LoginController } from './login.controller';
@@ -11,7 +11,6 @@ const loginController = new LoginController();
 const validConfig = { form: 'formFields', errors: 'errors' };
 
 function Login(): IComponentModel {
-  const loginFormId = 'id-login_form';
   return {
     state: {
       formFields: {
@@ -45,7 +44,6 @@ function Login(): IComponentModel {
     },
     components: {
       Modal,
-      PagesContainer,
       Input,
       Button,
     },

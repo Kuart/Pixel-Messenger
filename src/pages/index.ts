@@ -1,5 +1,5 @@
-import Messanger from './Messanger';
+import Messenger from './Messenger';
 
-export { Login, Registration, IUser } from './Auth';
+export { Login, Registration } from './Auth';
 export { ServerMissPage, UserMissPage } from './MissedPages';
-export { Messanger };
+export { Messenger };

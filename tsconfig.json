@@ -12,7 +12,11 @@
     "sourceMap": true,
     "downlevelIteration": true,
     "lib": ["ES2017", "DOM", "ES2016"],
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "exclude": ["../node_modules"],
   "include": ["./src/**/*.ts"]

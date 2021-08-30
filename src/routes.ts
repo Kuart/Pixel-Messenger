@@ -5,7 +5,7 @@ const cookieAuthController = new CookieAuthController();
 const ROUTES = {
   login: 'login',
   register: 'register',
-  messanger: 'messanger',
+  messenger: 'messenger',
   profile: 'profile',
 };
 
@@ -13,7 +13,7 @@ const routerConfig = {
   auth: {
     check: cookieAuthController.checkAuth,
     redirect: ROUTES.login,
-    authRedirect: ROUTES.messanger,
+    authRedirect: ROUTES.messenger,
     permittedRoutes: [ROUTES.login, ROUTES.register],
   },
   defaultRoute: {
@@ -26,8 +26,8 @@ const routerConfig = {
       component: 'Registration',
       title: 'Регистрация',
     },
-    [ROUTES.messanger]: {
-      component: 'Messanger',
+    [ROUTES.messenger]: {
+      component: 'Messenger',
       title: 'Чат',
     },
     wrong: {

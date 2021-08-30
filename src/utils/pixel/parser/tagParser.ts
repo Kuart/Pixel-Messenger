@@ -116,6 +116,8 @@ export class TagParser {
     if (name === LIST_TYPE.OBJECT_ARRAY) {
       return parseObjectPathTag(store, valueString) as Props;
     }
+
+    return '';
   };
 
   getTagName = (tag: string) => tag.split(' ')[0].slice(1).trim().replace('>', '');

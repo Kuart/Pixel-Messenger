@@ -1,5 +1,4 @@
 import { EVENTS } from '../../const';
-import { parseObjectPathTag } from '../parser/utils';
 import { ParentNodeType, VComponentNode } from '../pixelDom';
 import { Pixel } from '../root';
 import { ICurrentUserStore } from './store.type';

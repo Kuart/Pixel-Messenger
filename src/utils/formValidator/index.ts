@@ -1,2 +1,2 @@
 export { FormValidator } from './FormValidator';
-export { IValidatorConfig } from './FormValidator.type';
+export type { IValidatorConfig } from './FormValidator.type';

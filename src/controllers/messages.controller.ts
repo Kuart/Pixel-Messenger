@@ -1,6 +1,6 @@
 import { chatAPI, ChatWebSocket } from '../api';
 import { IMessage, IUser } from '../interfaces';
-import { IChat } from '../modules/Messanger/messanger.type';
+import { IChat } from '../modules/Messenger/messenger.type';
 import { dateHandler, PixelStore } from '../utils';
 
 class MessagesController {
@@ -128,6 +128,7 @@ class MessagesController {
     if (converted.length && converted.length > 1) {
       lastMessage = converted[converted.length - 1];
     } else if (converted.length) {
+      /* eslint prefer-destructuring: ["error", {VariableDeclarator: {object: true}}] */
       lastMessage = converted[0];
     }
 

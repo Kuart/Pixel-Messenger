@@ -2,6 +2,8 @@ export interface IPayload {
   content?: string;
   type: string;
 }
+
+/* eslint camelcase: "off" */
 export interface IMessage {
   user_id: number;
   time: string;

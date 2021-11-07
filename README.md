@@ -33,4 +33,3 @@ docker run -p 3000:3000 -d <name>
 
 - «[Heroku](https://pixel-messenger.herokuapp.com/)»,
 - «[Макеты Figma](https://www.figma.com/file/J0pgivTE3a1LNOoGOEZOAV/PixelChat?node-id=1%3A20)»,
-- «[PR Sprint 4](https://github.com/Kuart/middle.messenger.praktikum.yandex/pull/2)»
